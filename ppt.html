@@ -8,6 +8,14 @@
 	<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
 	<!-- Lucide Icons -->
 	<script src="https://unpkg.com/lucide@latest"></script>
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('special-cleaning-theme') || 'dark';
+			if (savedTheme === 'light') {
+				document.documentElement.classList.add('light-theme');
+			}
+		})();
+	</script>
 	<style>
 		:root {
 			--bg: #050a14;
@@ -20,15 +28,25 @@
 			--font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
 		}
 
+		.light-theme {
+			--bg: #f8f9fa;
+			--surface: #ffffff;
+			--text-main: #111;
+			--text-sub: #555;
+			--border: rgba(0, 0, 0, 0.1);
+			--primary: #a67c00;
+		}
+
 		* { margin: 0; padding: 0; box-sizing: border-box; }
 
 		body {
-			background-color: #000;
+			background-color: var(--bg);
 			color: var(--text-main);
 			font-family: var(--font-family);
 			overflow: hidden;
 			height: 100vh;
 			width: 100vw;
+			transition: background-color 0.3s, color 0.3s;
 		}
 
 		/* Slide System */
@@ -519,10 +537,7 @@
 
 	<!-- Controls -->
 	<div class="nav-controls">
-		<div class="controls">
-            <button onclick="prevSlide()" style="cursor: pointer;">이전</button>
-            <button onclick="nextSlide()" style="cursor: pointer;">다음</button>
-        </div>
+		<div class="nav-btn" onclick="toggleTheme()" title="테마 변경"><i data-lucide="moon" id="themeIcon"></i></div>
 		<div class="nav-btn" onclick="prevSlide()"><i data-lucide="chevron-left"></i></div>
 		<div class="nav-btn" onclick="nextSlide()"><i data-lucide="chevron-right"></i></div>
 	</div>
@@ -545,6 +560,22 @@
 			progressBar.style.width = `${progress}%`;
 			slideNum.innerText = `${currentSlide + 1} / ${slides.length}`;
 		}
+
+		function toggleTheme() {
+			const isLight = document.documentElement.classList.toggle('light-theme');
+			localStorage.setItem('special-cleaning-theme', isLight ? 'light' : 'dark');
+			updateThemeIcon();
+		}
+
+		function updateThemeIcon() {
+			const isLight = document.documentElement.classList.contains('light-theme');
+			const icon = document.getElementById('themeIcon');
+			if (icon) {
+				icon.setAttribute('data-lucide', isLight ? 'sun' : 'moon');
+				lucide.createIcons();
+			}
+		}
+		updateThemeIcon();
 
 		function nextSlide() {
 			if (currentSlide < slides.length - 1) {
