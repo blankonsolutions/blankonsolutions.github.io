@@ -20,7 +20,13 @@
             --info: #00c2ff;
         }
 
-        * { box-sizing: border-box; font-family: "Pretendard Variable", sans-serif; -webkit-tap-highlight-color: transparent; }
+        * {
+            box-sizing: border-box;
+            font-family: "Pretendard Variable", sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            line-height: 1.6;
+            letter-spacing: -0.025em;
+        }
 
         body {
             margin: 0; padding: 0; background: #050505; color: var(--text-main);
@@ -33,10 +39,10 @@
         }
 
         .bg { flex: 1; overflow-y: auto; padding-bottom: 20px; }
-        .padding { padding: 20px; }
+        .padding { padding: 24px; }
 
         .header {
-            padding: 50px 20px 15px; background: var(--surface);
+            padding: 50px 20px 20px; background: var(--surface);
             border-bottom: 1px solid var(--primary);
             display: flex; justify-content: space-between; align-items: center;
             position: sticky; top: 0; z-index: 10;
@@ -44,25 +50,23 @@
         .headerTitle { font-weight: bold; font-size: 17px; }
         .backBtn, .homeBtn { cursor: pointer; }
 
-        .card { background: var(--surface); padding: 20px; border-radius: 15px; border: 1px solid #222; margin-bottom: 15px; cursor: pointer; }
+        .card { background: var(--surface); padding: 24px; border-radius: 15px; border: 1px solid #222; margin-bottom: 20px; cursor: pointer; transition: background 0.2s; }
+        .card:active { background: #1a1a1a; }
+
         .primaryBtn {
-            width: 100%; padding: 15px; background: var(--primary); border: none;
-            border-radius: 10px; color: #fff; font-weight: 800; cursor: pointer;
+            width: 100%; padding: 18px; background: var(--primary); border: none;
+            border-radius: 12px; color: #fff; font-weight: 800; cursor: pointer;
+            font-size: 15px;
         }
 
-        /* Mini Stats Grid */
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        
         .nav {
-            height: 60px; background: var(--surface); border-top: 1px solid #222;
+            height: 75px; background: var(--surface); border-top: 1px solid #222;
             display: flex; justify-content: space-around; align-items: center; width: 100%;
         }
-        .nav-item { color: var(--text-dark); font-size: 10px; text-align: center; cursor: pointer; }
+        .nav-item { color: var(--text-dark); font-size: 11px; text-align: center; cursor: pointer; }
         .nav-item.active { color: var(--primary); }
 
-        .tag { font-size: 10px; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 5px; }
-        .tag-gray { background: #222; color: #888; }
-        .tag-blue { background: rgba(0,194,255,0.1); color: var(--info); border: 1px solid var(--info); }
+        .menuCard { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--surface); border-radius: 12px; margin-bottom: 12px; cursor: pointer; font-size: 14px; }
 
         @media (min-width: 600px) { #root { max-width: 480px; border-left: 1px solid #333; border-right: 1px solid #333; box-shadow: 0 0 50px rgba(0,0,0,0.5); } }
     </style>
@@ -73,15 +77,12 @@
 
     <script>
         let state = {
-            page: 'dash', // dash, stats, approval, logs, info
+            page: 'dash', // dash, stats, approval, logs, broadcast, archive, settings
             currentUser: { name: '이주무관', org: '광주광역시 서구청' },
             districts: [
                 { name: '역삼1동', risk: '상', activity: 85 },
                 { name: '역삼2동', risk: '중', activity: 40 },
                 { name: '도곡동', risk: '하', activity: 12 }
-            ],
-            pendingVendors: [
-                { id: 'v1', name: '든든특수청소', date: '2026-04-25', docs: '완료' }
             ],
             auditLogs: [
                  { time: '14:20', action: '예산 승인', target: 'B-04 프로젝트' },
@@ -93,7 +94,7 @@
 
         function render() {
             const root = document.getElementById('root');
-            let hideNav = ['approval', 'logs', 'info'].includes(state.page);
+            let hideNav = ['approval', 'logs', 'broadcast', 'archive', 'settings'].includes(state.page);
 
             root.innerHTML = `
                 ${renderHeader(hideNav)}
@@ -105,7 +106,7 @@
         function renderHeader(isSub) {
             return `
                 <div class="header">
-                    ${isSub ? `<div onclick="setPage('dash')" style="cursor:pointer; font-size:20px;">←</div>` : `<div onclick="location.href='index.html'" style="font-size:13px; border:1px solid #333; padding:5px 10px; border-radius:8px;">🏠 홈</div>`}
+                    ${isSub ? `<div class="backBtn" onclick="setPage('dash')">←</div>` : `<div onclick="location.href='index.html'" style="font-size:13px; border:1px solid #333; padding:6px 12px; border-radius:8px; cursor:pointer;">🏠 홈</div>`}
                     <div class="headerTitle">${getHeaderTitle()}</div>
                     <div style="width:40px"></div>
                 </div>
@@ -115,10 +116,10 @@
         function getHeaderTitle() {
             switch(state.page) {
                 case 'dash': return '행정 통합관제';
-                case 'stats': return '지역별 통계 분석';
-                case 'approval': return '신규 파트너 검증';
-                case 'logs': return '시스템 감사 로그';
-                case 'info': return '행정 매뉴얼 DB';
+                case 'stats': return '데이터 시각화';
+                case 'broadcast': return '긴급 행정 중계';
+                case 'archive': return '과거 데이터 아카이브';
+                case 'settings': return '플랫폼 운영 설정';
                 default: return '행정포털';
             }
         }
@@ -126,10 +127,10 @@
         function renderNav() {
             return `
                 <div class="nav">
-                    <div class="nav-item ${state.page==='dash'?'active':''}" onclick="setPage('dash')">🏠 홈</div>
-                    <div class="nav-item ${state.page==='stats'?'active':''}" onclick="setPage('stats')">📊 통계</div>
-                    <div class="nav-item ${state.page==='approval'?'active':''}" onclick="setPage('approval')">🛡️ 검증</div>
-                    <div class="nav-item" onclick="setPage('info')">📄 가이드</div>
+                    <div class="nav-item ${state.page==='dash'?'active':''}" onclick="setPage('dash')"><div>🏠</div>홈</div>
+                    <div class="nav-item ${state.page==='stats'?'active':''}" onclick="setPage('stats')"><div>📊</div>분석</div>
+                    <div class="nav-item" onclick="setPage('broadcast')"><div>📡</div>전파</div>
+                    <div class="nav-item" onclick="setPage('settings')"><div>⚙️</div>설정</div>
                 </div>
             `;
         }
@@ -138,65 +139,76 @@
             switch(state.page) {
                 case 'dash': return `
                     <div class="padding">
-                        <div style="margin-bottom:20px;">
+                        <div style="margin-bottom:30px;">
                             <div style="font-size:13px; color:var(--text-sub);">${state.currentUser.org}</div>
-                            <div style="font-size:22px; font-weight:800; margin-top:5px;">기동 대응 단계: <span style="color:var(--warning);">관심 (Level 1)</span></div>
+                            <div style="font-size:22px; font-weight:800; margin-top:8px; letter-spacing:-0.03em;">행정 통합 마스터 포털</div>
                         </div>
 
-                        <div class="grid-2" style="margin-bottom:20px;">
-                            <div class="card" onclick="setPage('stats')" style="margin-bottom:0;"><div style="font-size:20px;">🌆</div><div style="font-size:12px; margin-top:5px;">관내 위험 분포</div></div>
-                            <div class="card" onclick="setPage('approval')" style="margin-bottom:0;"><div style="font-size:20px;">📋</div><div style="font-size:12px; margin-top:5px;">업체 승인 대기</div></div>
+                        <div class="card" style="background:#1a1a1a; border-left: 4px solid var(--primary);">
+                            <div style="font-size:12px; color:var(--primary); font-weight:bold; margin-bottom:8px;">긴급 상황 알림</div>
+                            <div style="font-size:15px; font-weight:bold; line-height:1.5;">역삼동 관내 고위험군 가구 2개 소에서 72시간 이상 활동 감지되지 않음</div>
+                            <button class="primaryBtn" style="margin-top:15px; padding:10px; font-size:12px;" onclick="setPage('broadcast')">긴급 전파 실행</button>
                         </div>
 
-                        <div style="font-weight:bold; margin-bottom:15px;">🔍 실시간 행정 로그</div>
-                        <div class="card">
-                            ${state.auditLogs.map(l => `
-                                <div style="display:flex; justify-content:space-between; font-size:12px; padding:8px 0; border-bottom:1px solid #222;">
-                                    <span style="color:var(--text-dark);">${l.time}</span>
-                                    <span>${l.action}: <b style="color:var(--info);">${l.target}</b></span>
-                                </div>
-                            `).join('')}
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:25px;">
+                            <div class="card" onclick="setPage('stats')" style="margin-bottom:0; text-align:center;">
+                                <div style="font-size:24px; margin-bottom:8px;">📈</div>
+                                <div style="font-size:13px; font-weight:bold;">동별 지수</div>
+                            </div>
+                            <div class="card" onclick="setPage('archive')" style="margin-bottom:0; text-align:center;">
+                                <div style="font-size:24px; margin-bottom:8px;">🗄️</div>
+                                <div style="font-size:13px; font-weight:bold;">아카이브</div>
+                            </div>
                         </div>
+
+                        <div style="font-weight:bold; margin-top:35px; margin-bottom:15px; font-size:16px;">행정 도구</div>
+                        <div class="menuCard" onclick="setPage('settings')"><span>🔧 플랫폼 이용약관 관리</span><span>❯</span></div>
+                        <div class="menuCard" onclick="alert('데이터 추출 중...')"><span>📊 정기 보고서 자동 생성 (XLS)</span><span>❯</span></div>
                     </div>
                 `;
                 case 'stats': return `
                     <div class="padding">
-                        <h3 style="margin-bottom:15px;">행정동별 위험 지수</h3>
+                        <h3 style="margin-bottom:20px;">특수청소 수요 밀집도</h3>
                         ${state.districts.map(d => `
                             <div class="card">
-                                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                                    <div style="font-weight:bold;">${d.name}</div>
-                                    <div style="color:${d.risk==='상'?'var(--danger)':'var(--success)'}">${d.risk}</div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                                    <div style="font-weight:bold; font-size:15px;">${d.name}</div>
+                                    <div style="font-size:12px; font-weight:bold; color:${d.risk==='상'?'var(--danger)':'var(--success)'}">${d.risk} 위험</div>
                                 </div>
-                                <div style="height:6px; background:#222; border-radius:3px; overflow:hidden;">
+                                <div style="height:8px; background:#222; border-radius:4px; overflow:hidden;">
                                     <div style="height:100%; background:var(--primary); width:${d.activity}%"></div>
                                 </div>
+                                <div style="font-size:11px; color:var(--text-dark); margin-top:8px;">전월 대비 작업 빈도 ${d.activity}% 도달</div>
                             </div>
                         `).join('')}
                     </div>
                 `;
-                case 'approval': return `
+                case 'broadcast': return `
                     <div class="padding">
-                        <h3 style="margin-bottom:15px;">신규 파트너 가입 심사</h3>
-                        ${state.pendingVendors.map(v => `
-                            <div class="card">
-                                <div class="tag tag-blue">서류검토중</div>
-                                <div style="font-size:17px; font-weight:bold; margin:5px 0;">${v.name}</div>
-                                <div style="font-size:12px; color:var(--text-dark);">신청일: ${v.date}</div>
-                                <div class="grid-2" style="margin-top:15px;">
-                                    <button class="primaryBtn" style="padding:10px; font-size:12px;" onclick="alert('승인 완료')">승인</button>
-                                    <button class="primaryBtn" style="padding:10px; font-size:12px; background:var(--danger);" onclick="alert('반려 처리')">반려</button>
-                                </div>
-                            </div>
-                        `).join('')}
+                        <h2 style="margin-bottom:25px;">긴급 행정 전파</h2>
+                        <div class="card" style="border-color:var(--danger); background:rgba(220,53,69,0.05);">
+                            <p style="font-size:14px; line-height:1.7;">본 기능은 관내 등록된 모든 특수청소 파트너 업체에게 긴급 출동 및 작업 협조 요청을 동시에 발송합니다. 오남용에 주의하시기 바랍니다.</p>
+                        </div>
+                        <div style="margin-top:20px;">
+                            <textarea style="width:100%; background:#000; border:1px solid #333; color:#fff; padding:20px; border-radius:12px; font-size:14px; outline:none;" rows="6" placeholder="전파할 메시지 내용을 입력하세요."></textarea>
+                        </div>
+                        <button class="primaryBtn" style="margin-top:20px; background:var(--danger);" onclick="alert('관내 12개 업체에 긴급 전파가 완료되었습니다.')">즉시 전파 실행</button>
                     </div>
                 `;
-                case 'info': return `
+                case 'archive': return `
                     <div class="padding">
-                        <h3 style="margin-bottom:15px;">특수청소 행정 매뉴얼</h3>
-                        <div class="card" onclick="alert('다운로드 중...')">📕 [2026] 고립가구 현장 대응 가이드</div>
-                        <div class="card" onclick="alert('다운로드 중...')">📘 [지침] B2G 제한경쟁입찰 표준 절차</div>
-                        <div class="card" onclick="alert('다운로드 중...')">📗 지출결의서 소급 적용 기준</div>
+                        <h3 style="margin-bottom:20px;">행정 데이터 아카이브</h3>
+                        <div class="menuCard"><span>📂 2025년 하반기 작업 리포트</span><span>❯</span></div>
+                        <div class="menuCard"><span>📂 2025년 상반기 예산 집행 내역</span><span>❯</span></div>
+                        <div class="menuCard"><span>📂 과거 계약 및 심사 아카이브</span><span>❯</span></div>
+                    </div>
+                `;
+                case 'settings': return `
+                    <div class="padding">
+                        <h3 style="margin-bottom:20px;">시스템 운영 설정</h3>
+                        <div class="menuCard"><span>📜 서비스 이용약관 편집</span><span>❯</span></div>
+                        <div class="menuCard"><span>🛡️ 개인정보 처리방침 갱신</span><span>❯</span></div>
+                        <div class="menuCard"><span>🔑 관리자 권한 및 계정 관리</span><span>❯</span></div>
                     </div>
                 `;
             }
