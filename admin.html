@@ -23,13 +23,17 @@
         }
 
         body {
-            margin: 0; padding: 0; background: var(--bg); color: var(--text-main);
+            margin: 0; padding: 0; background: #050505; color: var(--text-main);
             height: 100vh; overflow: hidden;
+            display: flex; justify-content: center;
         }
 
-        #root { height: 100%; display: flex; flex-direction: column; }
+        #root {
+            height: 100%; display: flex; flex-direction: column;
+            width: 100%; background: var(--bg); position: relative;
+        }
 
-        .bg { flex: 1; overflow-y: auto; padding-bottom: 80px; }
+        .bg { flex: 1; overflow-y: auto; padding-bottom: 20px; }
         .padding { padding: 20px; }
 
         .header {
@@ -53,11 +57,22 @@
         
         @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
 
-        .nav { position: fixed; bottom: 0; width: 100%; height: 60px; background: var(--surface); border-top: 1px solid #222; display: flex; justify-content: space-around; align-items: center; }
-        .nav-item { color: var(--text-sub); font-size: 11px; text-align: center; }
+        .nav {
+            height: 60px; background: var(--surface); border-top: 1px solid #222;
+            display: flex; justify-content: space-around; align-items: center;
+            width: 100%;
+        }
+        .nav-item { color: var(--text-sub); font-size: 11px; text-align: center; cursor: pointer; }
         .nav-item.active { color: var(--primary); }
 
-        @media (min-width: 600px) { #root { max-width: 480px; margin: 0 auto; border: 1px solid #333; } }
+        @media (min-width: 600px) {
+            #root {
+                max-width: 480px;
+                border-left: 1px solid #333;
+                border-right: 1px solid #333;
+                box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            }
+        }
     </style>
 </head>
 
@@ -107,15 +122,6 @@
                             <div class="menu-item" onclick="setPage('report')"><div class="menu-icon">📄</div><div class="menu-label">서류자동화</div></div>
                             <div class="menu-item" onclick="location.href='index.html'"><div class="menu-icon">🚪</div><div class="menu-label">로그아웃</div></div>
                         </div>
-
-                        <div class="emergency-card">
-                            <div class="emergency-pulse"></div>
-                            <div style="flex:1;">
-                                <div style="font-weight:bold; font-size:14px; color:var(--danger);">긴급 현장 발생</div>
-                                <div style="font-size:12px; color:#aaa; margin-top:30px">치평동 고독사 의심 현장 실시간 알림</div>
-                            </div>
-                            <button style="background:var(--danger); border:none; padding:8px 12px; border-radius:5px; color:#fff; font-weight:bold; font-size:11px;">대응요청</button>
-                        </div>
                     </div>
                 `;
                 case 'monitoring': return `
@@ -124,10 +130,6 @@
                         <div style="background:var(--surface); padding:20px; border-radius:15px; border:1px solid #333; margin-bottom:20px;">
                             <h3 style="margin:0 0 15px 0; font-size:16px;">관내 위험 가구 분석</h3>
                             <div style="height:150px; background:#222; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#555;">[위험분석 지도 데이터]</div>
-                        </div>
-                        <div class="card" style="background:#111; padding:15px; border-radius:10px; border:1px solid #222;">
-                            <div style="font-weight:bold; color:var(--primary);">A등급 위험 발견</div>
-                            <div style="font-size:14px; margin-top:5px;">화정동 1인 가구 집적 지역 모니터링 강화 필요</div>
                         </div>
                     </div>
                 `;
