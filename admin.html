@@ -4,33 +4,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>특청 - 행정/관리자용</title>
+    <title>특청 - 행정용 포털</title>
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
         :root {
-            --primary: #28a745; /* Success Green/Gov theme */
+            --primary: #28a745; /* Success Green for Govt */
             --bg: #000;
             --surface: #111;
             --text-main: #fff;
             --text-sub: #aaa;
+            --text-dark: #666;
             --border: #333;
             --danger: #dc3545;
+            --warning: #ffc107;
         }
 
-        * {
-            box-sizing: border-box;
-            font-family: "Pretendard Variable", sans-serif;
-        }
+        * { box-sizing: border-box; font-family: "Pretendard Variable", sans-serif; -webkit-tap-highlight-color: transparent; }
 
         body {
             margin: 0; padding: 0; background: #050505; color: var(--text-main);
-            height: 100vh; overflow: hidden;
-            display: flex; justify-content: center;
+            height: 100vh; overflow: hidden; display: flex; justify-content: center;
         }
 
         #root {
-            height: 100%; display: flex; flex-direction: column;
-            width: 100%; background: var(--bg); position: relative;
+            height: 100%; display: flex; flex-direction: column; width: 100%;
+            background: var(--bg); position: relative;
         }
 
         .bg { flex: 1; overflow-y: auto; padding-bottom: 20px; }
@@ -40,39 +38,38 @@
             padding: 50px 20px 15px; background: var(--surface);
             border-bottom: 1px solid var(--primary);
             display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 10;
         }
         .headerTitle { font-weight: bold; font-size: 18px; }
+        .homeBtn { font-size: 14px; color: var(--text-sub); border: 1px solid var(--border); padding: 5px 10px; border-radius: 8px; cursor: pointer; }
 
-        .stat-card { background: var(--surface); padding: 20px; border-radius: 15px; border: 1px solid #222; margin-bottom: 20px; border-top: 3px solid var(--primary); }
-        .stat-label { font-size: 13px; color: var(--text-sub); }
-        .stat-value { font-size: 26px; font-weight: 800; color: var(--primary); margin-top: 5px; }
+        .card { background: var(--surface); padding: 20px; border-radius: 15px; border: 1px solid #222; margin-bottom: 15px; }
+        .primaryBtn {
+            width: 100%; padding: 15px; background: var(--primary); border: none;
+            border-radius: 10px; color: #fff; font-weight: 800; cursor: pointer;
+        }
+        .primaryBtn:active { opacity: 0.8; }
 
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .stat-card { border-top: 4px solid var(--primary); }
+        .stat-val { font-size: 28px; font-weight: 800; color: var(--primary); margin: 10px 0; }
+
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .menu-item { background: var(--surface); padding: 20px; border-radius: 15px; border: 1px solid #333; text-align: center; cursor: pointer; }
         .menu-icon { font-size: 24px; margin-bottom: 10px; }
         .menu-label { font-size: 13px; font-weight: 600; }
 
-        .emergency-card { background: #1a0505; border: 1px solid var(--danger); padding: 15px; border-radius: 12px; display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
-        .emergency-pulse { width: 10px; height: 10px; background: var(--danger); border-radius: 50%; animation: pulse 1s infinite; }
-        
-        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
+        .risk-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+        .risk-high { background: rgba(220,53,69,0.2); color: var(--danger); border: 1px solid var(--danger); }
+        .risk-mid { background: rgba(255,193,7,0.2); color: var(--warning); border: 1px solid var(--warning); }
 
         .nav {
             height: 60px; background: var(--surface); border-top: 1px solid #222;
-            display: flex; justify-content: space-around; align-items: center;
-            width: 100%;
+            display: flex; justify-content: space-around; align-items: center; width: 100%;
         }
-        .nav-item { color: var(--text-sub); font-size: 11px; text-align: center; cursor: pointer; }
+        .nav-item { color: var(--text-dark); font-size: 10px; text-align: center; cursor: pointer; }
         .nav-item.active { color: var(--primary); }
 
-        @media (min-width: 600px) {
-            #root {
-                max-width: 480px;
-                border-left: 1px solid #333;
-                border-right: 1px solid #333;
-                box-shadow: 0 0 50px rgba(0,0,0,0.5);
-            }
-        }
+        @media (min-width: 600px) { #root { max-width: 480px; border-left: 1px solid #333; border-right: 1px solid #333; box-shadow: 0 0 50px rgba(0,0,0,0.5); } }
     </style>
 </head>
 
@@ -81,61 +78,183 @@
 
     <script>
         let state = {
-            page: 'dash', // dash, bids, report, monitoring
-            currentUser: { name: '이주무관', org: '광주광역시 서구청', budget: 45000000 }
+            page: 'dash', // dash, monitoring, monitor_detail, bids, report
+            currentUser: { name: '이주무관', org: '광주 서구청', budget: 45000000 },
+            monitoringData: [
+                { id: 'm1', loc: '역삼동 123-4', resident: '김** (82세, 1인가구)', status: '위험', level: 'high', reason: '전력량 48시간 변동 없음', visits: 2 },
+                { id: 'm2', loc: '역삼동 56-2', resident: '박** (75세, 1인가구)', status: '주의', level: 'mid', reason: '수도 사용량 급감', visits: 5 },
+                { id: 'm3', loc: '도곡동 99-1', resident: '최** (79세, 1인가구)', status: '정상', level: 'low', reason: '최근 방문 완료', visits: 10 },
+                { id: 'm4', loc: '개포동 44-5', resident: '정** (85세, 1인가구)', status: '위험', level: 'high', reason: '가스 검침 이상 (미사용)', visits: 1 }
+            ],
+            bidsDB: [
+                { id: 'b1', title: '역삼동 복지사각지대 환경정비', budget: 5000000, deadline: '2026-05-01', participants: 4 },
+                { id: 'b2', title: '관내 쓰레기집 대규모 정리 사업', budget: 12000000, deadline: '2026-05-15', participants: 0 },
+                { id: 'b3', title: '고립가구 스마트기기 지원 시범사업', budget: 8500000, deadline: '2026-05-10', participants: 2 }
+            ],
+            selectedMonitor: null
         };
 
-        function setPage(p) { state.page = p; render(); }
+        function setPage(p, data = null) {
+            state.page = p;
+            if (data) state.selectedMonitor = data;
+            render();
+        }
 
         function render() {
             const root = document.getElementById('root');
+            let content = '';
+            let hideNav = false;
+
+            switch(state.page) {
+                case 'dash': content = renderDash(); break;
+                case 'monitoring': content = renderMonitoring(); break;
+                case 'monitor_detail': content = renderMonitorDetail(); hideNav = true; break;
+                case 'bids': content = renderBids(); break;
+                case 'report': content = renderReport(); break;
+            }
+
             root.innerHTML = `
-                <div class="bg">
-                    ${renderContent()}
-                </div>
-                <div class="nav">
-                    <div class="nav-item ${state.page==='dash'?'active':''}" onclick="setPage('dash')">🏠 대시보드</div>
-                    <div class="nav-item ${state.page==='monitoring'?'active':''}" onclick="setPage('monitoring')">🚨 현황판</div>
-                    <div class="nav-item ${state.page==='bids'?'active':''}" onclick="setPage('bids')">⚖️ 입찰관리</div>
-                    <div class="nav-item ${state.page==='report'?'active':''}" onclick="setPage('report')">📄 행정지원</div>
+                ${renderHeader(hideNav)}
+                <div class="bg">${content}</div>
+                ${hideNav ? '' : renderNav()}
+            `;
+        }
+
+        function renderHeader(isSub) {
+            return `
+                <div class="header">
+                    ${isSub ? `<div onclick="window.history.back(); setPage('monitoring');" style="cursor:pointer; font-size:20px;">←</div>` : `<div class="homeBtn" onclick="location.href='index.html'">🏠 홈</div>`}
+                    <div class="headerTitle">${getHeaderTitle()}</div>
+                    <div style="width:40px"></div>
                 </div>
             `;
         }
 
-        function renderContent() {
+        function getHeaderTitle() {
             switch(state.page) {
-                case 'dash': return `
-                    <div class="header">
-                        <div class="headerTitle">행정 관리 포털</div>
-                        <div style="font-size:12px;">${state.currentUser.org}</div>
-                    </div>
-                    <div class="padding">
-                        <div class="stat-card">
-                            <div class="stat-label">집행 예산 잔액</div>
-                            <div class="stat-value">${state.currentUser.budget.toLocaleString()}원</div>
-                        </div>
-
-                        <div style="font-weight:bold; margin-bottom:15px; font-size:15px;">행정 바로가기</div>
-                        <div class="menu-grid">
-                            <div class="menu-item" onclick="setPage('monitoring')"><div class="menu-icon">📊</div><div class="menu-label">위험분석</div></div>
-                            <div class="menu-item" onclick="setPage('bids')"><div class="menu-icon">🤝</div><div class="menu-label">업체조회</div></div>
-                            <div class="menu-item" onclick="setPage('report')"><div class="menu-icon">📄</div><div class="menu-label">서류자동화</div></div>
-                            <div class="menu-item" onclick="location.href='index.html'"><div class="menu-icon">🚪</div><div class="menu-label">로그아웃</div></div>
-                        </div>
-                    </div>
-                `;
-                case 'monitoring': return `
-                    <div class="header"><div class="headerTitle">실시간 관제/위험도</div></div>
-                    <div class="padding">
-                        <div style="background:var(--surface); padding:20px; border-radius:15px; border:1px solid #333; margin-bottom:20px;">
-                            <h3 style="margin:0 0 15px 0; font-size:16px;">관내 위험 가구 분석</h3>
-                            <div style="height:150px; background:#222; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#555;">[위험분석 지도 데이터]</div>
-                        </div>
-                    </div>
-                `;
-                case 'bids': return `<div class="header"><div class="headerTitle">검증업체 및 입찰</div></div><div class="padding">업체 목록 조회 및 제한경쟁입찰 공고 등록 서비스입니다.</div>`;
-                case 'report': return `<div class="header"><div class="headerTitle">행정서류 지원</div></div><div class="padding">지출결의서 및 작업완료 보고서 PDF 자동 생성 서비스입니다.</div>`;
+                case 'dash': return '행정 관리 포털';
+                case 'monitoring': return '위험 가구 현황';
+                case 'monitor_detail': return '현 가구 상세';
+                case 'bids': return '입찰 및 업체 관리';
+                case 'report': return '행정 지원 센터';
+                default: return '특청 관리자';
             }
+        }
+
+        function renderNav() {
+            return `
+                <div class="nav">
+                    <div class="nav-item ${state.page==='dash'?'active':''}" onclick="setPage('dash')">🏠 홈</div>
+                    <div class="nav-item ${state.page==='monitoring'?'active':''}" onclick="setPage('monitoring')">📡 관제</div>
+                    <div class="nav-item ${state.page==='bids'?'active':''}" onclick="setPage('bids')">⚖️ 입찰</div>
+                    <div class="nav-item ${state.page==='report'?'active':''}" onclick="setPage('report')">📄 행정</div>
+                </div>
+            `;
+        }
+
+        function renderDash() {
+            return `
+                <div class="padding">
+                    <div style="margin-bottom:25px;">
+                        <div style="font-size:14px; color:var(--text-sub);">${state.currentUser.org}</div>
+                        <div style="font-size:24px; font-weight:800; margin-top:5px;">${state.currentUser.name} 님, 안녕하세요.</div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div style="font-size:14px; color:var(--text-sub);">지출 가능한 집행 예산 잔액</div>
+                        <div class="stat-val">${state.currentUser.budget.toLocaleString()}원</div>
+                        <div style="font-size:12px; color:var(--text-dark);">본 예산은 특수청소 및 고립 가구 지원 사업비입니다.</div>
+                    </div>
+
+                    <div style="font-weight:bold; margin-bottom:15px;">행정 대시보드</div>
+                    <div class="menu-grid">
+                        <div class="menu-item" onclick="setPage('monitoring')"><div class="menu-icon">📊</div><div class="menu-label">위험분석</div></div>
+                        <div class="menu-item" onclick="setPage('bids')"><div class="menu-icon">🤝</div><div class="menu-label">업체/입찰</div></div>
+                        <div class="menu-item" onclick="setPage('report')"><div class="menu-icon">📄</div><div class="menu-label">행정자동화</div></div>
+                        <div class="menu-item" onclick="location.href='index.html'"><div class="menu-icon">🚪</div><div class="menu-label">로그아웃</div></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderMonitoring() {
+            return `
+                <div class="padding">
+                    <div style="background:#1a0505; border:1px solid var(--danger); padding:15px; border-radius:12px; display:flex; align-items:center; gap:15px; margin-bottom:20px;">
+                        <div style="width:10px; height:10px; background:var(--danger); border-radius:50%; animation: pulse 1s infinite;"></div>
+                        <div style="color:var(--danger); font-size:13px; font-weight:bold;">긴급 대응 가구 2개 발견</div>
+                    </div>
+                    ${state.monitoringData.map(m => `
+                        <div class="card" onclick="setPage('monitor_detail', ${JSON.stringify(m).replace(/"/g, '&quot;')})">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                <span class="risk-badge ${m.level==='high'?'risk-high':'risk-mid'}">${m.status}</span>
+                                <span style="font-size:11px; color:var(--text-dark);">방문 ${m.visits}회</span>
+                            </div>
+                            <div style="font-size:18px; font-weight:bold; margin-bottom:5px;">${m.resident}</div>
+                            <div style="font-size:13px; color:var(--text-sub);">${m.loc}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                <style> @keyframes pulse { 0% { opacity: 1; } 100% { opacity: 0; } } </style>
+            `;
+        }
+
+        function renderMonitorDetail() {
+            const m = state.selectedMonitor;
+            return `
+                <div class="padding">
+                    <div class="card">
+                        <div style="margin-bottom:20px;">
+                            <div style="font-size:12px; color:var(--text-sub);">위험 징후</div>
+                            <div style="font-size:18px; font-weight:bold; color:var(--danger); margin-top:5px;">${m.reason}</div>
+                        </div>
+                        <div style="padding-top:20px; border-top:1px solid #222;">
+                            <div style="font-size:14px; margin-bottom:10px;"><b>대상자 정보:</b> ${m.resident}</div>
+                            <div style="font-size:14px; margin-bottom:10px;"><b>거주지:</b> ${m.loc}</div>
+                            <div style="font-size:14px;"><b>기초수급 여부:</b> 대상 (자격검증 완료)</div>
+                        </div>
+                    </div>
+                    <button class="primaryBtn" onclick="alert('관 관내 매칭 업체에 긴급 지원 오더가 발송되었습니다.')">긴급 지원 요청 (매칭 시작)</button>
+                    <button class="primaryBtn" style="background:#555; margin-top:12px;" onclick="alert('행정 리포트 생성 중...')">관련 서류 자동 생성</button>
+                    <div style="height:40px"></div>
+                </div>
+            `;
+        }
+
+        function renderBids() {
+            return `
+                <div class="padding">
+                    <h3 style="margin-bottom:15px;">제한경쟁입찰 공고</h3>
+                    ${state.bidsDB.map(b => `
+                        <div class="card">
+                            <div style="font-size:16px; font-weight:bold; margin-bottom:10px;">${b.title}</div>
+                            <div style="font-size:13px; color:var(--text-sub); margin-bottom:5px;">집행 예산: ${b.budget.toLocaleString()}원</div>
+                            <div style="font-size:13px; color:var(--text-sub); margin-bottom:15px;">마감일: ${b.deadline}</div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div style="font-size:12px; color:var(--primary);">${b.participants}개 업체 참여중</div>
+                                <button style="background:var(--primary); border:none; padding:8px 15px; color:#fff; border-radius:8px; font-size:11px;" onclick="alert('입찰 심사 페이지로 이동합니다.')">공고 관리</button>
+                            </div>
+                        </div>
+                    `).join('')}
+                    <button class="primaryBtn" style="background:#333; border:1px solid var(--primary); color:var(--primary);" onclick="alert('새 입찰 공고를 작성합니다.')">+ 새 공고 등록</button>
+                </div>
+            `;
+        }
+
+        function renderReport() {
+            return `
+                <div class="padding">
+                    <h3 style="margin-bottom:15px;">서류 생성 및 자동화</h3>
+                    <div class="menuCard" onclick="alert('결의서 생성 중...')"><span>📋 지출결의서 자동 완성</span><span>❯</span></div>
+                    <div class="menuCard" onclick="alert('보고서 생성 중...')"><span>📊 현장 작업 완료 보고서 (B2G)</span><span>❯</span></div>
+                    <div class="menuCard" onclick="alert('조회 중...')"><span>📁 전자 계약 히스토리</span><span>❯</span></div>
+                    
+                    <div style="margin-top:30px; background:#0d1a0d; border:1px solid var(--primary); padding:20px; border-radius:15px;">
+                        <div style="font-size:12px; color:var(--primary); font-weight:bold; margin-bottom:10px;">스마트 모니터링 알림</div>
+                        <div style="font-size:13px; line-height:1.6; color:#ccc;">지난 24시간 동안 총 4건의 환경정비가 완료되었으며, 2건의 지출결의서 초안이 생성되었습니다.</div>
+                    </div>
+                </div>
+            `;
         }
 
         window.onload = render;
