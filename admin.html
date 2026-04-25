@@ -50,8 +50,10 @@
         .headerTitle { font-weight: bold; font-size: 17px; }
         .backBtn, .homeBtn { cursor: pointer; }
 
-        .card { background: var(--surface); padding: 24px; border-radius: 15px; border: 1px solid #222; margin-bottom: 20px; cursor: pointer; transition: background 0.2s; }
-        .card:active { background: #1a1a1a; }
+        .card {
+            background-color: var(--surface); padding: 25px; border-radius: 20px; transition: transform 0.2s, background-color 0.2s;
+            cursor: pointer; position: relative; overflow: hidden; border: 1px solid #222; margin-bottom: 20px;
+        }.card:active { background: #1a1a1a; }
 
         .primaryBtn {
             width: 100%; padding: 18px; background: var(--primary); border: none;

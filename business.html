@@ -50,8 +50,10 @@
         .headerTitle { font-weight: bold; font-size: 17px; }
         .backBtn, .homeBtn { cursor: pointer; }
 
-        .card { background: var(--surface); padding: 24px; border-radius: 15px; border: 1px solid #222; margin-bottom: 20px; cursor: pointer; transition: background 0.2s; }
-        .card:active { background: var(--surface-hover); }
+        .card {
+            background-color: var(--surface); padding: 25px; border-radius: 20px; transition: transform 0.2s, background-color 0.2s;
+            cursor: pointer; position: relative; overflow: hidden; border: 1px solid #222; margin-bottom: 20px;
+        }.card:active { background: var(--surface-hover); }
 
         .primaryBtn {
             width: 100%; padding: 18px; background: var(--primary); border: none;
@@ -71,6 +73,7 @@
         .nav-item.active { color: var(--primary); }
 
         .menuCard { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--surface); border-radius: 12px; margin-bottom: 12px; cursor: pointer; font-size: 14px; }
+        .portfolio-item { aspect-ratio: 4/3; background: #222; border-radius: 8px; border: 1px solid #333; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #444; cursor: pointer; }
 
         @media (min-width: 600px) { #root { max-width: 480px; border-left: 1px solid #333; border-right: 1px solid #333; box-shadow: 0 0 50px rgba(0,0,0,0.5); } }
     </style>
@@ -84,6 +87,17 @@
             page: 'dash', // dash, analytics, portfolio, assets, settlement, community, scorecard, partnership
             currentUser: { id: 'pro1', compName: '명품특수청소', name: '김대표', revenue: 15400000, rating: 4.9 },
             revenueData: [20, 45, 30, 60, 85, 40, 55],
+            assets: [
+                { name: 'O3 오존발생기 (강력형)', status: '정상', stock: '2대' },
+                { name: '혈흔 분해 전용 효소 세제', status: '부족', stock: '2L' },
+                { name: '병원균 사멸 4급 암모늄 소독제', status: '정상', stock: '20L' },
+                { name: 'HEPA 필터 장착 산업용 청소기', status: '정상', stock: '1대' },
+                { name: '고성능 공기 정화기 (에어 스크러버)', status: '정상', stock: '1대' },
+                { name: '해충 구제용 방역 약품', status: '정상', stock: '15L' },
+                { name: '차폐용 고강도 특수 테이프', status: '보통', stock: '12롤' },
+                { name: '전신 방호복 (Level D)', status: '정상', stock: '24벌' },
+                { name: '방독면 및 정화통', status: '정상', stock: '6세트' }
+            ],
             posts: [
                 { id: 'c1', title: '고독사 현장 특수 약품 추천 부탁드립니다.', author: '정클린' },
                 { id: 'c2', title: '이번 달 광주 서구청 입찰 공고 보셨나요?', author: '특청매니저' }
