@@ -2,362 +2,478 @@
 <html lang="ko">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>특청 파트너 - 비즈니스 관리</title>
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
-    <script>
-        (function() {
-            const savedTheme = localStorage.getItem('special-cleaning-theme') || 'dark';
-            if (savedTheme === 'light') {
-                document.documentElement.classList.add('light-theme');
-            }
-        })();
-    </script>
-    <style>
-        :root {
-            --primary: #c9a050;
-            --bg: #000;
-            --surface: #111;
-            --surface-light: #1a1a1a;
-            --surface-hover: #222;
-            --text-main: #fff;
-            --text-sub: #ccc; /* Improved from #aaa */
-            --text-dark: #888; /* Improved from #666 */
-            --border: #333;
-            --success: #28a745;
-            --danger: #dc3545;
-        }
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>특청 파트너 - 비즈니스 관리</title>
+	<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+	<script>
+		(function () {
+			const savedTheme = localStorage.getItem('special-cleaning-theme') || 'dark';
+			if (savedTheme === 'light') {
+				document.documentElement.classList.add('light-theme');
+			}
+		})();
+	</script>
+	<style>
+		:root {
+			--primary: #c9a050;
+			--bg: #000;
+			--surface: #111;
+			--surface-light: #1a1a1a;
+			--surface-hover: #222;
+			--text-main: #fff;
+			--text-sub: #ccc;
+			/* Improved from #aaa */
+			--text-dark: #888;
+			/* Improved from #666 */
+			--border: #333;
+			--success: #28a745;
+			--danger: #dc3545;
+		}
 
-        .light-theme {
-            --bg: #f8f9fa;
-            --surface: #ffffff;
-            --surface-light: #f1f3f5;
-            --surface-hover: #e9ecef;
-            --text-main: #111;
-            --text-sub: #555;
-            --text-dark: #888;
-            --border: #dee2e6;
-            --primary: #a67c00;
-        }
+		.light-theme {
+			--bg: #f8f9fa;
+			--surface: #ffffff;
+			--surface-light: #f1f3f5;
+			--surface-hover: #e9ecef;
+			--text-main: #111;
+			--text-sub: #555;
+			--text-dark: #888;
+			--border: #dee2e6;
+			--primary: #a67c00;
+		}
 
-        * {
-            box-sizing: border-box;
-            font-family: "Pretendard Variable", sans-serif;
-            -webkit-tap-highlight-color: transparent;
-            line-height: 1.6;
-            letter-spacing: -0.025em;
-        }
+		* {
+			box-sizing: border-box;
+			font-family: "Pretendard Variable", sans-serif;
+			-webkit-tap-highlight-color: transparent;
+			line-height: 1.6;
+			letter-spacing: -0.025em;
+		}
 
-        body {
-            margin: 0; padding: 0; background: #050505; color: var(--text-main);
-            height: 100vh; overflow: hidden; display: flex; justify-content: center;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .light-theme body { background-color: #f1f3f5; }
+		body {
+			margin: 0;
+			padding: 0;
+			background: #050505;
+			color: var(--text-main);
+			height: 100vh;
+			overflow: hidden;
+			display: flex;
+			justify-content: center;
+			transition: background-color 0.3s, color 0.3s;
+		}
 
-        #root {
-            height: 100%; display: flex; flex-direction: column; width: 100%;
-            background: var(--bg); position: relative;
-        }
+		.light-theme body {
+			background-color: #f1f3f5;
+		}
 
-        .bg { flex: 1; overflow-y: auto; padding-bottom: 20px; }
-        .padding { padding: 24px; }
+		#root {
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			width: 100%;
+			background: var(--bg);
+			position: relative;
+		}
 
-        .header {
-            padding: 50px 20px 20px; background: var(--surface);
-            border-bottom: 1px solid var(--primary);
-            display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 10;
-        }
-        .headerTitle { font-weight: bold; font-size: 17px; }
-        .backBtn, .homeBtn { cursor: pointer; }
+		.bg {
+			flex: 1;
+			overflow-y: auto;
+			padding-bottom: 20px;
+		}
 
-        .card { background: var(--surface); padding: 24px; border-radius: 15px; border: 1px solid #222; margin-bottom: 20px; cursor: pointer; transition: background 0.2s; }
-        .card:active { background: var(--surface-hover); }
+		.padding {
+			padding: 24px;
+		}
 
-        .primaryBtn {
-            width: 100%; padding: 18px; background: var(--primary); border: none;
-            border-radius: 12px; color: #000; font-weight: 800; cursor: pointer;
-            font-size: 15px;
-        }
+		.header {
+			padding: 50px 20px 20px;
+			background: var(--surface);
+			border-bottom: 1px solid var(--primary);
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			position: sticky;
+			top: 0;
+			z-index: 10;
+		}
 
-        .chart-container { display: flex; align-items: flex-end; gap: 10px; height: 120px; margin-top: 25px; padding-bottom: 12px; border-bottom: 1px solid #333; }
-        .chart-bar { flex: 1; background: var(--primary); border-radius: 4px 4px 0 0; position: relative; cursor: pointer; }
-        .chart-bar:hover { opacity: 0.8; }
-        .chart-bar::after { content: attr(data-label); position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--text-dark); }
+		.headerTitle {
+			font-weight: bold;
+			font-size: 17px;
+		}
 
-        .nav {
-            height: 75px; background: var(--surface); border-top: 1px solid #222;
-            display: flex; justify-content: space-around; align-items: center; width: 100%;
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-        .nav-item { color: var(--text-dark); font-size: 11px; text-align: center; cursor: pointer; }
-        .nav-item.active { color: var(--primary); }
+		.backBtn,
+		.homeBtn {
+			cursor: pointer;
+		}
 
-        .menuCard { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--surface); border-radius: 12px; margin-bottom: 12px; cursor: pointer; font-size: 14px; }
-        .asset-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #222; }
+		.card {
+			background: var(--surface);
+			padding: 24px;
+			border-radius: 15px;
+			border: 1px solid #222;
+			margin-bottom: 20px;
+			cursor: pointer;
+			transition: background 0.2s;
+		}
 
-        @media (min-width: 600px) { #root { max-width: 480px; border-left: 1px solid #333; border-right: 1px solid #333; box-shadow: 0 0 50px rgba(0,0,0,0.5); } }
-    </style>
+		.card:active {
+			background: var(--surface-hover);
+		}
+
+		.primaryBtn {
+			width: 100%;
+			padding: 18px;
+			background: var(--primary);
+			border: none;
+			border-radius: 12px;
+			color: #000;
+			font-weight: 800;
+			cursor: pointer;
+			font-size: 15px;
+		}
+
+		.chart-container {
+			display: flex;
+			align-items: flex-end;
+			gap: 10px;
+			height: 120px;
+			margin-top: 25px;
+			padding-bottom: 12px;
+			border-bottom: 1px solid #333;
+		}
+
+		.chart-bar {
+			flex: 1;
+			background: var(--primary);
+			border-radius: 4px 4px 0 0;
+			position: relative;
+			cursor: pointer;
+		}
+
+		.chart-bar:hover {
+			opacity: 0.8;
+		}
+
+		.chart-bar::after {
+			content: attr(data-label);
+			position: absolute;
+			bottom: -22px;
+			left: 50%;
+			transform: translateX(-50%);
+			font-size: 10px;
+			color: var(--text-dark);
+		}
+
+		.nav {
+			height: 75px;
+			background: var(--surface);
+			border-top: 1px solid #222;
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+			width: 100%;
+			padding-bottom: env(safe-area-inset-bottom);
+		}
+
+		.nav-item {
+			color: var(--text-dark);
+			font-size: 11px;
+			text-align: center;
+			cursor: pointer;
+		}
+
+		.nav-item.active {
+			color: var(--primary);
+		}
+
+		.menuCard {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 20px;
+			background: var(--surface);
+			border-radius: 12px;
+			margin-bottom: 12px;
+			cursor: pointer;
+			font-size: 14px;
+		}
+
+		.asset-row {
+			display: flex;
+			justify-content: space-between;
+			padding: 15px 0;
+			border-bottom: 1px solid #222;
+		}
+
+		@media (min-width: 600px) {
+			#root {
+				max-width: 480px;
+				border-left: 1px solid #333;
+				border-right: 1px solid #333;
+				box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+			}
+		}
+	</style>
 </head>
 
 <body>
-    <div id="root"></div>
+	<div id="root"></div>
 
-    <script>
-        let state = {
-            page: 'dash', // dash, analytics, portfolio, assets, settlement, community, scorecard, partnership
-            currentUser: { id: 'pro1', compName: '명품특수청소', name: '김대표', revenue: 15400000, rating: 4.9 },
-            revenueData: [
-                { l: '월', v: 45 }, { l: '화', v: 30 }, { l: '수', v: 60 }, { l: '목', v: 85 }, { l: '금', v: 70 }, { l: '토', v: 95 }, { l: '일', v: 40 }
-            ],
-            assets: [
-                { name: 'O3 오존발생기 (강력형)', status: '정상', stock: '2대' },
-                { name: '혈흔 분해 전용 효소 세제', status: '부족', stock: '2L' },
-                { name: '병원균 사멸 소독제 (20L)', status: '정상', stock: '20L' },
-                { name: '산업용 HEPA 청소기', status: '정상', stock: '1대' },
-                { name: ' Level D 전신 방호복', status: '정상', stock: '24벌' }
-            ],
-            settlements: [
-                { id: 'S1', date: '2026-04-20', label: '역삼동 고독사 현장', amount: 2450000, status: '완료' },
-                { id: 'S2', date: '2026-04-15', label: '도곡동 화재 복구', amount: 4800000, status: '완료' }
-            ],
-            posts: [
-                { id: 'c1', title: '고독사 현장 특수 약품 추천 부탁드립니다.', author: '정클린' },
-                { id: 'c2', title: '이번 달 광주 서구청 입찰 공고 보셨나요?', author: '특청매니저' }
-            ]
-        };
+	<script>
+		let state = {
+			page: 'dash', // dash, analytics, portfolio, assets, settlement, community, scorecard, partnership
+			currentUser: { id: 'pro1', compName: '명품특수청소', name: '김대표', revenue: 15400000, rating: 4.9 },
+			revenueData: [
+				{ l: '월', v: 45 }, { l: '화', v: 30 }, { l: '수', v: 60 }, { l: '목', v: 85 }, { l: '금', v: 70 }, { l: '토', v: 95 }, { l: '일', v: 40 }
+			],
+			assets: [
+				{ name: 'O3 오존발생기 (강력형)', status: '정상', stock: '2대' },
+				{ name: '혈흔 분해 전용 효소 세제', status: '부족', stock: '2L' },
+				{ name: '병원균 사멸 소독제 (20L)', status: '정상', stock: '20L' },
+				{ name: '산업용 HEPA 청소기', status: '정상', stock: '1대' },
+				{ name: ' Level D 전신 방호복', status: '정상', stock: '24벌' }
+			],
+			settlements: [
+				{ id: 'S1', date: '2026-04-20', label: '역삼동 고독사 현장', amount: 2450000, status: '완료' },
+				{ id: 'S2', date: '2026-04-15', label: '도곡동 화재 복구', amount: 4800000, status: '완료' }
+			],
+			posts: [
+				{ id: 'c1', title: '고독사 현장 특수 약품 추천 부탁드립니다.', author: '정클린' },
+				{ id: 'c2', title: '이번 달 광주 서구청 입찰 공고 보셨나요?', author: '특청매니저' }
+			]
+		};
 
-        function setPage(p) { state.page = p; render(); }
+		function setPage(p) { state.page = p; render(); }
 
-        function render() {
-            const root = document.getElementById('root');
-            let hideNav = ['portfolio', 'assets', 'settlement', 'community', 'scorecard', 'partnership', 'analytics'].includes(state.page);
+		function render() {
+			const root = document.getElementById('root');
+			let hideNav = ['portfolio', 'assets', 'settlement', 'community', 'scorecard', 'partnership', 'analytics'].includes(state.page);
 
-            root.innerHTML = `
-                ${renderHeader(hideNav)}
-                <div class="bg">${renderContent()}</div>
-                ${hideNav ? '' : renderNav()}
-            `;
-        }
+			root.innerHTML = `
+				${renderHeader(hideNav)}
+				<div class="bg">${renderContent()}</div>
+				${hideNav ? '' : renderNav()}
+			`;
+		}
 
-        function renderHeader(isSub) {
-            return `
-                <div class="header">
-                    ${isSub ? `<div class="backBtn" onclick="setPage('dash')">←</div>` : `<div onclick="location.href='index.html'" style="font-size:13px; border:1px solid #333; padding:6px 12px; border-radius:8px; cursor:pointer;">🏠 홈</div>`}
-                    <div class="headerTitle">${getHeaderTitle()}</div>
-                    <div style="cursor:pointer; font-size:18px;" onclick="toggleTheme()">🌓</div>
-                </div>
-            `;
-        }
+		function renderHeader(isSub) {
+			return `
+				<div class="header">
+					${isSub ? `<div class="backBtn" onclick="setPage('dash')">←</div>` : `<div onclick="location.href='index.html'" style="font-size:13px; border:1px solid #333; padding:6px 12px; border-radius:8px; cursor:pointer;">🏠 홈</div>`}
+					<div class="headerTitle">${getHeaderTitle()}</div>
+					<div style="cursor:pointer; font-size:18px;" onclick="toggleTheme()">🌓</div>
+				</div>
+			`;
+		}
 
-        function toggleTheme() {
-            const isLight = document.documentElement.classList.toggle('light-theme');
-            localStorage.setItem('special-cleaning-theme', isLight ? 'light' : 'dark');
-        }
+		function toggleTheme() {
+			const isLight = document.documentElement.classList.toggle('light-theme');
+			localStorage.setItem('special-cleaning-theme', isLight ? 'light' : 'dark');
+		}
 
-        function getHeaderTitle() {
-            switch(state.page) {
-                case 'dash': return '파트너 지원센터';
-                case 'community': return '프로 전용 커뮤니티';
-                case 'scorecard': return '서비스 품질 진단';
-                case 'partnership': return '파트너십 센터';
-                case 'analytics': return '사업 데이터 분석';
-                case 'assets': return '재고 및 자산 관리';
-                case 'settlement': return '정산 내역 관리';
-                case 'portfolio': return '포트폴리오 관리';
-                default: return '비즈니스';
-            }
-        }
+		function getHeaderTitle() {
+			switch (state.page) {
+				case 'dash': return '파트너 지원센터';
+				case 'community': return '프로 전용 커뮤니티';
+				case 'scorecard': return '서비스 품질 진단';
+				case 'partnership': return '파트너십 센터';
+				case 'analytics': return '사업 데이터 분석';
+				case 'assets': return '재고 및 자산 관리';
+				case 'settlement': return '정산 내역 관리';
+				case 'portfolio': return '포트폴리오 관리';
+				default: return '비즈니스';
+			}
+		}
 
-        function renderNav() {
-            return `
-                <div class="nav">
-                    <div class="nav-item ${state.page==='dash'?'active':''}" onclick="setPage('dash')"><div>🏠</div>홈</div>
-                    <div class="nav-item ${state.page==='analytics'?'active':''}" onclick="setPage('analytics')"><div>📊</div>분석</div>
-                    <div class="nav-item ${state.page==='community'?'active':''}" onclick="setPage('community')"><div>🤝</div>커뮤니티</div>
-                    <div class="nav-item" onclick="setPage('scorecard')"><div>⭐</div>등급</div>
-                </div>
-            `;
-        }
+		function renderNav() {
+			return `
+				<div class="nav">
+					<div class="nav-item ${state.page === 'dash' ? 'active' : ''}" onclick="setPage('dash')"><div>🏠</div>홈</div>
+					<div class="nav-item ${state.page === 'analytics' ? 'active' : ''}" onclick="setPage('analytics')"><div>📊</div>분석</div>
+					<div class="nav-item ${state.page === 'community' ? 'active' : ''}" onclick="setPage('community')"><div>🤝</div>커뮤니티</div>
+					<div class="nav-item" onclick="setPage('scorecard')"><div>⭐</div>등급</div>
+				</div>
+			`;
+		}
 
-        function renderContent() {
-            switch(state.page) {
-                case 'dash': return `
-                    <div class="padding">
-                        <div style="margin-bottom:30px;">
-                            <div style="font-size:13px; color:var(--text-sub);">반가워요, ${state.currentUser.name} 님</div>
-                            <div style="font-size:22px; font-weight:800; margin-top:8px; letter-spacing:-0.03em;">${state.currentUser.compName} <span style="font-size:12px; color:var(--primary);">인증업체</span></div>
-                        </div>
+		function renderContent() {
+			switch (state.page) {
+				case 'dash': return `
+					<div class="padding">
+						<div style="margin-bottom:30px;">
+							<div style="font-size:13px; color:var(--text-sub);">반가워요, ${state.currentUser.name} 님</div>
+							<div style="font-size:22px; font-weight:800; margin-top:8px; letter-spacing:-0.03em;">${state.currentUser.compName} <span style="font-size:12px; color:var(--primary);">인증업체</span></div>
+						</div>
 
-                        <div class="card" style="background:var(--primary); color:#000; border:none; box-shadow:0 12px 24px rgba(201,160,80,0.3);" onclick="setPage('analytics')">
-                            <div style="font-size:13px; font-weight:bold;">이번 달 확정 수익</div>
-                            <div style="font-size:28px; font-weight:900; margin:12px 0;">${state.currentUser.revenue.toLocaleString()}원</div>
-                            <div style="font-size:11px; opacity:0.7;">전월 대비 12.5% 상승 (↑)</div>
-                        </div>
+						<div class="card" style="background:var(--primary); color:#000; border:none; box-shadow:0 12px 24px rgba(201,160,80,0.3);" onclick="setPage('analytics')">
+							<div style="font-size:13px; font-weight:bold;">이번 달 확정 수익</div>
+							<div style="font-size:28px; font-weight:900; margin:12px 0;">${state.currentUser.revenue.toLocaleString()}원</div>
+							<div style="font-size:11px; opacity:0.7;">전월 대비 12.5% 상승 (↑)</div>
+						</div>
 
-                        <div style="font-weight:bold; margin-top:35px; margin-bottom:15px; font-size:16px;">현장 및 재고 상태</div>
-                        <div class="card" onclick="setPage('assets')">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-                                <span style="font-weight:bold;">🛠️ 주요 장비/약품 현황</span>
-                                <span style="font-size:12px; color:var(--primary);">상세보기 ❯</span>
-                            </div>
-                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                                ${state.assets.slice(0, 2).map(a => `
-                                    <div style="background:var(--surface-light); padding:12px; border-radius:10px; font-size:12px; border:1px solid var(--border);">
-                                        <div style="color:var(--text-sub); margin-bottom:4px;">${a.name}</div>
-                                        <div style="font-weight:bold; color:${a.status==='정상'?'var(--success)':'var(--danger)'}">${a.status} (${a.stock})</div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
+						<div style="font-weight:bold; margin-top:35px; margin-bottom:15px; font-size:16px;">현장 및 재고 상태</div>
+						<div class="card" onclick="setPage('assets')">
+							<div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+								<span style="font-weight:bold;">🛠️ 주요 장비/약품 현황</span>
+								<span style="font-size:12px; color:var(--primary);">상세보기 ❯</span>
+							</div>
+							<div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+								${state.assets.slice(0, 2).map(a => `
+									<div style="background:var(--surface-light); padding:12px; border-radius:10px; font-size:12px; border:1px solid var(--border);">
+										<div style="color:var(--text-sub); margin-bottom:4px;">${a.name}</div>
+										<div style="font-weight:bold; color:${a.status === '정상' ? 'var(--success)' : 'var(--danger)'}">${a.status} (${a.stock})</div>
+									</div>
+								`).join('')}
+							</div>
+						</div>
 
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:10px;">
-                            <div class="card" onclick="setPage('portfolio')" style="text-align:center;">
-                                <div style="font-size:24px; margin-bottom:10px;">🖼️</div>
-                                <div style="font-size:13px; font-weight:bold;">포트폴리오</div>
-                            </div>
-                            <div class="card" onclick="setPage('settlement')" style="text-align:center;">
-                                <div style="font-size:24px; margin-bottom:10px;">💳</div>
-                                <div style="font-size:13px; font-weight:bold;">정산 내역</div>
-                            </div>
-                        </div>
+						<div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:10px;">
+							<div class="card" onclick="setPage('portfolio')" style="text-align:center;">
+								<div style="font-size:24px; margin-bottom:10px;">🖼️</div>
+								<div style="font-size:13px; font-weight:bold;">포트폴리오</div>
+							</div>
+							<div class="card" onclick="setPage('settlement')" style="text-align:center;">
+								<div style="font-size:24px; margin-bottom:10px;">💳</div>
+								<div style="font-size:13px; font-weight:bold;">정산 내역</div>
+							</div>
+						</div>
 
-                        <div style="font-weight:bold; margin-top:35px; margin-bottom:15px; font-size:16px;">파트너 서비스</div>
-                        <div class="menuCard" onclick="setPage('community')"><span>🤝 프로 커뮤니티</span><span>❯</span></div>
-                        <div class="menuCard" onclick="setPage('partnership')"><span>💼 신규 제안 / 기능 요청</span><span>❯</span></div>
-                    </div>
-                `;
-                case 'analytics': return `
-                    <div class="padding">
-                        <h2 style="font-size:22px; font-weight:800; margin-bottom:10px;">매출 및 성장 지표</h2>
-                        <p style="font-size:14px; color:var(--text-sub); margin-bottom:30px;">최근 7일간의 수익 변동 추이입니다.</p>
-                        
-                        <div class="chart-container">
-                            ${state.revenueData.map(d => `
-                                <div class="chart-bar" style="height:${d.v}%" data-label="${d.l}"></div>
-                            `).join('')}
-                        </div>
-                        
-                        <div style="margin-top:40px;">
-                            <div class="card" style="margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
-                                <div>
-                                    <div style="font-size:12px; color:var(--text-sub);">최고 매출일</div>
-                                    <div style="font-weight:bold; font-size:16px;">목요일 (1,250,000원)</div>
-                                </div>
-                                <span style="font-size:18px;">🔥</span>
-                            </div>
-                            <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-                                <div>
-                                    <div style="font-size:12px; color:var(--text-sub);">월간 총 상담 건수</div>
-                                    <div style="font-weight:bold; font-size:16px;">124건</div>
-                                </div>
-                                <span style="font-size:18px;">💬</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                case 'assets': return `
-                    <div class="padding">
-                        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:25px;">
-                            <h2 style="margin:0;">재고 및 자산 목록</h2>
-                            <div style="font-size:12px; color:var(--primary); cursor:pointer;">+ 항목 추가</div>
-                        </div>
-                        <div class="card">
-                            ${state.assets.map(a => `
-                                <div class="asset-row">
-                                    <div>
-                                        <div style="font-weight:bold; font-size:15px;">${a.name}</div>
-                                        <div style="font-size:12px; color:var(--text-dark); margin-top:4px;">최근 정검: 2026-04-20</div>
-                                    </div>
-                                    <div style="text-align:right;">
-                                        <div style="font-weight:bold; color:${a.status==='정상'?'var(--success)':'var(--danger)'}">${a.status}</div>
-                                        <div style="font-size:12px; color:var(--text-sub);">${a.stock}</div>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-                case 'settlement': return `
-                    <div class="padding">
-                        <h2 style="margin-bottom:25px;">정산 내역 상세</h2>
-                        ${state.settlements.map(s => `
-                            <div class="menuCard" style="flex-direction:column; align-items:flex-start; gap:8px;">
-                                <div style="display:flex; justify-content:space-between; width:100%;">
-                                    <div style="font-weight:bold;">${s.label}</div>
-                                    <div style="color:var(--success); font-weight:bold;">+ ${s.amount.toLocaleString()}원</div>
-                                </div>
-                                <div style="font-size:12px; color:var(--text-dark);">${s.date} • 정산완료</div>
-                            </div>
-                        `).join('')}
-                        <div style="margin-top:30px; text-align:center; font-size:13px; color:var(--text-sub);">
-                            이번 달 총 정산 예정액: <b style="color:var(--text-main);">7,250,000원</b>
-                        </div>
-                    </div>
-                `;
-                case 'portfolio': return `
-                    <div class="padding">
-                        <h2 style="margin-bottom:25px;">포트폴리오 관리</h2>
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-                            <div style="aspect-ratio:1; background:#222; border:1px solid #333; border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer;">
-                                <span style="font-size:24px; color:var(--text-main);">➕</span>
-                                <span style="font-size:11px; color:var(--text-sub); margin-top:8px;">새 현장 등록</span>
-                            </div>
-                            <div style="aspect-ratio:1; background:#222; border:1px solid #333; border-radius:12px; overflow:hidden; position:relative; cursor:pointer;">
-                                <div style="position:absolute; bottom:0; width:100%; padding:8px; background:rgba(0,0,0,0.7); font-size:10px; text-align:center;">역삼동 OO 빌라</div>
-                                <div style="width:100%; height:100%; background:var(--surface-light);"></div>
-                            </div>
-                            <div style="aspect-ratio:1; background:#222; border:1px solid #333; border-radius:12px; overflow:hidden; position:relative; cursor:pointer;">
-                                <div style="position:absolute; bottom:0; width:100%; padding:8px; background:rgba(0,0,0,0.7); font-size:10px; text-align:center;">도곡동 화재현장</div>
-                                <div style="width:100%; height:100%; background:linear-gradient(45deg, #222, #111);"></div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                case 'community': return `
-                    <div class="padding">
-                        <div style="background:var(--surface-light); padding:24px; border-radius:15px; margin-bottom:25px; border-bottom:2px solid var(--primary);">
-                            <div style="font-weight:bold; margin-bottom:8px; font-size:16px;">프로 전용 실시간 정보망</div>
-                            <div style="font-size:12px; color:var(--text-sub);">현장의 무용담과 기술 노하우를 공유하세요.</div>
-                        </div>
-                        ${state.posts.map(p => `
-                            <div class="menuCard" style="flex-direction:column; align-items:flex-start; gap:8px;">
-                                <div style="font-weight:bold;">${p.title}</div>
-                                <div style="font-size:12px; color:var(--text-dark);">작성자: ${p.author} • 5분 전</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-                case 'scorecard': return `
-                    <div class="padding" style="text-align:center;">
-                        <div style="margin-top:20px; font-size:60px; margin-bottom:20px;">⭐</div>
-                        <h2 style="font-weight:800; font-size:24px;">나의 품질 등급</h2>
-                        <p style="color:var(--text-sub); font-size:14px; margin-bottom:40px;">프로 점수를 관리하여 우선 매칭 기회를 얻으세요.</p>
-                        
-                        <div class="card" style="text-align:left;">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:12px;"><span>평균 평점</span><span style="font-weight:bold; color:var(--warning);">4.9 / 5.0</span></div>
-                            <div style="display:flex; justify-content:space-between; margin-bottom:12px;"><span>응답 속도</span><span style="font-weight:bold; color:var(--success);">쾌속 (98%)</span></div>
-                            <div style="display:flex; justify-content:space-between;"><span>작격증 검증</span><span style="font-weight:bold; color:var(--success);">완료</span></div>
-                        </div>
-                    </div>
-                `;
-                case 'partnership': return `
-                    <div class="padding">
-                        <h2 style="margin-bottom:25px;">파트너십 문의 및 제안</h2>
-                        <div class="card">
-                            <textarea style="width:100%; background:transparent; border:none; color:var(--text-main); font-size:14px; outline:none;" rows="6" placeholder="기능 개선 아이디어나 파트너십 제안이 있으시다면 자유롭게 남겨주세요."></textarea>
-                        </div>
-                        <button class="primaryBtn">제안 보내기</button>
-                    </div>
-                `;
-                default: return ``;
-            }
-        }
+						<div style="font-weight:bold; margin-top:35px; margin-bottom:15px; font-size:16px;">파트너 서비스</div>
+						<div class="menuCard" onclick="setPage('community')"><span>🤝 프로 커뮤니티</span><span>❯</span></div>
+						<div class="menuCard" onclick="setPage('partnership')"><span>💼 신규 제안 / 기능 요청</span><span>❯</span></div>
+					</div>
+				`;
+				case 'analytics': return `
+					<div class="padding">
+						<h2 style="font-size:22px; font-weight:800; margin-bottom:10px;">매출 및 성장 지표</h2>
+						<p style="font-size:14px; color:var(--text-sub); margin-bottom:30px;">최근 7일간의 수익 변동 추이입니다.</p>
 
-        window.onload = render;
-    </script>
+						<div class="chart-container">
+							${state.revenueData.map(d => `
+								<div class="chart-bar" style="height:${d.v}%" data-label="${d.l}"></div>
+							`).join('')}
+						</div>
+
+						<div style="margin-top:40px;">
+							<div class="card" style="margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+								<div>
+									<div style="font-size:12px; color:var(--text-sub);">최고 매출일</div>
+									<div style="font-weight:bold; font-size:16px;">목요일 (1,250,000원)</div>
+								</div>
+								<span style="font-size:18px;">🔥</span>
+							</div>
+							<div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+								<div>
+									<div style="font-size:12px; color:var(--text-sub);">월간 총 상담 건수</div>
+									<div style="font-weight:bold; font-size:16px;">124건</div>
+								</div>
+								<span style="font-size:18px;">💬</span>
+							</div>
+						</div>
+					</div>
+				`;
+				case 'assets': return `
+					<div class="padding">
+						<div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:25px;">
+							<h2 style="margin:0;">재고 및 자산 목록</h2>
+							<div style="font-size:12px; color:var(--primary); cursor:pointer;">+ 항목 추가</div>
+						</div>
+						<div class="card">
+							${state.assets.map(a => `
+								<div class="asset-row">
+									<div>
+										<div style="font-weight:bold; font-size:15px;">${a.name}</div>
+										<div style="font-size:12px; color:var(--text-dark); margin-top:4px;">최근 정검: 2026-04-20</div>
+									</div>
+									<div style="text-align:right;">
+										<div style="font-weight:bold; color:${a.status === '정상' ? 'var(--success)' : 'var(--danger)'}">${a.status}</div>
+										<div style="font-size:12px; color:var(--text-sub);">${a.stock}</div>
+									</div>
+								</div>
+							`).join('')}
+						</div>
+					</div>
+				`;
+				case 'settlement': return `
+					<div class="padding">
+						<h2 style="margin-bottom:25px;">정산 내역 상세</h2>
+						${state.settlements.map(s => `
+							<div class="menuCard" style="flex-direction:column; align-items:flex-start; gap:8px;">
+								<div style="display:flex; justify-content:space-between; width:100%;">
+									<div style="font-weight:bold;">${s.label}</div>
+									<div style="color:var(--success); font-weight:bold;">+ ${s.amount.toLocaleString()}원</div>
+								</div>
+								<div style="font-size:12px; color:var(--text-dark);">${s.date} • 정산완료</div>
+							</div>
+						`).join('')}
+						<div style="margin-top:30px; text-align:center; font-size:13px; color:var(--text-sub);">
+							이번 달 총 정산 예정액: <b style="color:var(--text-main);">7,250,000원</b>
+						</div>
+					</div>
+				`;
+				case 'portfolio': return `
+					<div class="padding">
+						<h2 style="margin-bottom:25px;">포트폴리오 관리</h2>
+						<div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+							<div style="aspect-ratio:1; background:#222; border:1px solid #333; border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer;">
+								<span style="font-size:24px; color:var(--text-main);">➕</span>
+								<span style="font-size:11px; color:var(--text-sub); margin-top:8px;">새 현장 등록</span>
+							</div>
+							<div style="aspect-ratio:1; background:#222; border:1px solid #333; border-radius:12px; overflow:hidden; position:relative; cursor:pointer;">
+								<div style="position:absolute; bottom:0; width:100%; padding:8px; background:rgba(0,0,0,0.7); font-size:10px; text-align:center;">역삼동 OO 빌라</div>
+								<div style="width:100%; height:100%; background:var(--surface-light);"></div>
+							</div>
+							<div style="aspect-ratio:1; background:#222; border:1px solid #333; border-radius:12px; overflow:hidden; position:relative; cursor:pointer;">
+								<div style="position:absolute; bottom:0; width:100%; padding:8px; background:rgba(0,0,0,0.7); font-size:10px; text-align:center;">도곡동 화재현장</div>
+								<div style="width:100%; height:100%; background:linear-gradient(45deg, #222, #111);"></div>
+							</div>
+						</div>
+					</div>
+				`;
+				case 'community': return `
+					<div class="padding">
+						<div style="background:var(--surface-light); padding:24px; border-radius:15px; margin-bottom:25px; border-bottom:2px solid var(--primary);">
+							<div style="font-weight:bold; margin-bottom:8px; font-size:16px;">프로 전용 실시간 정보망</div>
+							<div style="font-size:12px; color:var(--text-sub);">현장의 무용담과 기술 노하우를 공유하세요.</div>
+						</div>
+						${state.posts.map(p => `
+							<div class="menuCard" style="flex-direction:column; align-items:flex-start; gap:8px;">
+								<div style="font-weight:bold;">${p.title}</div>
+								<div style="font-size:12px; color:var(--text-dark);">작성자: ${p.author} • 5분 전</div>
+							</div>
+						`).join('')}
+					</div>
+				`;
+				case 'scorecard': return `
+					<div class="padding" style="text-align:center;">
+						<div style="margin-top:20px; font-size:60px; margin-bottom:20px;">⭐</div>
+						<h2 style="font-weight:800; font-size:24px;">나의 품질 등급</h2>
+						<p style="color:var(--text-sub); font-size:14px; margin-bottom:40px;">프로 점수를 관리하여 우선 매칭 기회를 얻으세요.</p>
+
+						<div class="card" style="text-align:left;">
+							<div style="display:flex; justify-content:space-between; margin-bottom:12px;"><span>평균 평점</span><span style="font-weight:bold; color:var(--warning);">4.9 / 5.0</span></div>
+							<div style="display:flex; justify-content:space-between; margin-bottom:12px;"><span>응답 속도</span><span style="font-weight:bold; color:var(--success);">쾌속 (98%)</span></div>
+							<div style="display:flex; justify-content:space-between;"><span>작격증 검증</span><span style="font-weight:bold; color:var(--success);">완료</span></div>
+						</div>
+					</div>
+				`;
+				case 'partnership': return `
+					<div class="padding">
+						<h2 style="margin-bottom:25px;">파트너십 문의 및 제안</h2>
+						<div class="card">
+							<textarea style="width:100%; background:transparent; border:none; color:var(--text-main); font-size:14px; outline:none;" rows="6" placeholder="기능 개선 아이디어나 파트너십 제안이 있으시다면 자유롭게 남겨주세요."></textarea>
+						</div>
+						<button class="primaryBtn">제안 보내기</button>
+					</div>
+				`;
+				default: return ``;
+			}
+		}
+
+		window.onload = render;
+	</script>
 </body>
 
 </html>

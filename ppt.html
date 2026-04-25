@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +10,7 @@
 	<!-- Lucide Icons -->
 	<script src="https://unpkg.com/lucide@latest"></script>
 	<script>
-		(function() {
+		(function () {
 			const savedTheme = localStorage.getItem('special-cleaning-theme') || 'dark';
 			if (savedTheme === 'light') {
 				document.documentElement.classList.add('light-theme');
@@ -20,8 +21,10 @@
 		:root {
 			--bg: #050a14;
 			--surface: #0c1425;
-			--primary: #c9a050; /* Gold for premium feel */
-			--accent: #e50914; /* Red for emergency/alert */
+			--primary: #c9a050;
+			/* Gold for premium feel */
+			--accent: #e50914;
+			/* Red for emergency/alert */
 			--text-main: #ffffff;
 			--text-sub: #94a3b8;
 			--border: rgba(255, 255, 255, 0.1);
@@ -37,7 +40,11 @@
 			--primary: #a67c00;
 		}
 
-		* { margin: 0; padding: 0; box-sizing: border-box; }
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
 
 		body {
 			background-color: var(--bg);
@@ -72,9 +79,10 @@
 			transition: opacity 0.6s ease, transform 0.8s ease;
 			padding: 80px;
 			background: radial-gradient(circle at 70% 30%, rgba(201, 160, 80, 0.05) 0%, transparent 50%),
-						radial-gradient(circle at 10% 80%, rgba(229, 9, 20, 0.05) 0%, transparent 40%);
+				radial-gradient(circle at 10% 80%, rgba(229, 9, 20, 0.05) 0%, transparent 40%);
 			background-color: var(--bg);
-			overflow-y: auto; /* Allow internal scrolling on mobile if content overflows */
+			overflow-y: auto;
+			/* Allow internal scrolling on mobile if content overflows */
 		}
 
 		.slide.active {
@@ -97,12 +105,41 @@
 		}
 
 		/* Typography */
-		h1 { font-size: 80px; font-weight: 900; line-height: 1.1; margin-bottom: 20px; letter-spacing: -0.03em; }
-		h2 { font-size: 56px; font-weight: 800; line-height: 1.2; margin-bottom: 30px; }
-		h3 { font-size: 32px; font-weight: 700; color: var(--primary); margin-bottom: 15px; }
-		p { font-size: 24px; color: var(--text-sub); line-height: 1.6; }
-		.highlight { color: var(--primary); }
-		.alert { color: var(--accent); }
+		h1 {
+			font-size: 80px;
+			font-weight: 900;
+			line-height: 1.1;
+			margin-bottom: 20px;
+			letter-spacing: -0.03em;
+		}
+
+		h2 {
+			font-size: 56px;
+			font-weight: 800;
+			line-height: 1.2;
+			margin-bottom: 30px;
+		}
+
+		h3 {
+			font-size: 32px;
+			font-weight: 700;
+			color: var(--primary);
+			margin-bottom: 15px;
+		}
+
+		p {
+			font-size: 24px;
+			color: var(--text-sub);
+			line-height: 1.6;
+		}
+
+		.highlight {
+			color: var(--primary);
+		}
+
+		.alert {
+			color: var(--accent);
+		}
 
 		.slide-title {
 			position: absolute;
@@ -115,6 +152,7 @@
 			align-items: center;
 			gap: 15px;
 		}
+
 		.slide-title::before {
 			content: '';
 			width: 40px;
@@ -132,19 +170,70 @@
 			transition: background 0.3s, border-color 0.3s;
 		}
 
-		.stat-item { text-align: center; }
-		.stat-value { font-size: 100px; font-weight: 900; color: var(--primary); line-height: 1; }
-		.stat-label { font-size: 20px; color: var(--text-sub); margin-top: 10px; }
+		.stat-item {
+			text-align: center;
+		}
 
-		.timeline { display: flex; gap: 20px; width: 100%; margin-top: 50px; }
+		.stat-value {
+			font-size: 100px;
+			font-weight: 900;
+			color: var(--primary);
+			line-height: 1;
+		}
+
+		.stat-label {
+			font-size: 20px;
+			color: var(--text-sub);
+			margin-top: 10px;
+		}
+
+		.timeline {
+			display: flex;
+			gap: 20px;
+			width: 100%;
+			margin-top: 50px;
+		}
+
 		.slide-tab {
-            flex: 1; padding: 10px; background: #222; color: #888; text-align: center;
-            font-size: 11px; border: 1px solid #333; border-radius: 8px; cursor: pointer;
-        }
-		.timeline-step { flex: 1; position: relative; padding-top: 30px; border-top: 2px solid var(--border); }
-		.timeline-step::after { content: ''; position: absolute; top: -7px; left: 0; width: 12px; height: 12px; background: var(--primary); border-radius: 50%; }
-		.timeline-step h4 { font-size: 24px; margin-bottom: 10px; color: var(--text-main); }
-		.timeline-step p { font-size: 16px; color: var(--text-sub); }
+			flex: 1;
+			padding: 10px;
+			background: #222;
+			color: #888;
+			text-align: center;
+			font-size: 11px;
+			border: 1px solid #333;
+			border-radius: 8px;
+			cursor: pointer;
+		}
+
+		.timeline-step {
+			flex: 1;
+			position: relative;
+			padding-top: 30px;
+			border-top: 2px solid var(--border);
+		}
+
+		.timeline-step::after {
+			content: '';
+			position: absolute;
+			top: -7px;
+			left: 0;
+			width: 12px;
+			height: 12px;
+			background: var(--primary);
+			border-radius: 50%;
+		}
+
+		.timeline-step h4 {
+			font-size: 24px;
+			margin-bottom: 10px;
+			color: var(--text-main);
+		}
+
+		.timeline-step p {
+			font-size: 16px;
+			color: var(--text-sub);
+		}
 
 		/* Navigation */
 		.nav-controls {
@@ -155,6 +244,7 @@
 			gap: 15px;
 			z-index: 100;
 		}
+
 		.nav-btn {
 			width: 50px;
 			height: 50px;
@@ -168,7 +258,11 @@
 			cursor: pointer;
 			transition: all 0.3s ease;
 		}
-		.nav-btn:hover { background: var(--primary); border-color: var(--primary); }
+
+		.nav-btn:hover {
+			background: var(--primary);
+			border-color: var(--primary);
+		}
 
 		.progress-bar {
 			position: fixed;
@@ -197,10 +291,20 @@
 			border: 8px solid #222;
 			border-radius: 40px;
 			position: relative;
-			box-shadow: 0 50px 100px rgba(0,0,0,0.8);
+			box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8);
 			overflow: hidden;
 		}
-		.mockup-inner { width: 100%; height: 100%; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; transform: scale(1); }
+
+		.mockup-inner {
+			width: 100%;
+			height: 100%;
+			background: var(--bg);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			transform: scale(1);
+		}
 
 		/* Category Badge */
 		.category-badge {
@@ -216,48 +320,146 @@
 
 		/* Animations */
 		@keyframes fadeInUp {
-			from { opacity: 0; transform: translateY(30px); }
-			to { opacity: 1; transform: translateY(0); }
+			from {
+				opacity: 0;
+				transform: translateY(30px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
 		}
-		.animate { opacity: 0; }
-		.active .animate { animation: fadeInUp 0.8s ease forwards; }
-		.delay-1 { animation-delay: 0.2s !important; }
-		.delay-2 { animation-delay: 0.4s !important; }
-		.delay-3 { animation-delay: 0.6s !important; }
+
+		.animate {
+			opacity: 0;
+		}
+
+		.active .animate {
+			animation: fadeInUp 0.8s ease forwards;
+		}
+
+		.delay-1 {
+			animation-delay: 0.2s !important;
+		}
+
+		.delay-2 {
+			animation-delay: 0.4s !important;
+		}
+
+		.delay-3 {
+			animation-delay: 0.6s !important;
+		}
 
 		/* Mobile Optimization */
 		@media (max-width: 768px) {
-			.slide { padding: 30px 20px; justify-content: flex-start; padding-top: 100px; }
-			.container { padding: 0 10px; }
-			.grid-2 { grid-template-columns: 1fr; gap: 30px; }
-			
-			h1 { font-size: 36px; }
-			h2 { font-size: 28px; margin-bottom: 20px; }
-			h3 { font-size: 20px; }
-			p { font-size: 16px; }
+			.slide {
+				padding: 30px 20px;
+				justify-content: flex-start;
+				padding-top: 100px;
+			}
 
-			.slide-title { top: 30px; left: 20px; font-size: 14px; }
-			.slide-title::before { width: 20px; }
-			.slide-num { left: 20px; bottom: 20px; font-size: 12px; }
-			.nav-controls { bottom: 20px; right: 20px; scale: 0.8; }
+			.container {
+				padding: 0 10px;
+			}
 
-			.glass-card { padding: 20px; border-radius: 16px; }
-			.stat-value { font-size: 48px; }
-			.stat-label { font-size: 14px; }
+			.grid-2 {
+				grid-template-columns: 1fr;
+				gap: 30px;
+			}
 
-			.timeline { flex-direction: column; gap: 40px; margin-top: 30px; }
-			.timeline-step { border-top: none; border-left: 2px solid var(--border); padding-top: 0; padding-left: 20px; }
-			.timeline-step::after { top: 0; left: -7px; }
+			h1 {
+				font-size: 36px;
+			}
 
-			.mockup { width: 240px; height: 480px; margin: 0 auto; }
-			
-			.slide#slide1 h1 { font-size: 40px; }
-			.slide#slide1 h2 { font-size: 18px; line-height: 1.4; }
-			.slide#slide1 img { height: 40px !important; }
+			h2 {
+				font-size: 28px;
+				margin-bottom: 20px;
+			}
+
+			h3 {
+				font-size: 20px;
+			}
+
+			p {
+				font-size: 16px;
+			}
+
+			.slide-title {
+				top: 30px;
+				left: 20px;
+				font-size: 14px;
+			}
+
+			.slide-title::before {
+				width: 20px;
+			}
+
+			.slide-num {
+				left: 20px;
+				bottom: 20px;
+				font-size: 12px;
+			}
+
+			.nav-controls {
+				bottom: 20px;
+				right: 20px;
+				scale: 0.8;
+			}
+
+			.glass-card {
+				padding: 20px;
+				border-radius: 16px;
+			}
+
+			.stat-value {
+				font-size: 48px;
+			}
+
+			.stat-label {
+				font-size: 14px;
+			}
+
+			.timeline {
+				flex-direction: column;
+				gap: 40px;
+				margin-top: 30px;
+			}
+
+			.timeline-step {
+				border-top: none;
+				border-left: 2px solid var(--border);
+				padding-top: 0;
+				padding-left: 20px;
+			}
+
+			.timeline-step::after {
+				top: 0;
+				left: -7px;
+			}
+
+			.mockup {
+				width: 240px;
+				height: 480px;
+				margin: 0 auto;
+			}
+
+			.slide#slide1 h1 {
+				font-size: 40px;
+			}
+
+			.slide#slide1 h2 {
+				font-size: 18px;
+				line-height: 1.4;
+			}
+
+			.slide#slide1 img {
+				height: 40px !important;
+			}
 		}
-
 	</style>
 </head>
+
 <body>
 
 	<div class="progress-bar" id="progressBar"></div>
@@ -610,4 +812,5 @@
 		updateSlides();
 	</script>
 </body>
+
 </html>
