@@ -590,7 +590,7 @@
                     intro: '고독사, 쓰레기집 완벽 복구 전문 업체입니다.', empCount: '5명', equip: '고압세척기, 오존살균기 3대', portfolios: []
                 },
                 { id: 'cus1', pw: '12345678', role: 'customer', name: '테스트고객', phone: '010-1234-5678', cash: 0, reviews: [] },
-                { id: 'gov1', pw: '12345678', role: 'gov', name: '김주무관', phone: '010-9999-8888', govType: '지자체', govName: '광주광역시 본청', cash: 0, reviews: [] }
+                { id: 'gov1', pw: '12345678', role: 'gov', name: '김주무관', phone: '010-9999-8888', govType: '관공서', govName: '광주광역시 본청', cash: 0, reviews: [] }
             ],
             requestsDB: [
                 { id: 'r1', userId: 'cus1', tags: ['고독사'], commonType: ['아파트'], loc: '서울특별시 강남구 역삼동', area: '25', floor: '10', elevator: '있음', desc: '빠른 처리 부탁드립니다.', status: '견적 대기중', dateOption: '일주일 이내', images: [] }
@@ -988,7 +988,7 @@
                                 <div class="label">기관 유형</div>
                                 <div class="row">
                                     <div class="halfBtn ${f.govType === '중앙부처' ? 'activeBtn' : ''}" onclick="updateSignupForm('govType', '중앙부처')">중앙부처</div>
-                                    <div class="halfBtn ${f.govType === '지자체' ? 'activeBtn' : ''}" onclick="updateSignupForm('govType', '지자체')">지자체</div>
+                                    <div class="halfBtn ${f.govType === '관공서' ? 'activeBtn' : ''}" onclick="updateSignupForm('govType', '관공서')">관공서</div>
                                 </div>
                                 <div class="label">소속 기관</div>
                                 <select class="input" onchange="updateSignupForm('govName', this.value)">

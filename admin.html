@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>특청 행정 포털 - 거버넌스 관리</title>
+    <title>특청 마스터 관리자 - 플랫폼 통합 관리</title>
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
         :root {
-            --primary: #28a745;
+            --primary: #E50914;
             --bg: #000;
             --surface: #111;
             --text-main: #fff;
@@ -82,21 +82,16 @@
 
     <script>
         let state = {
-            page: 'dash', // dash, stats, approval, logs, broadcast, archive, settings
-            currentUser: { name: '이주무관', org: '광주광역시 서구청' },
-            districts: [
-                { name: '역삼1동', risk: '상', activity: 85 },
-                { name: '역삼2동', risk: '중', activity: 40 },
-                { name: '도곡동', risk: '하', activity: 12 }
-            ],
-            auditLogs: [
-                 { id: 'L1', time: '14:20', action: '예산 승인', target: 'B-04 프로젝트', actor: '이주무관' },
-                 { id: 'L2', time: '13:05', action: '가구 점검', target: '역삼동 123-4', actor: '관리시스템' },
-                 { id: 'L3', time: '11:50', action: '업체 승인', target: '명품특수청소', actor: '권운영자' }
-            ],
+            page: 'dash', // dash, vendors, settings, logs
+            currentUser: { name: '권운영자', org: '특청 마스터 관리 본부' },
             pendingVendors: [
                 { id: 'V1', name: '청결한내일', type: '법인', date: '2026-04-25', files: 3 },
                 { id: 'V2', name: '바른정리팀', type: '개인', date: '2026-04-24', files: 2 }
+            ],
+            auditLogs: [
+                 { id: 'L1', time: '14:20', action: '시스템 정책 변경', target: '개인정보 처리방침', actor: '권운영자' },
+                 { id: 'L2', time: '11:50', action: '업체 가입 거절', target: '미인증업체A', actor: '권운영자' },
+                 { id: 'L3', time: '09:12', action: '서버 보안 점검', target: 'DB Cluster 01', actor: 'System' }
             ]
         };
 
@@ -104,7 +99,7 @@
 
         function render() {
             const root = document.getElementById('root');
-            let hideNav = ['approval', 'logs', 'broadcast', 'archive', 'settings', 'stats'].includes(state.page);
+            let hideNav = ['vendors', 'settings', 'logs'].includes(state.page);
 
             root.innerHTML = `
                 ${renderHeader(hideNav)}
@@ -125,13 +120,11 @@
 
         function getHeaderTitle() {
             switch(state.page) {
-                case 'dash': return '행정 통합관제';
-                case 'stats': return '지역별 데이터 지수';
-                case 'broadcast': return '긴급 행정 전파';
-                case 'archive': return '데이터 아카이브';
-                case 'settings': return '운영 및 정책 관리';
-                case 'approval': return '업체 가입 심사';
-                default: return '행정포털';
+                case 'dash': return '마스터 관리 센터';
+                case 'vendors': return '파트너 업체 심사';
+                case 'settings': return '플랫폼 운영 설정';
+                case 'logs': return '전체 시스템 로그';
+                default: return '마스터 어드민';
             }
         }
 
@@ -139,9 +132,9 @@
             return `
                 <div class="nav">
                     <div class="nav-item ${state.page==='dash'?'active':''}" onclick="setPage('dash')"><div>🏠</div>홈</div>
-                    <div class="nav-item ${state.page==='stats'?'active':''}" onclick="setPage('stats')"><div>📊</div>분석</div>
-                    <div class="nav-item" onclick="setPage('broadcast')"><div>📡</div>전파</div>
-                    <div class="nav-item" onclick="setPage('settings')"><div>⚙️</div>설정</div>
+                    <div class="nav-item ${state.page==='vendors'?'active':''}" onclick="setPage('vendors')"><div>📝</div>심사</div>
+                    <div class="nav-item ${state.page==='settings'?'active':''}" onclick="setPage('settings')"><div>⚙️</div>설정</div>
+                    <div class="nav-item ${state.page==='logs'?'active':''}" onclick="setPage('logs')"><div>📜</div>로그</div>
                 </div>
             `;
         }
@@ -152,35 +145,44 @@
                     <div class="padding">
                         <div style="margin-bottom:30px;">
                             <div style="font-size:13px; color:var(--text-sub);">${state.currentUser.org}</div>
-                            <div style="font-size:22px; font-weight:800; margin-top:8px; letter-spacing:-0.03em;">행정 통합 마스터 포털</div>
+                            <div style="font-size:22px; font-weight:800; margin-top:8px; letter-spacing:-0.03em;">특청 마스터 통합 제어</div>
                         </div>
 
-                        <div class="card" style="background:#1a1a1a; border-left: 4px solid var(--danger);">
-                            <div style="font-size:12px; color:var(--danger); font-weight:bold; margin-bottom:8px;">실시간 긴급 경보</div>
-                            <div style="font-size:15px; font-weight:bold; line-height:1.5;">관내 고위험군 가구 이상 활동 감지 (2건)</div>
-                            <button class="primaryBtn" style="margin-top:15px; padding:10px; font-size:12px; background:var(--danger);" onclick="setPage('broadcast')">현장 상황 전파 실행</button>
+                        <div class="card" style="background:#1a1a1a; border-left: 4px solid var(--primary);">
+                            <div style="font-size:12px; color:var(--primary); font-weight:bold; margin-bottom:8px;">오늘의 주요 지표</div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                    <div style="font-size:11px; color:var(--text-sub);">신규 가입 신청</div>
+                                    <div style="font-size:20px; font-weight:bold;">${state.pendingVendors.length}건</div>
+                                </div>
+                                <div>
+                                    <div style="font-size:11px; color:var(--text-sub);">현재 활성 오더</div>
+                                    <div style="font-size:20px; font-weight:bold;">42건</div>
+                                </div>
+                            </div>
+                            <button class="primaryBtn" style="margin-top:15px; padding:10px; font-size:12px;" onclick="setPage('vendors')">업체 심사 바로가기</button>
                         </div>
 
                         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:25px;">
-                            <div class="card" onclick="setPage('approval')" style="margin-bottom:0; text-align:center;">
-                                <div style="font-size:24px; margin-bottom:8px;">📝</div>
-                                <div style="font-size:13px; font-weight:bold;">가입 심사</div>
-                                <div style="font-size:10px; color:var(--info); margin-top:4px;">${state.pendingVendors.length}건 대기</div>
+                            <div class="card" onclick="setPage('settings')" style="margin-bottom:0; text-align:center;">
+                                <div style="font-size:24px; margin-bottom:8px;">🛠️</div>
+                                <div style="font-size:13px; font-weight:bold;">시스템 설정</div>
                             </div>
-                            <div class="card" onclick="setPage('stats')" style="margin-bottom:0; text-align:center;">
-                                <div style="font-size:24px; margin-bottom:8px;">📈</div>
-                                <div style="font-size:13px; font-weight:bold;">지역 지수</div>
+                            <div class="card" onclick="setPage('logs')" style="margin-bottom:0; text-align:center;">
+                                <div style="font-size:24px; margin-bottom:8px;">📊</div>
+                                <div style="font-size:13px; font-weight:bold;">통합 로그</div>
                             </div>
                         </div>
 
-                        <div style="font-weight:bold; margin-top:35px; margin-bottom:15px; font-size:16px;">상세 모니터링</div>
-                        <div class="menuCard" onclick="setPage('settings')"><span>🔧 정책 및 이용약관 편집</span><span>❯</span></div>
-                        <div class="menuCard" onclick="setPage('archive')"><span>📂 과거 데이터 아카이브</span><span>❯</span></div>
+                        <div style="font-weight:bold; margin-top:35px; margin-bottom:15px; font-size:16px;">본사 전용 관리 도구</div>
+                        <div class="menuCard" onclick="setPage('settings')"><span>📜 정책 및 약관 편집 마스터</span><span>❯</span></div>
+                        <div class="menuCard" onclick="alert('결제 정산 페이지로 이동')"><span>💰 파트너 정산 및 매출 관리</span><span>❯</span></div>
+                        <div class="menuCard" onclick="alert('사용자 관리 페이지로 이동')"><span>👤 전체 회원 관리 (CS)</span><span>❯</span></div>
                         
                         <div style="margin-top:25px;">
                             <div style="font-weight:bold; margin-bottom:15px; font-size:14px; color:var(--text-dark);">최근 시스템 로그</div>
-                            ${state.auditLogs.slice(0, 2).map(l => `
-                                <div style="display:flex; justify-content:space-between; font-size:12px; padding:10px 0; border-bottom:1px solid #222;">
+                            ${state.auditLogs.slice(0, 3).map(l => `
+                                <div style="display:flex; justify-content:space-between; font-size:11px; padding:10px 0; border-bottom:1px solid #222;">
                                     <span style="color:var(--text-sub);">${l.time}</span>
                                     <span style="font-weight:bold;">${l.action}</span>
                                     <span style="color:var(--text-dark);">${l.actor}</span>
@@ -189,32 +191,9 @@
                         </div>
                     </div>
                 `;
-                case 'stats': return `
+                case 'vendors': return `
                     <div class="padding">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
-                            <h2 style="margin:0;">지역별 위험 지수</h2>
-                            <div style="font-size:12px; color:var(--text-sub);">2026.04.25 기준</div>
-                        </div>
-                        ${state.districts.map(d => `
-                            <div class="card" style="cursor:default;">
-                                <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
-                                    <div style="font-weight:bold; font-size:16px;">${d.name}</div>
-                                    <div class="status-pill ${d.risk==='상'?'status-warn':''}" style="color:${d.risk==='상'?'var(--danger)':'var(--success)'}">${d.risk} 위험</div>
-                                </div>
-                                <div style="height:8px; background:#222; border-radius:4px; overflow:hidden; margin-bottom:10px;">
-                                    <div style="height:100%; background:var(--primary); width:${d.activity}%"></div>
-                                </div>
-                                <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-dark);">
-                                    <span>행정 대응 필요도: ${d.activity}%</span>
-                                    <span>전월 대비 +${Math.floor(Math.random()*10)}%</span>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-                case 'approval': return `
-                    <div class="padding">
-                        <h2 style="margin-bottom:25px;">업체 입점 심사</h2>
+                        <h2 style="margin-bottom:25px;">파트너 입점 심사</h2>
                         ${state.pendingVendors.map(v => `
                             <div class="card">
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
@@ -222,54 +201,39 @@
                                         <div style="font-weight:bold; font-size:17px;">${v.name}</div>
                                         <div style="font-size:12px; color:var(--text-sub);">${v.type} 사업자 • ${v.date} 신청</div>
                                     </div>
-                                    <div style="font-size:11px; background:#222; padding:4px 8px; border-radius:5px;">첨부서류 ${v.files}건</div>
+                                    <div style="font-size:11px; background:#222; padding:4px 8px; border-radius:5px;">서류 ${v.files}건</div>
                                 </div>
                                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                                    <button class="primaryBtn" style="padding:12px; background:#333; font-size:13px;" onclick="alert('서류 검토를 시작합니다.')">서류 검토</button>
-                                    <button class="primaryBtn" style="padding:12px; font-size:13px;" onclick="alert('승인 완료되었습니다.')">최종 승인</button>
+                                    <button class="primaryBtn" style="padding:12px; background:#333; font-size:13px;" onclick="alert('서류 검토 모드')">검토</button>
+                                    <button class="primaryBtn" style="padding:12px; font-size:13px;" onclick="alert('승인 완료')">최종 승인</button>
                                 </div>
                             </div>
                         `).join('')}
                     </div>
                 `;
-                case 'broadcast': return `
-                    <div class="padding">
-                        <h2 style="margin-bottom:15px;">긴급 행정 전파</h2>
-                        <p style="font-size:14px; color:var(--text-sub); line-height:1.6; margin-bottom:30px;">긴급 작업 협조가 필요한 상황에만 사용해 주세요.<br>관내 등록된 모든 전문가에게 알림이 전송됩니다.</p>
-                        
-                        <div style="font-weight:bold; font-size:14px; margin-bottom:10px; color:var(--text-dark);">전파 대상 구역</div>
-                        <div style="display:flex; gap:10px; margin-bottom:25px;">
-                            <span class="status-pill status-ready">전체</span>
-                            <span class="status-pill" style="border:1px solid #333; color:#666;">역삼동</span>
-                            <span class="status-pill" style="border:1px solid #333; color:#666;">도곡동</span>
-                        </div>
-
-                        <div class="card" style="padding:10px;">
-                            <textarea style="width:100%; background:transparent; border:none; color:#fff; padding:15px; font-size:14px; border-radius:12px; outline:none;" rows="6" placeholder="전파할 상세 내용을 입력하세요. (예: 고독사 의심 현장 확인 등)"></textarea>
-                        </div>
-                        <button class="primaryBtn" style="margin-top:20px; background:var(--danger);" onclick="alert('긴급 전파 메시지가 전송되었습니다.')">즉시 전파 (Push 알림)</button>
-                    </div>
-                `;
-                case 'archive': return `
-                    <div class="padding">
-                        <h2 style="margin-bottom:25px;">행정 데이터 아카이브</h2>
-                        <div class="menuCard"><div><div style="font-size:10px; color:var(--text-dark);">2025-12-31</div><b>2025년 하반기 작업 통합 보고서</b></div><span>📥</span></div>
-                        <div class="menuCard"><div><div style="font-size:10px; color:var(--text-dark);">2025-06-30</div><b>2025년 상반기 예산 집행 결산</b></div><span>📥</span></div>
-                        <div class="menuCard"><div><div style="font-size:10px; color:var(--text-dark);">2024-12-31</div><b>2024년 고독사 방지 기술 활용 백서</b></div><span>📥</span></div>
-                    </div>
-                `;
                 case 'settings': return `
                     <div class="padding">
-                        <h2 style="margin-bottom:30px;">시스템 운영 설정</h2>
+                        <h2 style="margin-bottom:30px;">플랫폼 운영 설정</h2>
+                        <div style="font-weight:bold; margin-bottom:15px; color:var(--text-dark);">핵심 정책</div>
+                        <div class="menuCard"><span>📜 이용약관 마스터 관리</span><span>❯</span></div>
+                        <div class="menuCard"><span>🛡️ 개인정보 처리방침 설정</span><span>❯</span></div>
+                        <div class="menuCard"><span>⚖️ 분쟁 조정 표준 매뉴얼</span><span>❯</span></div>
                         
-                        <div style="font-weight:bold; margin-bottom:15px; color:var(--text-dark);">정책 편집</div>
-                        <div class="menuCard" onclick="alert('편집 모드로 진입')"><span>📜 서비스 이용약관 (고객용/업체용)</span><span>❯</span></div>
-                        <div class="menuCard" onclick="alert('편집 모드로 진입')"><span>🛡️ 개인정보 처리방침 마스터</span><span>❯</span></div>
-                        <div class="menuCard" onclick="alert('편집 모드로 진입')"><span>⚖️ 분쟁 조정 및 면책 기준</span><span>❯</span></div>
-                        
-                        <div style="font-weight:bold; margin-top:35px; margin-bottom:15px; color:var(--text-dark);">보안 및 권한</div>
-                        <div class="menuCard"><span>🔑 2단계 인증 설정 보강</span><span>❯</span></div>
-                        <div class="menuCard"><span>👤 하위 관리자 계정 생성</span><span>❯</span></div>
+                        <div style="font-weight:bold; margin-top:35px; margin-bottom:15px; color:var(--text-dark);">운영 관리</div>
+                        <div class="menuCard"><span>🔑 관리자 보안 (2FA) 설정</span><span>❯</span></div>
+                        <div class="menuCard"><span>👤 운영 팀원 계정 권한</span><span>❯</span></div>
+                    </div>
+                `;
+                case 'logs': return `
+                    <div class="padding">
+                        <h2 style="margin-bottom:25px;">통합 시스템 로그</h2>
+                        ${state.auditLogs.map(l => `
+                             <div class="card" style="padding:15px; margin-bottom:10px;">
+                                <div style="font-size:10px; color:var(--text-sub); margin-bottom:5px;">${l.time} | Actor: ${l.actor}</div>
+                                <div style="font-weight:bold; font-size:14px;">${l.action}</div>
+                                <div style="font-size:12px; color:var(--text-dark);">대상: ${l.target}</div>
+                             </div>
+                        `).join('')}
                     </div>
                 `;
             }
