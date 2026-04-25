@@ -124,11 +124,12 @@
 
 		/* Slide-specific elements */
 		.glass-card {
-			background: rgba(255, 255, 255, 0.03);
+			background: var(--surface);
 			border: 1px solid var(--border);
 			border-radius: 24px;
 			padding: 40px;
 			backdrop-filter: blur(10px);
+			transition: background 0.3s, border-color 0.3s;
 		}
 
 		.stat-item { text-align: center; }
@@ -270,11 +271,11 @@
 				<p style="color: var(--primary); font-weight: 800; letter-spacing: 0.5em; margin-bottom: 20px;">BLANKON SOLUTIONS</p>
 				<h1 style="font-size: 90px;">대한민국 <span class="highlight">고립</span> 대응<br>B2G·B2C 통합 플랫폼</h1>
 				<div style="width: 100px; height: 4px; background: var(--primary); margin: 40px auto;"></div>
-				<h2 style="font-size: 40px; font-weight: 400; color: var(--text-sub);">특수현장 전문가 매칭 & 행정 자동화 솔루션 <span style="font-weight: 900; color:#fff">[특청]</span></h2>
+				<h2 style="font-size: 40px; font-weight: 400; color: var(--text-sub);">특수현장 전문가 매칭 & 행정 자동화 솔루션 <span style="font-weight: 900; color: var(--primary);">[특청]</span></h2>
 				<div style="margin-top: 80px; display: flex; justify-content: center; gap: 40px; align-items: center;">
 					<img src="https://i.postimg.cc/kGFSsmS1/blankon-logo.jpg" alt="Logo" style="height: 60px;">
 					<div style="width:1px; height:40px; background: var(--border);"></div>
-					<p style="font-size: 20px; color: #fff;">대표이사 <strong>김도영</strong></p>
+					<p style="font-size: 20px; color: var(--text-main);">대표이사 <strong>김도영</strong></p>
 				</div>
 			</div>
 		</div>
@@ -339,7 +340,7 @@
 					<div class="glass-card">
 						<h3>기존 종합 플랫폼 <span style="font-size: 16px; color: var(--text-sub);">(숨*, 크*)</span></h3>
 						<p style="font-size: 18px; color: var(--text-sub); margin-bottom: 20px;">단순 사업자 등록증만으로 가입 가능</p>
-						<ul style="list-style: none; color: rgba(255,255,255,0.4); font-size: 16px; line-height: 1.8;">
+						<ul style="list-style: none; color: var(--text-dark); font-size: 16px; line-height: 1.8;">
 							<li>✕ 특수 현장별 전문 지식 검증 불가</li>
 							<li>✕ 무분별한 최저가 경쟁으로 품질 저하</li>
 							<li>✕ 사고 발생 시 플랫폼 책임 회피</li>
@@ -352,7 +353,7 @@
 							<span class="category-badge">고독사</span><span class="category-badge">자살</span><span class="category-badge">쓰레기집</span>
 							<span class="category-badge">화재</span><span class="category-badge">강력범죄</span><span class="category-badge">침수</span>
 						</div>
-						<ul style="list-style: none; color: #fff; font-size: 16px; line-height: 1.8;">
+						<ul style="list-style: none; color: var(--text-main); font-size: 16px; line-height: 1.8;">
 							<li><span class="highlight">✓</span> 카테고리별 <strong>필수 인허가증</strong> 개별 첨부</li>
 							<li><span class="highlight">✓</span> 본사 <strong>최종 승인 후</strong> 견적 참여 권한 부여</li>
 							<li><span class="highlight">✓</span> 검증된 데이터 기반 <strong>공공 수의계약</strong> 적격성 확보</li>
@@ -429,7 +430,7 @@
 							<i data-lucide="microscope" style="color: var(--primary); width: 40px; height: 40px;"></i>
 							<h3>시각적·수치적 분석</h3>
 						</div>
-						<p style="font-size: 18px; color: #fff; margin-bottom: 15px;"><strong>H2S(황화수소) & NH3(암모니아) 측정</strong></p>
+						<p style="font-size: 18px; color: var(--text-main); margin-bottom: 15px;"><strong>H2S(황화수소) & NH3(암모니아) 측정</strong></p>
 						<p style="font-size: 16px;">단순히 "냄새가 난다"는 주관적 판단이 아닌, 가스 측정기를 통한 수치화로 오염도를 정밀 분석하고 완벽한 제거를 과학적으로 증명합니다.</p>
 					</div>
 					<div class="glass-card">
@@ -437,7 +438,7 @@
 							<i data-lucide="zap" style="color: var(--primary); width: 40px; height: 40px;"></i>
 							<h3>복합 살균·소독 시스템</h3>
 						</div>
-						<p style="font-size: 18px; color: #fff; margin-bottom: 15px;"><strong>오존(O3) & UV-C 자외선 소독</strong></p>
+						<p style="font-size: 18px; color: var(--text-main); margin-bottom: 15px;"><strong>오존(O3) & UV-C 자외선 소독</strong></p>
 						<p style="font-size: 16px;">공기 중의 세균을 죽이는 오존 산화 공정과 잔류 박테리아를 파괴하는 UV-C 조사를 병행하여 생물학적 위험을 완전히 제거합니다.</p>
 					</div>
 				</div>
@@ -468,7 +469,7 @@
 						<p style="font-size: 18px;">업체선정 기안, 집행 보고, 지출결의서.<br>공공기관 표준 PDF 양식 자동 생성.</p>
 					</div>
 				</div>
-				<p style="text-align: center; margin-top: 40px; font-weight: 700; color: #fff;">불분명한 코드와 복잡한 기안 절차를 <span class="highlight">시스템</span>으로 자동화합니다.</p>
+				<p style="text-align: center; margin-top: 40px; font-weight: 700; color: var(--text-main);">불분명한 코드와 복잡한 기안 절차를 <span class="highlight">시스템</span>으로 자동화합니다.</p>
 			</div>
 		</div>
 
