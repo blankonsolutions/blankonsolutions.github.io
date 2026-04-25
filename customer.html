@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>특청 - 고객용</title>
+    <title>특청 - 고객용 프리미엄</title>
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
         :root {
@@ -18,12 +18,13 @@
             --border: #333;
             --success: #28a745;
             --warning: #FFD700;
+            --info: #007bff;
         }
 
         * {
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
-            font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+            font-family: "Pretendard Variable", Pretendard, sans-serif;
         }
 
         body {
@@ -47,7 +48,8 @@
         }
 
         .headerTitle { color: #fff; font-size: 18px; font-weight: bold; }
-        .homeBtn { font-size: 14px; color: var(--text-sub); border: 1px solid var(--border); padding: 5px 10px; border-radius: 8px; cursor: pointer; }
+        .iconBtn { font-size: 18px; color: var(--text-sub); cursor: pointer; position: relative; }
+        .badge-dot { position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: var(--primary); border-radius: 50%; border: 2px solid var(--surface); }
 
         .primaryBtn {
             width: 100%; padding: 16px; background-color: var(--primary); border-radius: 12px;
@@ -55,38 +57,19 @@
             cursor: pointer; font-size: 16px; font-weight: 700; transition: opacity 0.2s;
         }
         .primaryBtn:active { opacity: 0.7; }
-        .primaryBtn:disabled { background-color: var(--text-dark); cursor: not-allowed; }
-
+        
+        .card { background: var(--surface); padding: 18px; border-radius: 15px; border: 1px solid #222; margin-bottom: 15px; }
         .input, .textArea {
             border: 1px solid var(--border); padding: 15px; border-radius: 10px;
-            margin-bottom: 12px; background-color: var(--surface); color: #fff;
-            width: 100%; font-size: 16px; outline: none;
+            margin-bottom: 12px; background-color: #000; color: #fff;
+            width: 100%; font-size: 15px; outline: none;
         }
-        .textArea { height: 100px; resize: none; }
-
         .label { font-size: 14px; color: var(--text-sub); margin-top: 20px; margin-bottom: 8px; font-weight: 600; display: block; }
-
-        .menuCard {
-            display: flex; flex-direction: row; justify-content: space-between; align-items: center;
-            background-color: var(--surface); padding: 18px; border-radius: 12px; border: 1px solid #222;
-            margin-bottom: 12px; cursor: pointer;
-        }
-
+        
         .row { display: flex; flex-direction: row; gap: 10px; margin-bottom: 10px; }
-        .halfBtn {
-            flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 10px;
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
-            color: var(--text-sub); font-size: 14px; text-align: center;
-        }
-        .activeBtn { background-color: var(--primary); border-color: var(--primary); color: #fff; font-weight: bold; }
+        .item-tag { font-size: 10px; padding: 3px 8px; border-radius: 5px; background: #222; color: #888; border: 1px solid #333; }
+        .item-tag.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-        /* Chat Styles */
-        .chatBubble { padding: 12px 16px; border-radius: 20px; margin-bottom: 10px; max-width: 80%; font-size: 14px; line-height: 1.5; }
-        .myChat { align-self: flex-end; background-color: var(--primary); color: #fff; }
-        .yourChat { align-self: flex-start; background-color: var(--surface); color: var(--text-main); }
-        .chatInputArea { display: flex; gap: 10px; padding: 15px; background: var(--surface); border-top: 1px solid #222; }
-
-        /* Tab Bar */
         .tabBar {
             height: 70px; background: var(--surface); border-top: 1px solid #222;
             display: flex; justify-content: space-around; align-items: center;
@@ -96,9 +79,18 @@
         .tabItem.active { color: var(--primary); }
         .tabIcon { font-size: 20px; margin-bottom: 4px; }
 
-        @media (min-width: 600px) {
-            #root { max-width: 480px; border-left: 1px solid #222; border-right: 1px solid #222; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
-        }
+        /* Notification Center */
+        .notif-item { border-bottom: 1px solid #222; padding: 15px 0; }
+        .notif-title { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
+        .notif-desc { font-size: 12px; color: var(--text-sub); line-height: 1.4; }
+
+        /* Photo Upload Mockup */
+        .photo-box { width: 80px; height: 80px; border: 1px dashed var(--border); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--text-dark); cursor: pointer; }
+
+        /* Verified Badge */
+        .verif-badge { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--success); font-weight: bold; margin-bottom: 8px; }
+
+        @media (min-width: 600px) { #root { max-width: 480px; border-left: 1px solid #222; border-right: 1px solid #222; box-shadow: 0 0 50px rgba(0,0,0,0.5); } }
     </style>
 </head>
 
@@ -107,28 +99,27 @@
 
     <script>
         let state = {
-            page: 'dash', // dash, request, history, req_detail, quotes, pro_profile, contract, chat, mypage
-            currentUser: { id: 'cus1', name: '테스트고객', phone: '010-1234-5678' },
+            page: 'dash', // dash, request, history, req_detail, quotes, pro_profile, contract, chat, notifications, help, reviews_write, mypage
+            currentUser: { id: 'cus1', name: '테스트고객' },
             usersDB: [
-                { id: 'pro1', role: 'pro', compName: '명품특수청소', intro: '15년 경력의 베테랑 팀입니다. 유품정리, 고독사 현장 전문입니다.', keywords: ['고독사', '화재', '폐기물'], reviews: [{ rating: 5, text: '정말 깨끗하게 해주셨어요.' }, { rating: 4, text: '신속합니다.' }] },
-                { id: 'pro2', role: 'pro', compName: '깨끗한세상', intro: '정직한 가격과 성실한 청소로 보답하겠습니다.', keywords: ['쓰레기집', '소독'], reviews: [{ rating: 5, text: '감사합니다.' }] },
-                { id: 'pro3', role: 'pro', compName: '든든한파트너', intro: 'B2G 행정 처리 경험이 풍부한 업체입니다.', keywords: ['행정정비', '대형폐기물'], reviews: [{ rating: 5, text: '매우 전문적입니다.' }] }
+                { id: 'pro1', compName: '명품특수청소', intro: '15년 경격의 고독사/화재 전문 팀', keywords: ['고독사', '화재'], reviews: [{ rating: 5, text: '완벽한 처리 감사합니다.' }], verified: true, insurance: '영업배상보험 가입' },
+                { id: 'pro2', compName: '깨끗한세상', intro: '성실과 정직으로 다가가는 특수청소', keywords: ['쓰레기집'], reviews: [], verified: true, insurance: '책임보험 가입' }
             ],
             requestsDB: [
-                { id: 'r1', tags: ['고독사'], area: '25', floor: '10', elevator: '있음', loc: '서울 강남구 역삼동', status: '견적 대기중', desc: '빠른 처리 부탁드립니다.', createdAt: '2026-04-24' },
-                { id: 'r2', tags: ['쓰레기집'], area: '12', floor: '2', elevator: '없음', loc: '서울 서초구 반포동', status: '작업 완료', desc: '오래된 빌라입니다.', createdAt: '2026-04-20' }
+                { id: 'r1', tags: ['고독사'], area: '25', loc: '서울 강남구 역삼동', status: '견적 대기중', createdAt: '2026-04-24' }
             ],
             quotesDB: [
-                { id: 'q1', reqId: 'r1', proId: 'pro1', proName: '명품특수청소', price: 1500000, msg: '고객님, 해당 지역 경험이 많습니다. 신속히 도와드릴게요.', status: 'pending' },
-                { id: 'q2', reqId: 'r1', proId: 'pro2', proName: '깨끗한세상', price: 1350000, msg: '꼼꼼한 소독 작업을 약속드립니다.', status: 'pending' }
+                { id: 'q1', proId: 'pro1', proName: '명품특수청소', price: 1500000, msg: '신속히 도와드리겠습니다.', status: 'pending' }
             ],
-            chatDB: [
-                { id: 'c1', proId: 'pro1', sender: 'pro1', text: '안녕하세요, 견적 확인 부탁드립니다. 방문 견적도 가능합니다.' }
+            notifs: [
+                { id: 'n1', title: '새로운 견적 도착', desc: '명품특수청소 업체로부터 1,500,000원 견적이 도착했습니다.', date: '방금 전', unread: true },
+                { id: 'n2', title: '상담 메시지', desc: '업체와 상담을 시작할 수 있습니다.', date: '10분 전', unread: false }
             ],
-            requestForm: { tags: [], area: '', floor: '', elevator: '', desc: '', loc: '강남구 역삼동' },
-            selectedReq: null,
-            selectedPro: null,
-            selectedQuote: null
+            faqs: [
+                { q: '특수청소 비용은 어떻게 산정되나요?', a: '현장 면적, 오염도, 폐기물 양 등에 따라 결정됩니다.' },
+                { q: '상담은 무료인가요?', a: '네, 비대면 견적 상담은 100% 무료입니다.' }
+            ],
+            requestForm: { tags: [], area: '', photos: [] }
         };
 
         function setPage(p, data = null) {
@@ -137,7 +128,7 @@
                 if (p === 'req_detail') state.selectedReq = data;
                 if (p === 'pro_profile') state.selectedPro = data;
                 if (p === 'contract') state.selectedQuote = data;
-                if (p === 'chat') state.selectedPro = data;
+                if (p === 'chat') { state.selectedPro = data; state.chatDB = state.chatDB || [{ sender: data.id, text: '반갑습니다. 무엇을 도와드릴까요?' }]; }
             }
             render();
         }
@@ -145,17 +136,20 @@
         function render() {
             const root = document.getElementById('root');
             let content = '';
-            let hideTabBar = false;
+            let hideTabBar = ['request', 'chat', 'contract', 'pro_profile', 'notifications', 'reviews_write'].includes(state.page);
 
             switch (state.page) {
                 case 'dash': content = renderDash(); break;
-                case 'request': content = renderRequest(); hideTabBar = true; break;
+                case 'request': content = renderRequest(); break;
                 case 'history': content = renderHistory(); break;
-                case 'req_detail': content = renderReqDetail(); hideTabBar = true; break;
+                case 'req_detail': content = renderReqDetail(); break;
                 case 'quotes': content = renderQuotes(); break;
-                case 'pro_profile': content = renderProProfile(); hideTabBar = true; break;
-                case 'contract': content = renderContract(); hideTabBar = true; break;
-                case 'chat': content = renderChat(); hideTabBar = true; break;
+                case 'pro_profile': content = renderProProfile(); break;
+                case 'contract': content = renderContract(); break;
+                case 'chat': content = renderChat(); break;
+                case 'notifications': content = renderNotifications(); break;
+                case 'help': content = renderHelp(); break;
+                case 'reviews_write': content = renderReviewsWrite(); break;
                 case 'mypage': content = renderMyPage(); break;
             }
 
@@ -166,27 +160,24 @@
             `;
         }
 
-        function renderHeader(isSubPage) {
+        function renderHeader(isSub) {
+            const hasUnread = state.notifs.some(n => n.unread);
             return `
                 <div class="header">
-                    ${isSubPage ? `<div onclick="window.history.back(); setPage('dash');" style="cursor:pointer; font-size:20px;">←</div>` : `<div class="homeBtn" onclick="location.href='index.html'">🏠 홈</div>`}
+                    ${isSub ? `<div onclick="window.history.back();" style="cursor:pointer; font-size:20px;">←</div>` : `<div onclick="location.href='index.html'" style="font-size:14px; border:1px solid #333; padding:5px 10px; border-radius:8px;">🏠 홈</div>`}
                     <div class="headerTitle">${getHeaderTitle()}</div>
-                    <div style="width:40px"></div>
+                    <div class="iconBtn" onclick="setPage('notifications')">🔔 ${hasUnread ? '<div class="badge-dot"></div>' : ''}</div>
                 </div>
             `;
         }
 
         function getHeaderTitle() {
-            switch (state.page) {
+            switch(state.page) {
                 case 'dash': return '특청 고객용';
-                case 'request': return '청소 요청서 작성';
-                case 'history': return '나의 요청 내역';
-                case 'req_detail': return '요청 상세';
-                case 'quotes': return '받은 견적함';
-                case 'pro_profile': return '업체 정보';
-                case 'contract': return '전자 계약서';
-                case 'chat': return '상담 채팅';
-                case 'mypage': return '마이페이지';
+                case 'notifications': return '알림 내역';
+                case 'help': return '고객 센터';
+                case 'request': return '견적 신청';
+                case 'reviews_write': return '리뷰 작성';
                 default: return '특청';
             }
         }
@@ -194,57 +185,60 @@
         function renderTabBar() {
             return `
                 <div class="tabBar">
-                    <div class="tabItem ${state.page === 'dash' ? 'active' : ''}" onclick="setPage('dash')"><div class="tabIcon">🏠</div>홈</div>
+                    <div class="tabItem ${['dash', 'help'].includes(state.page) ? 'active' : ''}" onclick="setPage('dash')"><div class="tabIcon">🏠</div>홈</div>
                     <div class="tabItem ${state.page === 'history' ? 'active' : ''}" onclick="setPage('history')"><div class="tabIcon">📄</div>내요청</div>
                     <div class="tabItem ${state.page === 'quotes' ? 'active' : ''}" onclick="setPage('quotes')"><div class="tabIcon">📩</div>견적함</div>
-                    <div class="tabItem ${state.page === 'mypage' ? 'active' : ''}" onclick="setPage('mypage')"><div class="tabIcon">👤</div>마이</div>
+                    <div class="tabItem ${['mypage', 'help'].includes(state.page) ? 'active' : ''}" onclick="setPage('mypage')"><div class="tabIcon">👤</div>마이</div>
                 </div>
             `;
         }
 
         function renderDash() {
             return `
-                <div style="padding: 20px;">
-                    <div style="font-size: 24px; font-weight: 800; margin-bottom: 8px;">반가워요, <span style="color:var(--primary)">${state.currentUser.name}</span>님</div>
-                    <div style="color:var(--text-sub); font-size:14px; margin-bottom:30px;">오늘도 쾌적한 환경을 위해 도와드릴게요.</div>
+                <div class="padding">
+                    <div style="font-size: 24px; font-weight: 800; margin-bottom: 25px;">${state.currentUser.name} 님, <br>안심하고 청소를 맡기세요.</div>
                     
                     <div style="background: linear-gradient(135deg, #E50914, #ff4d4d); padding: 25px; border-radius: 20px; color: #fff; margin-bottom: 30px; cursor: pointer; box-shadow: 0 10px 20px rgba(229,9,20,0.3);" onclick="setPage('request')">
-                        <div style="font-size: 14px; opacity: 0.9; margin-bottom: 5px;">현장 전문가의 도움이 필요하신가요?</div>
-                        <div style="font-size: 20px; font-weight: 800;">⚡ 무료 견적 요청하기</div>
+                        <div style="font-size: 14px; opacity: 0.9; margin-bottom: 5px;">현장 전문가가 24시간 대기 중</div>
+                        <div style="font-size: 20px; font-weight: 800;">⚡ 지금 바로 견적 신청하기</div>
                     </div>
 
-                    <div style="font-weight: bold; margin-bottom: 15px;">나의 이용 현황</div>
-                    <div class="menuCard" onclick="setPage('history')"><span>📄 나의 요청서 (${state.requestsDB.length})</span><span>❯</span></div>
-                    <div class="menuCard" onclick="setPage('quotes')"><span>📩 받은 견적함 (${state.quotesDB.length})</span><span>❯</span></div>
+                    <div style="font-weight: bold; margin-bottom: 15px;">진행 상태</div>
+                    <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="font-size:12px; color:var(--text-sub);">최근 요청</div>
+                            <div style="font-size:16px; font-weight:bold; margin-top:3px;">${state.requestsDB[0].tags[0]} 현장</div>
+                        </div>
+                        <span style="color:var(--primary); font-weight:bold; font-size:14px;">견적 대기중</span>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:20px;">
+                        <div class="card" onclick="setPage('help')" style="margin-bottom:0; text-align:center;"><div style="font-size:24px; margin-bottom:8px;">❓</div><div style="font-size:13px; font-weight:600;">자주 묻는 질문</div></div>
+                        <div class="card" onclick="alert('전화 상담으로 연결됩니다.')" style="margin-bottom:0; text-align:center;"><div style="font-size:24px; margin-bottom:8px;">📞</div><div style="font-size:13px; font-weight:600;">실시간 전화문의</div></div>
+                    </div>
                 </div>
             `;
         }
 
         function renderRequest() {
-            const f = state.requestForm;
             return `
                 <div class="padding">
-                    <div class="label">청소 유형 (선택)</div>
+                    <div class="label">청소 서비스 선택</div>
                     <div class="row">
-                        <div class="halfBtn ${f.tags.includes('고독사') ? 'activeBtn' : ''}" onclick="toggleTag('고독사')">고독사</div>
-                        <div class="halfBtn ${f.tags.includes('쓰레기집') ? 'activeBtn' : ''}" onclick="toggleTag('쓰레기집')">쓰레기집</div>
-                        <div class="halfBtn ${f.tags.includes('화재') ? 'activeBtn' : ''}" onclick="toggleTag('화재')">화재</div>
-                    </div>
-                    
-                    <div class="label">현장 면적 (평)</div>
-                    <input class="input" type="number" placeholder="예: 25" oninput="state.requestForm.area=this.value" value="${f.area}">
-                    
-                    <div class="label">층수 및 엘리베이터</div>
-                    <div class="row">
-                        <input class="input" style="flex:1" type="number" placeholder="층수" oninput="state.requestForm.floor=this.value" value="${f.floor}">
-                        <div class="halfBtn ${f.elevator === '있음' ? 'activeBtn' : ''}" onclick="state.requestForm.elevator='있음'; render();">엘베있음</div>
-                        <div class="halfBtn ${f.elevator === '없음' ? 'activeBtn' : ''}" onclick="state.requestForm.elevator='없음'; render();">없음</div>
+                        <div class="item-tag active">고독사</div><div class="item-tag">쓰레기집</div><div class="item-tag">화재/복구</div>
                     </div>
 
-                    <div class="label">상세 상황 및 요청사항</div>
-                    <textarea class="textArea" placeholder="정확한 견적을 위해 상황을 자세히 적어주세요." oninput="state.requestForm.desc=this.value">${f.desc}</textarea>
+                    <div class="label">현장 사진 첨부 (선택)</div>
+                    <div class="row">
+                        <div class="photo-box" onclick="alert('사진 선택 팝업')">+</div>
+                        <div style="font-size:12px; color:var(--text-dark); display:flex; align-items:center;">상세 견적에 큰 도움이 됩니다.</div>
+                    </div>
+
+                    <div class="label">현장 면적 및 상세 내용</div>
+                    <input class="input" placeholder="평수 입력 (예: 24)">
+                    <textarea class="textArea" placeholder="상황을 자세히 설명해주시면 더 정확한 견적이 가능합니다."></textarea>
                     
-                    <button class="primaryBtn" style="margin-top:20px" onclick="submitRequest()">요청서 발송하기</button>
+                    <button class="primaryBtn" onclick="alert('견적이 발송되었습니다!'); setPage('history');">요청서 완료</button>
                     <div style="height:40px"></div>
                 </div>
             `;
@@ -253,32 +247,36 @@
         function renderHistory() {
             return `
                 <div class="padding">
-                    ${state.requestsDB.length === 0 ? '<div style="text-align:center; padding:50px; color:var(--text-dark)">요청 내역이 없습니다.</div>' : 
-                        state.requestsDB.map(r => `
-                        <div class="menuCard" style="flex-direction:column; align-items:flex-start;" onclick="setPage('req_detail', ${JSON.stringify(r).replace(/"/g, '&quot;')})">
-                            <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:10px;">
-                                <span style="color:var(--primary); font-weight:bold; font-size:12px;">${r.status}</span>
-                                <span style="color:var(--text-dark); font-size:12px;">${r.createdAt}</span>
+                    ${state.requestsDB.map(r => `
+                        <div class="card" onclick="setPage('req_detail', ${JSON.stringify(r).replace(/"/g, '&quot;')})">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                                <span style="font-size:12px; color:var(--primary); font-weight:bold;">${r.status}</span>
+                                <span style="font-size:12px; color:var(--text-dark);">${r.createdAt}</span>
                             </div>
                             <div style="font-size:17px; font-weight:bold;">${r.tags.join(', ')} / ${r.area}평</div>
-                            <div style="color:var(--text-sub); font-size:13px; margin-top:5px;">${r.loc}</div>
+                            <div style="font-size:13px; color:var(--text-sub); margin-top:5px;">${r.loc}</div>
                         </div>
                     `).join('')}
+                    <div class="card" style="border: 1px dashed #333; opacity:0.6; text-align:center;">
+                        <span style="font-size:13px; font-weight:bold;">이전 서비스 내역</span>
+                        <div style="margin-top:10px; font-size:11px;">완료된 작업은 여기서 리뷰를 남길 수 있습니다.</div>
+                        <button class="primaryBtn" style="height:35px; font-size:12px; margin-top:10px; background:#222; color:#fff;" onclick="setPage('reviews_write')">리뷰 쓰러가기</button>
+                    </div>
                 </div>
             `;
         }
 
-        function renderReqDetail() {
-            const r = state.selectedReq;
+        function renderNotifications() {
             return `
                 <div class="padding">
-                    <div style="background:var(--surface); padding:20px; border-radius:15px; border:1px solid #222;">
-                        <h3 style="margin-bottom:15px;">요청 정보</h3>
-                        <div style="margin-bottom:10px;"><span style="color:var(--text-sub)">유형:</span> ${r.tags.join(', ')}</div>
-                        <div style="margin-bottom:10px;"><span style="color:var(--text-sub)">면적:</span> ${r.area}평</div>
-                        <div style="margin-bottom:10px;"><span style="color:var(--text-sub)">위치:</span> ${r.loc} (${r.floor}층, 엘리베이터 ${r.elevator})</div>
-                        <div style="margin-top:15px; border-top:1px solid #333; padding-top:15px; color:var(--text-sub); font-size:14px; line-height:1.6;">${r.desc}</div>
-                    </div>
+                    ${state.notifs.map(n => `
+                        <div class="notif-item">
+                            <div class="notif-title">${n.title} ${n.unread ? '<span style="color:var(--primary)">●</span>' : ''}</div>
+                            <div class="notif-desc">${n.desc}</div>
+                            <div style="font-size:11px; color:var(--text-dark); margin-top:5px;">${n.date}</div>
+                        </div>
+                    `).join('')}
+                    <button class="primaryBtn" style="margin-top:20px; background:var(--surface); border:1px solid #333;" onclick="state.notifs.forEach(n=>n.unread=false); render();">모두 읽음 처리</button>
                 </div>
             `;
         }
@@ -286,18 +284,17 @@
         function renderQuotes() {
             return `
                 <div class="padding">
-                    ${state.quotesDB.length === 0 ? '<div style="text-align:center; padding:50px; color:var(--text-dark)">받은 견적이 없습니다.</div>' : 
-                        state.quotesDB.map(q => `
-                        <div style="background:var(--surface); padding:20px; border-radius:15px; border:1px solid #333; margin-bottom:15px;">
+                    ${state.quotesDB.map(q => `
+                        <div class="card">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                                <div style="font-weight:bold; font-size:18px; cursor:pointer; color:var(--primary)" onclick="viewPro('${q.proId}')">${q.proName} ❯</div>
-                                <div style="background:rgba(255,255,255,0.05); padding:5px 10px; border-radius:8px; font-size:12px;">평점 ⭐ 4.9</div>
+                                <div onclick="setPage('pro_profile', state.usersDB.find(u=>u.id==='${q.proId}'))" style="cursor:pointer; font-weight:bold; font-size:18px; color:var(--primary);">${q.proName} ❯</div>
+                                <div style="font-size:12px; color:var(--warning);">⭐ 4.9 (120+)</div>
                             </div>
-                            <div style="font-size:24px; font-weight:800; color:var(--primary); margin-bottom:10px;">${q.price.toLocaleString()}원</div>
-                            <div style="color:var(--text-sub); font-size:14px; line-height:1.4; margin-bottom:20px;">${q.msg}</div>
+                            <div style="font-size:24px; font-weight:800; color:var(--primary); margin-bottom:15px;">${q.price.toLocaleString()}원</div>
+                            <div style="background:#000; padding:15px; border-radius:10px; font-size:13px; color:var(--text-sub); margin-bottom:20px; border:1px solid #1a1a1a;">${q.msg}</div>
                             <div class="row">
-                                <button class="halfBtn activeBtn" onclick="setPage('chat', state.usersDB.find(u=>u.id==='${q.proId}'))">상담하기</button>
-                                <button class="halfBtn" style="background:#fff; color:#000;" onclick="setPage('contract', ${JSON.stringify(q).replace(/"/g, '&quot;')})">계약하기</button>
+                                <button class="primaryBtn" style="flex:1" onclick="setPage('chat', state.usersDB.find(u=>u.id==='${q.proId}'))">상담하기</button>
+                                <button class="primaryBtn" style="flex:1; background:#fff; color:#000;" onclick="setPage('contract', ${JSON.stringify(q).replace(/"/g, '&quot;')})">바로계약</button>
                             </div>
                         </div>
                     `).join('')}
@@ -309,59 +306,56 @@
             const p = state.selectedPro;
             return `
                 <div class="padding">
-                    <h2 style="font-size:28px; font-weight:800; margin-bottom:10px;">${p.compName}</h2>
-                    <div class="row" style="margin-bottom:20px;">
-                        ${p.keywords.map(k => `<div style="background:rgba(229,9,20,0.1); border:1px solid var(--primary); padding:4px 10px; border-radius:20px; color:var(--primary); font-size:12px;">${k}</div>`).join('')}
-                    </div>
-                    <div style="background:var(--surface); padding:20px; border-radius:15px; line-height:1.6; margin-bottom:30px;">${p.intro}</div>
+                    <div class="verif-badge">🛡️ 특청 인증 파트너</div>
+                    <h2 style="font-size:28px; font-weight:800; margin-bottom:5px;">${p.compName}</h2>
+                    <div style="font-size:12px; color:var(--info); margin-bottom:20px;">📜 ${p.insurance}</div>
                     
-                    <h3 style="margin-bottom:15px;">고객 리뷰</h3>
-                    ${p.reviews.map(r => `
-                        <div style="border-bottom:1px solid #222; padding:15px 0;">
-                            <div style="color:var(--warning); margin-bottom:5px;">${'⭐'.repeat(r.rating)}</div>
-                            <div style="font-size:14px; color:var(--text-main);">${r.text}</div>
-                        </div>
-                    `).join('')}
-                    <div style="height:40px"></div>
+                    <div style="font-weight:bold; margin-bottom:10px;">전문 분야</div>
+                    <div class="row" style="margin-bottom:20px;">
+                        ${p.keywords.map(k => `<span class="item-tag active">${k}</span>`).join('')}
+                    </div>
+
+                    <div class="card" style="background:#000; border-color:#222; line-height:1.6; font-size:14px;">${p.intro}</div>
+                    
+                    <h3 style="margin-bottom:15px;">포트폴리오 (최근 작업)</h3>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:30px;">
+                        <div style="aspect-ratio:1; background:#222; border-radius:10px;"></div>
+                        <div style="aspect-ratio:1; background:#222; border-radius:10px;"></div>
+                    </div>
                 </div>
             `;
         }
 
-        function renderContract() {
-            const q = state.selectedQuote;
+        function renderReviewsWrite() {
             return `
                 <div class="padding">
-                    <div style="background:#fff; color:#000; padding:30px; border-radius:5px; box-shadow:0 0 20px rgba(0,0,0,0.5); font-family:serif;">
-                        <h2 style="text-align:center; text-decoration:underline; margin-bottom:30px;">특수청소 용역 계약서</h2>
-                        <p style="font-size:12px; margin-bottom:15px;">본 계약은 <b>${state.currentUser.name}</b>(이하 "갑")과 <b>${q.proName}</b>(이하 "을")간의 서비스 이용을 목적으로 체결한다.</p>
-                        <div style="margin-bottom:20px; border:1px solid #000; padding:10px;">
-                            <div style="margin-bottom:5px;">1. 용역 금액: 금 ${q.price.toLocaleString()}원</div>
-                            <div style="margin-bottom:5px;">2. 작업 내용: ${state.requestsDB[0].tags.join(', ')} 및 관련 폐기물 처리</div>
-                        </div>
-                        <p style="font-size:11px; color:#555;">(중략) 본 계약은 전자상거래법에 의거하여 법적 효력을 가집니다.</p>
-                        <div style="margin-top:30px; display:flex; justify-content:space-between;">
-                            <div>(갑) ${state.currentUser.name} (서명없음)</div>
-                            <div>(을) ${q.proName} (서명완료)</div>
-                        </div>
+                    <div style="text-align:center; margin-bottom:30px;">
+                        <div style="font-size:18px; font-weight:bold; margin-bottom:10px;">작업은 만족스러우셨나요?</div>
+                        <div style="font-size:30px;">⭐⭐⭐⭐⭐</div>
                     </div>
-                    <button class="primaryBtn" style="margin-top:30px;" onclick="signContract()">서명하고 계약완료</button>
-                    <div style="height:40px"></div>
+                    <div class="label">상세 후기</div>
+                    <textarea class="textArea" placeholder="업체의 친절함, 청결도 등을 공유해 주세요."></textarea>
+                    
+                    <div class="label">완료 사진 (선택)</div>
+                    <div class="photo-box">+</div>
+                    
+                    <button class="primaryBtn" style="margin-top:30px;" onclick="alert('리뷰 감사드립니다! 포인트가 지급되었습니다.'); setPage('dash');">리뷰 등록하기</button>
                 </div>
             `;
         }
 
-        function renderChat() {
-            const p = state.selectedPro;
+        function renderHelp() {
             return `
-                <div style="display:flex; flex-direction:column; height:100%;">
-                    <div style="flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column;">
-                        ${state.chatDB.map(c => `
-                            <div class="chatBubble ${c.sender === state.currentUser.id ? 'myChat' : 'yourChat'}">${c.text}</div>
-                        `).join('')}
-                    </div>
-                    <div class="chatInputArea">
-                        <input class="input" style="flex:1; margin-bottom:0;" id="chatMsg" placeholder="메시지를 입력하세요...">
-                        <button class="primaryBtn" style="width: auto; padding:15px 20px;" onclick="sendChat()">전송</button>
+                <div class="padding">
+                    <h2 style="margin-bottom:20px;">무엇을 도와드릴까요?</h2>
+                    ${state.faqs.map(f => `
+                        <div class="card">
+                            <div style="font-weight:bold; font-size:14px; margin-bottom:8px; color:var(--primary);">Q. ${f.q}</div>
+                            <div style="font-size:13px; color:var(--text-sub); line-height:1.5;">${f.a}</div>
+                        </div>
+                    `).join('')}
+                    <div class="card" style="background:var(--primary); text-align:center; cursor:pointer;" onclick="alert('1:1 실시간 상담 연결')">
+                        <div style="color:#fff; font-weight:bold;">카카오톡 1:1 유선 상담</div>
                     </div>
                 </div>
             `;
@@ -370,69 +364,29 @@
         function renderMyPage() {
             return `
                 <div class="padding">
-                    <div style="background:var(--surface); padding:25px; border-radius:20px; margin-bottom:20px; display:flex; align-items:center; gap:20px;">
+                    <div style="display:flex; align-items:center; gap:20px; margin-bottom:30px;">
                         <div style="width:60px; height:60px; background:var(--primary); border-radius:30px; display:flex; align-items:center; justify-content:center; font-size:24px;">👤</div>
                         <div>
-                            <div style="font-weight:bold; font-size:18px;">${state.currentUser.name}</div>
-                            <div style="color:var(--text-sub); font-size:13px;">${state.currentUser.phone}</div>
+                            <div style="font-size:18px; font-weight:bold;">${state.currentUser.name} 님</div>
+                            <div style="font-size:12px; color:var(--text-sub);">일반 회원 (VVIP)</div>
                         </div>
                     </div>
-                    <div class="menuCard"><span>💳 결제 수단 관리</span><span>❯</span></div>
-                    <div class="menuCard"><span>🔔 알림 설정</span><span>❯</span></div>
-                    <div class="menuCard"><span>📢 공지사항</span><span>❯</span></div>
-                    <div class="menuCard" style="color:var(--primary); font-weight:bold;" onclick="location.href='index.html'">🚪 로그아웃 및 홈으로</div>
+                    <div class="menuCard" onclick="setPage('help')"><span>📢 공지사항</span><span>❯</span></div>
+                    <div class="menuCard"><span>💳 결제 수단 및 내역</span><span>❯</span></div>
+                    <div class="menuCard" onclick="setPage('help')"><span>🛠️ 고객센터</span><span>❯</span></div>
+                    <div class="menuCard" style="color:var(--primary)" onclick="location.href='index.html'">🚪 로그아웃</div>
                 </div>
             `;
         }
 
-        // --- Event Handlers ---
-        function toggleTag(t) {
-            const idx = state.requestForm.tags.indexOf(t);
-            if (idx > -1) state.requestForm.tags.splice(idx, 1);
-            else state.requestForm.tags.push(t);
-            render();
+        function renderChat() {
+            return `<div class="padding" style="text-align:center; pt:50px;">실시간 채팅 상담 중... <br><br> <button class="primaryBtn" onclick="window.history.back()">목록으로</button></div>`;
         }
-
-        function submitRequest() {
-            const f = state.requestForm;
-            if (f.tags.length === 0 || !f.area) return alert('유형과 면적을 입력해주세요.');
-            const newReq = {
-                id: 'r' + Date.now(),
-                tags: [...f.tags],
-                area: f.area,
-                floor: f.floor || '1',
-                elevator: f.elevator || '없음',
-                loc: f.loc,
-                status: '견적 대기중',
-                desc: f.desc,
-                createdAt: new Date().toISOString().split('T')[0]
-            };
-            state.requestsDB.unshift(newReq);
-            alert('요청서가 발송되었습니다!');
-            setPage('history');
+        function renderContract() {
+            return `<div class="padding" style="text-align:center; pt:50px;">전자계약 진행 중... <br><br> <button class="primaryBtn" onclick="window.history.back()">목록으로</button></div>`;
         }
-
-        function viewPro(id) {
-            const pro = state.usersDB.find(u => u.id === id);
-            setPage('pro_profile', pro);
-        }
-
-        function signContract() {
-            alert('계약이 체결되었습니다! 전문가가 일정을 확정할 예정입니다.');
-            setPage('dash');
-        }
-
-        function sendChat() {
-            const msg = document.getElementById('chatMsg').value;
-            if (!msg) return;
-            state.chatDB.push({ id: 'c' + Date.now(), sender: state.currentUser.id, text: msg });
-            document.getElementById('chatMsg').value = '';
-            render();
-            // Mock Pro Auto-reply
-            setTimeout(() => {
-                state.chatDB.push({ id: 'c' + (Date.now() + 1), sender: state.selectedPro.id, text: '확인했습니다. 자세한 안내 도와드리겠습니다.' });
-                render();
-            }, 1000);
+        function renderReqDetail() {
+            return `<div class="padding" style="text-align:center; pt:50px;">상세 내역 페이지... <br><br> <button class="primaryBtn" onclick="window.history.back()">목록으로</button></div>`;
         }
 
         window.onload = render;
