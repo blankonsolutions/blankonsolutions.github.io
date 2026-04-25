@@ -43,8 +43,9 @@
         }
         .headerTitle { font-weight: bold; font-size: 17px; }
         .backBtn { cursor: pointer; font-size: 20px; }
+        .homeBtn { cursor: pointer; font-size: 13px; border: 1px solid #333; padding: 5px 10px; border-radius: 8px; }
 
-        .card { background: var(--surface); padding: 20px; border-radius: 15px; border: 1px solid #222; margin-bottom: 15px; }
+        .card { background: var(--surface); padding: 20px; border-radius: 15px; border: 1px solid #222; margin-bottom: 15px; cursor: pointer; }
         .primaryBtn {
             width: 100%; padding: 15px; background: var(--primary); border: none;
             border-radius: 10px; color: #000; font-weight: 800; cursor: pointer;
@@ -52,7 +53,7 @@
 
         /* Analytics Chart Simulation */
         .chart-container { display: flex; align-items: flex-end; gap: 8px; height: 100px; margin-top: 20px; padding-bottom: 10px; border-bottom: 1px solid #333; }
-        .chart-bar { flex: 1; background: var(--primary); border-radius: 3px 3px 0 0; position: relative; }
+        .chart-bar { flex: 1; background: var(--primary); border-radius: 3px 3px 0 0; position: relative; cursor: pointer; }
         .chart-bar::after { content: attr(data-label); position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 9px; color: var(--text-dark); }
 
         .nav {
@@ -63,7 +64,8 @@
         .nav-item.active { color: var(--primary); }
 
         .portfolio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .portfolio-item { aspect-ratio: 4/3; background: #222; border-radius: 8px; border: 1px solid #333; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #444; }
+        .portfolio-item { aspect-ratio: 4/3; background: #222; border-radius: 8px; border: 1px solid #333; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #444; cursor: pointer; }
+        .portfolio-item:hover { border-color: var(--primary); }
 
         .badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 5px; }
         .badge-success { background: rgba(40,167,69,0.1); color: var(--success); border: 1px solid var(--success); }

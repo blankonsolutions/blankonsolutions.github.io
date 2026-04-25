@@ -118,6 +118,10 @@
 		.stat-label { font-size: 20px; color: var(--text-sub); margin-top: 10px; }
 
 		.timeline { display: flex; gap: 20px; width: 100%; margin-top: 50px; }
+		.slide-tab {
+            flex: 1; padding: 10px; background: #222; color: #888; text-align: center;
+            font-size: 11px; border: 1px solid #333; border-radius: 8px; cursor: pointer;
+        }
 		.timeline-step { flex: 1; position: relative; padding-top: 30px; border-top: 2px solid var(--border); }
 		.timeline-step::after { content: ''; position: absolute; top: -7px; left: 0; width: 12px; height: 12px; background: var(--primary); border-radius: 50%; }
 		.timeline-step h4 { font-size: 24px; margin-bottom: 10px; color: #fff; }
@@ -515,6 +519,10 @@
 
 	<!-- Controls -->
 	<div class="nav-controls">
+		<div class="controls">
+            <button onclick="prevSlide()" style="cursor: pointer;">이전</button>
+            <button onclick="nextSlide()" style="cursor: pointer;">다음</button>
+        </div>
 		<div class="nav-btn" onclick="prevSlide()"><i data-lucide="chevron-left"></i></div>
 		<div class="nav-btn" onclick="nextSlide()"><i data-lucide="chevron-right"></i></div>
 	</div>
