@@ -1,0 +1,461 @@
+<!doctype html><html lang=ko><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><title>특청 - 특수청소 전문 중개 플랫폼</title><style>:root{--primary:#E50914;--bg:#000;--surface:#111;--surface-hover:#222;--text-main:#fff;--text-sub:#aaa;--text-dark:#666;--border:#333;--success:#28a745;--warning:#FFD700}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}body{margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background-color:var(--bg);color:var(--text-main);height:100vh;overflow:hidden}#root{height:100%;display:flex;flex-direction:column}.bg{display:flex;flex-direction:column;flex:1;background-color:var(--bg);overflow-y:auto}.padding{padding:30px}.mainContainer{flex:1;background-color:var(--bg);display:flex;flex-direction:column;justify-content:center;align-items:center;padding:30px}.mainSubTitle{color:var(--primary);font-size:15px;font-weight:700;margin-bottom:10px}.mainLogo{font-size:70px;font-weight:700;color:#fff;margin-bottom:60px;letter-spacing:-4px;line-height:1}.primaryBtn{width:100%;padding:18px;background-color:var(--primary);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;border:none;cursor:pointer;font-size:17px;font-weight:700;transition:opacity .2s}.primaryBtn:active{opacity:.7}.btnText{color:#fff;font-size:17px;font-weight:700}.proBtn{width:100%;padding:17px;border:1.5px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;background-color:var(--surface);color:#fff;cursor:pointer}.proBtnText{color:#fff;font-weight:700;font-size:17px}.formTitle{font-size:32px;font-weight:700;color:#fff;margin-bottom:30px;text-align:center}.label{font-size:14px;color:var(--text-sub);margin-top:25px;margin-bottom:10px;font-weight:700;display:block}.input{border:1px solid var(--border);padding:15px;border-radius:10px;margin-bottom:12px;background-color:var(--surface);color:#fff;width:100%;font-size:16px;outline:0}.input::placeholder{color:var(--text-dark)}.inputWrapper{display:flex;flex-direction:row;align-items:center;background-color:var(--surface);border-radius:10px;border:1px solid var(--border);margin-bottom:12px}.row{display:flex;flex-direction:row;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:10px}.halfBtn{flex:1;padding:15px;border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-sub)}.smallBtn{width:85px;height:50px;background-color:#444;border-radius:10px;display:flex;justify-content:center;align-items:center;border:none;color:#fff;cursor:pointer}.activeBtn{background-color:var(--primary);border-color:var(--primary);color:#fff}.activeText{color:#fff;font-weight:700}.header{padding-top:60px;padding-bottom:20px;display:flex;flex-direction:row;justify-content:space-between;align-items:center;padding-left:20px;padding-right:20px;border-bottom:1px solid #222;background-color:var(--surface);position:sticky;top:0;z-index:10}.headerTitle{color:#fff;font-size:18px;font-weight:700}.textArea{border:1px solid var(--border);padding:20px;border-radius:15px;height:120px;background-color:var(--surface);color:#fff;width:100%;font-size:16px;outline:0;resize:none}.splashContainer{flex:1;background-color:var(--bg);display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh}.splashTitle{font-size:16px;color:var(--primary);font-weight:700;letter-spacing:2px}.splashSub{font-size:13px;color:#888;margin-bottom:8px}.splashBrand{font-size:65px;font-weight:700;color:#fff;letter-spacing:-2px}.uploadBox{height:60px;background-color:var(--surface);border:1px dashed #444;border-radius:10px;display:flex;justify-content:center;align-items:center;margin-top:5px;margin-bottom:5px;cursor:pointer}.menuCard{display:flex;flex-direction:row;justify-content:space-between;align-items:center;background-color:var(--surface);padding:20px;border-radius:10px;border:1px solid #222;margin-bottom:15px;cursor:pointer}.modalOverlay{position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,.8);display:flex;justify-content:center;align-items:center;z-index:100;padding:20px;overflow-y:auto}.modalContent{background-color:var(--surface);padding:25px;border-radius:15px;border:1px solid var(--border);width:100%;max-width:500px;position:relative}.modalLabel{color:var(--text-sub);font-size:12px;margin-bottom:8px;margin-top:15px;font-weight:700;display:block}.tagBtn{padding:10px 15px;background-color:#222;border-radius:20px;margin-bottom:10px;margin-right:8px;border:1px solid var(--border);color:var(--text-sub);cursor:pointer;display:inline-block}.cameraBtn{padding:15px;background-color:#222;border-radius:10px;display:flex;align-items:center;justify-content:center;border:1px solid #444;color:#fff;cursor:pointer;width:100%}.tagWrap{display:flex;flex-direction:row;flex-wrap:wrap;margin:0 -5px}.dynamicCard{background-color:#0a0a0a;padding:20px;border-radius:15px;margin-top:15px;border:1px solid #222;border-left:3px solid var(--primary)}.dynamicLabel{color:var(--primary);font-weight:700;margin-bottom:10px;font-size:13px;display:block}.addressBox{flex:1;background-color:#222;padding:12px;border-radius:8px;margin:0 3px;display:flex;justify-content:center;align-items:center;border:1px solid #444;color:#fff;cursor:pointer}.chatBubble{padding:15px;border-radius:15px;margin-bottom:10px;max-width:80%}.myChat{align-self:flex-end;background-color:var(--primary)}.yourChat{align-self:flex-start;background-color:#333}.chatInputBar{display:flex;flex-direction:row;padding:15px;background-color:var(--surface);border-top:1px solid #222;position:sticky;bottom:0}.chatChatInput{flex:1;color:#fff;background-color:#222;border-radius:20px;padding:0 15px;height:45px;border:none;outline:0}.sendBtn{margin-left:10px;background-color:var(--primary);border-radius:20px;padding:0 20px;display:flex;align-items:center;cursor:pointer;border:none;color:#fff;font-weight:700}::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}@media print{body{background:#fff;color:#000;overflow:visible;height:auto}.no-print{display:none!important}.bg{overflow:visible;height:auto}}</style></head><body><div id=root></div><script>let state={isLoading:!0,page:"splash",currentUser:null,usersDB:[{id:"admin123",pw:"admin123",role:"admin",name:"총괄관리자"},{id:"pro1",pw:"12345678",role:"pro",name:"테스트업체",compName:"김도영특수청소",bizNum:"1234567890",status:"승인완료",isApproved:!0,cash:5e4,keywords:["고독사","쓰레기집","악취제거"],docs:{biz:"dummy_url",sanitation:"dummy_url",disinfection:"dummy_url",waste:"dummy_url"},intro:"고독사, 쓰레기집 완벽 복구 전문 업체입니다.",empCount:"5명",equip:"고압세척기, 오존살균기 3대",portfolios:[]},{id:"cus1",pw:"12345678",role:"customer",name:"테스트고객",phone:"010-1234-5678",cash:0,reviews:[]},{id:"gov1",pw:"12345678",role:"gov",name:"김주무관",phone:"010-9999-8888",govType:"지자체",govName:"광주광역시 본청",cash:0,reviews:[]}],requestsDB:[{id:"r1",userId:"cus1",tags:["고독사"],commonType:["아파트"],loc:"서울특별시 강남구 역삼동",area:"25",floor:"10",elevator:"있음",desc:"빠른 처리 부탁드립니다.",status:"견적 대기중",dateOption:"일주일 이내",images:[]}],quotesDB:[],chatDB:[],selectedReq:null,viewingPro:null,selectedContract:null,paymentTargetQuote:null,payMethod:"card",reviewRating:"5",reviewText:"",scheduleDate:"",scheduleTime:"",targetScheduleQuote:null,showReportPreview:!1,signupForm:{role:"customer",id:"",pw:"",pwConfirm:"",name:"",phone:"",bizNum:"",compName:"",keywords:[]},loginForm:{id:"",pw:""},requestForm:{commonType:[],tags:[],area:"",floor:"",elevator:"",addr:{sido:"",sigungu:"",dong:""},desc:"",images:[],dateOption:"",dateSpecific:{y:"",m:"",d:""},detailDeath:{period:"",floor:""},detailCrime:{type:"",locMain:"",locSub:""},detailTrash:{types:[],moveType:"",extraService:[]},detailFire:{degree:"",locMain:"",locSub:""},detailFlood:{type:""},detailInherit:{furnitureDesc:""}},modals:{addr:!1,addrStep:1,tempSido:"",tempSigungu:""},docs:{biz:null,sanitation:null,disinfection:null,waste:null,waterTank:null}};const koreaAddressData={"서울특별시":{"강남구":["역삼동","청담동","대치동","삼성동"],"서초구":["서초동","반포동","방배동"],"송파구":["잠실동","가락동"],"마포구":["서교동","연남동"],"강서구":["마곡동","화곡동"]},"부산광역시":{"해운대구":["우동","중동","반여동"],"수영구":["광안동","남천동"],"부산진구":["서면","부전동"],"동래구":["부전동"]},"광주광역시":{"서구":["광천동","치평동","상무동","풍암동"],"북구":["운암동","용봉동","일곡동"],"동구":["충장동","동명동"],"남구":["양림동","봉선동"],"광산구":["송정동","수완동","첨단동"]}};function setPage(e){state.page=e,render()}function render(){var e,t=document.getElementById("root");if(state.isLoading)t.innerHTML=renderSplash();else{switch(state.page){case"main":t.innerHTML=renderMain();break;case"login":t.innerHTML=renderLogin();break;case"signup":t.innerHTML=renderSignup();break;case"customer_dash":t.innerHTML=renderCustomerDash();break;case"pro_dash":t.innerHTML=renderProDash();break;case"gov_dash":t.innerHTML=renderGovDash();break;case"admin_dash":t.innerHTML=renderAdminDash();break;case"pro_mypage":t.innerHTML=renderProMyPage();break;case"gov_report_center":t.innerHTML=renderGovReportCenter();break;case"gov_pro_list":t.innerHTML=renderGovProList();break;case"gov_bid_post":t.innerHTML=renderGovBidPost();break;case"chat_room":t.innerHTML=renderChatRoom();break;case"customer_request":t.innerHTML=renderCustomerRequest();break;case"customer_quotes":t.innerHTML=renderCustomerQuotes();break;case"customer_contracts":t.innerHTML=renderCustomerContracts();break;case"customer_view_pro_profile":t.innerHTML=renderCustomerViewProProfile();break;case"pro_request_detail":t.innerHTML=renderProRequestDetail();break;case"pro_schedule_manage":t.innerHTML=renderProScheduleManage();break;case"e_contract":t.innerHTML=renderEContract();break;default:t.innerHTML=renderMain()}state.modals.addr&&((e=document.createElement("div")).innerHTML=renderAddrModal(),t.appendChild(e.firstElementChild)),window.scrollTo(0,0)}}function renderSplash(){return`
+                <div class="splashContainer">
+                    <div class="splashSub">대한민국 1등 특수청소 전문가 매칭</div>
+                    <div class="splashTitle">특수청소 전문 중개 플랫폼</div>
+                    <div class="splashBrand">특청</div>
+                </div>
+            `}function renderMain(){return`
+                <div class="mainContainer">
+                    <div class="mainSubTitle">특수현장, 전문가가 답입니다</div>
+                    <div class="mainLogo">특청</div>
+                    <div style="width:100%">
+                        <button class="primaryBtn" onclick="setPage('login')">로그인</button>
+                        <button class="proBtn" style="margin-top:15px" onclick="setPage('signup')">회원가입</button>
+                    </div>
+                </div>
+            `}function renderGovDash(){var e=state.currentUser;return`
+                <div class="bg">
+                    <div style="padding: 70px 30px 20px; background: var(--surface); border-bottom: 1px solid var(--primary)">
+                        <div style="color: var(--primary); font-size:14px; font-weight:bold">행정 파트너 시스템 (${e.govType})</div>
+                        <div style="font-size: 22px; font-weight: bold;">${e.govName} ${e.name} 님</div>
+                    </div>
+                    <div class="padding">
+                        <div class="menuCard" onclick="alert('기능 준비 중')">🤝 검증업체 상세 조회</div>
+                        <div class="menuCard" onclick="alert('기능 준비 중')">📢 입찰 공고 등록</div>
+                        <div class="menuCard" onclick="setPage('gov_report_center')">📄 수행보고 및 지출결의</div>
+                        <div class="menuCard" style="border-color:var(--primary)" onclick="handleLogout()">로그아웃</div>
+                    </div>
+                </div>
+            `}function renderGovReportCenter(){return`
+                <div class="bg">
+                    <div class="header"><div onclick="setPage('gov_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">지출결의 센터</div><div style="width:40px"></div></div>
+                    <div class="padding">
+                        <div style="background-color:rgba(229,9,20,0.1); padding:15px; border-radius:10px; border:1px solid var(--primary); margin-bottom:20px">
+                            <div style="color:var(--primary); font-weight:bold; margin-bottom:5px">🏢 행정 자동화 시스템</div>
+                            <div style="color:#fff; font-size:11px">업체가 제출한 서류를 기반으로 지출결의서를 자동 생성합니다.</div>
+                        </div>
+                        <div style="background-color:var(--surface); padding:20px; border-radius:10px; border:1px solid #333; margin-bottom:15px">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:10px">
+                                <div style="color:var(--primary); font-weight:bold">미결재 (청구 대기)</div>
+                                <div style="color:#888; font-size:12px">2026-04-25 수신</div>
+                            </div>
+                            <div style="font-weight:bold; font-size:16px">[서구] 고독사 현장 특수청소 수의계약</div>
+                            <div style="color:var(--text-sub); margin-top:5px">수행업체: 강남특수청소</div>
+                            <div style="color:var(--text-sub)">청구금액: 1,500,000 원</div>
+                            ${state.showReportPreview?`
+                                <div style="background-color:#fff; color:#000; padding:15px; border-radius:5px; margin-top:15px; font-size:12px">
+                                    <h3 style="text-align:center; border-bottom:1px solid #000; padding-bottom:5px">지 출 결 의 서</h3>
+                                    <p>건명: 광주 서구 관내 고독사 현장 복구 대금 지출</p>
+                                    <p>금액: 금 1,500,000원</p>
+                                    <p style="text-align:right">위와 같이 청구함.</p>
+                                </div>
+                                <button class="primaryBtn" style="margin-top:15px" onclick="downloadPDF()">✅ PDF 다운로드 및 기안 올리기</button>
+                            `:`
+                                <button class="primaryBtn" style="margin-top:15px; background-color:#444" onclick="toggleReportPreview()">👀 지출결의서 미리보기</button>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `}function renderProMyPage(){var e=state.currentUser;return`
+                <div class="bg">
+                    <div class="header"><div onclick="setPage('pro_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">마이페이지 (정보 관리)</div><div style="width:40px"></div></div>
+                    <div class="padding">
+                        <div class="label">업체 명칭</div>
+                        <input class="input" value="${e.compName}" oninput="state.currentUser.compName=this.value">
+                        <div class="label">사업자 등록번호</div>
+                        <input class="input" value="${e.bizNum}" readonly style="background-color:#111">
+                        <div class="label">전문 분야</div>
+                        <div class="tagWrap">
+                            ${e.keywords.map(e=>`<div class="tagBtn activeBtn">${e}</div>`).join("")}
+                        </div>
+                        <button class="primaryBtn" style="margin-top:30px" onclick="alert('정보가 수정되었습니다.'); setPage('pro_dash')">정보 수정 완료</button>
+                        <button class="proBtn" style="margin-top:15px; border-color:var(--primary)" onclick="handleLogout()">로그아웃</button>
+                    </div>
+                </div>
+            `}function renderAdminDash(){var e=state.usersDB.filter(e=>"pro"===e.role&&!e.isApproved);return`
+                <div class="bg">
+                    <div class="header"><div class="headerTitle">관리자 결재 센터</div></div>
+                    <div class="padding">
+                        <div style="font-weight:bold; margin-bottom:15px">신규 가입 심사 대기 업체</div>
+                        ${0===e.length?'<div style="color:#888; text-align:center; padding:30px">대기 중인 업체가 없습니다.</div>':""}
+                        ${e.map(e=>`
+                            <div class="menuCard">
+                                <div style="flex:1">
+                                    <div style="font-weight:bold">${e.compName}</div>
+                                    <div style="font-size:12px; color:#888">대표: ${e.name} / ${e.bizNum}</div>
+                                </div>
+                                <div class="smallBtn" style="background-color:var(--primary)" onclick="approvePro('${e.id}')">승인</div>
+                            </div>
+                        `).join("")}
+                        <button class="proBtn" style="margin-top:40px" onclick="handleLogout()">로그아웃</button>
+                    </div>
+                </div>
+            `}function renderLogin(){return`
+                <div class="bg">
+                    <div class="header">
+                        <button onclick="setPage('main')" style="color: var(--primary); background: none; border: none; cursor: pointer;">← 뒤로</button>
+                        <div class="headerTitle">로그인</div>
+                        <div style="width:40px;"></div>
+                    </div>
+                    <div class="padding">
+                        <div class="formTitle">특청</div>
+                        <div class="label">아이디</div>
+                        <input class="input" id="loginId" placeholder="아이디 입력" value="${state.loginForm.id}" oninput="state.loginForm.id=this.value">
+                        <div class="label">비밀번호</div>
+                        <input class="input" id="loginPw" type="password" placeholder="비밀번호 입력" value="${state.loginForm.pw}" oninput="state.loginForm.pw=this.value">
+                        <button class="primaryBtn" style="margin-top: 30px;" onclick="handleLogin()">로그인</button>
+                    </div>
+                </div>
+            `}function renderSignup(){var e=state.signupForm;return`
+                <div class="bg">
+                    <div class="header">
+                        <button onclick="setPage('main')" style="color: var(--primary); background: none; border: none; cursor: pointer;">← 뒤로</button>
+                        <div class="headerTitle">회원가입</div>
+                        <div style="width:40px;"></div>
+                    </div>
+                    <div class="padding">
+                        <div class="label">회원 유형 선택</div>
+                        <div class="row">
+                            <div class="halfBtn ${"customer"===e.role?"activeBtn":""}" style="width: 32%" onclick="updateSignupForm('role', 'customer')">일반고객</div>
+                            <div class="halfBtn ${"pro"===e.role?"activeBtn":""}" style="width: 32%" onclick="updateSignupForm('role', 'pro')">특수청소사</div>
+                            <div class="halfBtn ${"gov"===e.role?"activeBtn":""}" style="width: 32%" onclick="updateSignupForm('role', 'gov')">관공서</div>
+                        </div>
+                        <div class="label">아이디 (8~14자)</div>
+                        <div class="row">
+                            <input class="input" style="flex: 1; margin-right: 10px; margin-bottom: 0;" placeholder="아이디 입력" value="${e.id}" oninput="updateSignupForm('id', this.value); f.isIdChecked=false;">
+                            <button class="smallBtn" onclick="handleCheckId()">${e.isIdChecked?"확인됨":"중복확인"}</button>
+                        </div>
+                        <div class="label">비밀번호</div>
+                        <input class="input" type="password" placeholder="비밀번호 입력" value="${e.pw}" oninput="updateSignupForm('pw', this.value)">
+                        <input class="input" type="password" placeholder="비밀번호 확인" value="${e.pwConfirm}" oninput="updateSignupForm('pwConfirm', this.value)">
+                        
+                        ${"customer"===e.role||"gov"===e.role?`
+                            <div class="label" style="color: var(--primary)">본인 인증</div>
+                            <button class="proBtn" onclick="handleAuth()">${e.isAuthDone?"✅ 인증 완료":"📱 본인인증 진행"}</button>
+                            ${"gov"===e.role?`
+                                <div class="label">소속 기관</div>
+                                <select class="input" onchange="updateSignupForm('govName', this.value)">
+                                    <option value="">소속 선택</option>
+                                    <option value="광주광역시" ${"광주광역시"===e.govName?"selected":""}>광주광역시</option>
+                                    <option value="서울특별시" ${"서울특별시"===e.govName?"selected":""}>서울특별시</option>
+                                </select>
+                            `:""}
+                        `:`
+                            <div class="label">사업자 정보</div>
+                            <input class="input" placeholder="사업자등록번호" value="${e.bizNum}" oninput="updateSignupForm('bizNum', this.value)">
+                            <input class="input" placeholder="상호명" value="${e.compName}" oninput="updateSignupForm('compName', this.value)">
+                        `}
+                        <button class="primaryBtn" style="margin-top:30px; margin-bottom:50px" onclick="handleSignup()">가입 완료</button>
+                    </div>
+                </div>
+            `}function renderCustomerQuotes(){var e=state.quotesDB.filter(e=>e.reqUserId===state.currentUser.id&&"pending"===e.status);return`
+                <div class="bg">
+                    <div class="header"><div onclick="setPage('customer_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">받은 견적함</div><div style="width:40px"></div></div>
+                    <div class="padding">
+                        ${0===e.length?'<div style="color:#888; text-align:center; margin-top:50px">도착한 견적이 없습니다.</div>':""}
+                        ${e.map(e=>`
+                            <div style="background-color:var(--surface); padding:25px; border-radius:15px; border:1px solid var(--border); margin-bottom:20px">
+                                <div style="display:flex; justify-content:space-between; align-items:center">
+                                    <div style="font-weight:bold; font-size:18px">${e.proName}</div>
+                                    <div style="background-color:rgba(40,167,69,0.2); padding:4px 8px; border-radius:12px; border:1px solid var(--success); color:var(--success); font-size:10px; font-weight:bold">🛡️ 인증업체</div>
+                                </div>
+                                <div style="color:var(--primary); font-size:24px; font-weight:bold; margin:15px 0">${Number(e.price).toLocaleString()}원</div>
+                                <div style="color:var(--text-sub); margin-bottom:20px; line-height:1.5">${e.msg}</div>
+                                <div class="proBtn" style="margin-bottom:15px" onclick="viewProProfile('${e.proId}')">📄 업체 프로필 및 리뷰 보기</div>
+                                <div class="row">
+                                    <div class="halfBtn" style="background-color:#222" onclick="setPage('chat_room')">💬 문의하기</div>
+                                    <div class="halfBtn activeBtn" onclick="startPayment('${e.id}')">결제 진행</div>
+                                </div>
+                            </div>
+                        `).join("")}
+                    </div>
+                </div>
+            `}function renderCustomerContracts(){var e=state.quotesDB.filter(e=>e.reqUserId===state.currentUser.id&&["paid","contracted","signed","completed"].includes(e.status));return`
+                <div class="bg">
+                    <div class="header"><div onclick="setPage('customer_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">내 계약/작업 관리</div><div style="width:40px"></div></div>
+                    <div class="padding">
+                        ${0===e.length?'<div style="color:#888; text-align:center; margin-top:50px">진행 중인 계약이 없습니다.</div>':""}
+                        ${e.map(e=>`
+                            <div style="background-color:var(--surface); padding:20px; border-radius:10px; border:1px solid var(--border); margin-bottom:15px">
+                                <div style="color:var(--primary); font-weight:bold; margin-bottom:5px">${"paid"===e.status?"결제완료 (매칭중)":"contracted"===e.status?"계약서 서명 대기":"signed"===e.status?"작업 대기/진행 중":"작업 완료"}</div>
+                                <div style="font-weight:bold; font-size:16px">${e.proName} (${Number(e.price).toLocaleString()}원)</div>
+                                ${"contracted"===e.status?`<div class="primaryBtn" style="margin-top:15px; padding:10px" onclick="openContract('${e.id}')">계약서 서명하기</div>`:""}
+                                ${"completed"!==e.status||e.isReviewed?"":`<div class="primaryBtn" style="margin-top:15px; padding:10px; background-color:var(--success)" onclick="writeReview('${e.id}')">리뷰 작성하기</div>`}
+                            </div>
+                        `).join("")}
+                    </div>
+                </div>
+            `}function renderCustomerDash(){return`
+                <div class="bg">
+                    <div style="padding: 70px 30px 20px; border-bottom: 1px solid var(--border)">
+                        <div style="font-size: 22px; font-weight: bold;">${state.currentUser.name} 고객님</div>
+                    </div>
+                    <div class="padding">
+                        <button class="primaryBtn" onclick="setPage('customer_request')">⚡ 즉시 견적 요청하기</button>
+                        <div class="menuCard" style="margin-top:30px" onclick="setPage('customer_quotes')">📩 받은 견적함</div>
+                        <div class="menuCard" onclick="setPage('customer_contracts')">📋 계약/작업 관리</div>
+                        <div class="menuCard" onclick="handleLogout()">로그아웃</div>
+                    </div>
+                </div>
+            `}function renderProDash(){const t=state.currentUser;var e=state.quotesDB.filter(e=>e.proId===t.id&&"paid"===e.status);return`
+                <div class="bg">
+                    <div style="background-color:var(--surface); padding:30px; padding-top:70px; border-bottom:1px solid var(--primary); display:flex; justify-content:space-between">
+                        <div style="font-size:20px; font-weight:bold">${t.compName} 대표님</div>
+                        <div onclick="setPage('pro_mypage')" style="cursor:pointer">⚙️</div>
+                    </div>
+                    <div class="padding">
+                        ${0<e.length?`
+                            <div style="margin-bottom:40px">
+                                <div style="font-weight:bold; margin-bottom:15px; font-size:16px">💸 결제 완료된 오더</div>
+                                ${e.map(e=>`
+                                    <div style="background-color:#1a0505; padding:20px; border-radius:15px; border:1px solid var(--primary); margin-bottom:15px">
+                                        <div style="font-weight:bold; color:var(--primary)">고객 결제 완료</div>
+                                        <div style="font-size:18px; font-weight:bold; margin-top:5px">총 ${Number(e.price).toLocaleString()}원</div>
+                                        <div class="primaryBtn" style="margin-top:15px; padding:10px" onclick="manageSchedule('${e.id}')">일정 확정 및 계약 진행</div>
+                                    </div>
+                                `).join("")}
+                            </div>
+                        `:""}
+
+                        <div style="font-weight:bold; margin-bottom:15px; font-size:16px">실시간 도착 오더</div>
+                        ${0===state.requestsDB.length?'<div style="color:#888; text-align:center; margin-top:30px">새로운 오더가 없습니다.</div>':""}
+                        ${state.requestsDB.map(e=>`
+                            <div style="background-color:var(--surface); padding:20px; border-radius:15px; border:1px solid #333; margin-bottom:15px">
+                                <div style="color:var(--primary); font-weight:bold">🚨 [매칭 대기]</div>
+                                <div style="font-size:18px; font-weight:bold; margin-top:5px">[${e.loc.split(" ")[1]}] ${e.tags.join(", ")}</div>
+                                <div style="color:var(--text-sub); margin-top:8px">유형: ${e.commonType.join(", ")}</div>
+                                <div class="primaryBtn" style="margin-top:20px; padding:10px" onclick="viewOrderDetails('${e.id}')">상세보기 및 견적작성</div>
+                            </div>
+                        `).join("")}
+                    </div>
+                </div>
+            `}function renderProRequestDetail(){var e=state.selectedReq;return`
+                <div class="bg">
+                    <div class="header"><div onclick="setPage('pro_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">오더 상세 및 견적</div><div style="width:40px"></div></div>
+                    <div class="padding">
+                        <div style="background-color:var(--surface); padding:20px; border-radius:10px; border:1px solid #333; margin-bottom:20px">
+                            <div style="color:var(--primary); font-weight:bold; margin-bottom:10px">📄 고객 요청 상세 내용</div>
+                            <div style="font-size:16px; margin-bottom:5px">현장: ${e.commonType.join(", ")} (${e.tags.join(", ")})</div>
+                            <div style="color:var(--text-sub); margin-bottom:5px">주소: ${e.loc}</div>
+                            <div style="color:var(--text-sub); margin-bottom:5px">공통: ${e.area}평 / ${e.floor}층 / ${e.elevator}</div>
+                            <div style="color:#fff; line-height:1.5; margin-top:10px">상황 설명: ${e.desc}</div>
+                        </div>
+                        <div class="proBtn" style="margin-bottom:30px; border-color:#fff" onclick="setPage('chat_room')">💬 고객과 먼저 채팅 상담하기</div>
+                        <div class="label">견적 금액 제안 (숫자만 입력) *</div>
+                        <input class="input" type="number" placeholder="예: 1500000" id="quotePrice">
+                        <div class="label">고객에게 보낼 메시지 *</div>
+                        <textarea class="textArea" placeholder="전문성이나 추가 설명을 어필해보세요." id="quoteMsg"></textarea>
+                        <button class="primaryBtn" style="margin-top:30px" onclick="submitQuote()">고객에게 견적 보내기</button>
+                    </div>
+                </div>
+            `}function renderProScheduleManage(){var e=state.targetScheduleQuote;return`
+                <div class="bg">
+                    <div class="header"><div onclick="setPage('pro_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">계약 및 일정 확정</div><div style="width:40px"></div></div>
+                    <div class="padding">
+                        <div style="background-color:var(--surface); padding:20px; border-radius:10px; border:1px solid #333; margin-bottom:20px">
+                            <div style="color:#888; margin-bottom:5px">고객 결제 금액</div>
+                            <div style="color:var(--primary); font-size:24px; font-weight:bold; margin-bottom:15px">${Number(e.price).toLocaleString()}원</div>
+                            <div style="color:#fff">고객 ID: ${e.reqUserId}</div>
+                        </div>
+                        <div class="label">작업 예정 일자</div>
+                        <input class="input" type="date" id="schedDate">
+                        <div class="label">작업 시작 시간</div>
+                        <input class="input" type="time" id="schedTime">
+                        <button class="primaryBtn" style="margin-top:30px" onclick="confirmSchedule()">일정 확정 및 계약서 생성</button>
+                    </div>
+                </div>
+            `}function renderEContract(){var e=state.selectedContract,t="customer"===state.currentUser.role||"gov"===state.currentUser.role;return`
+                <div class="bg">
+                    <div class="header"><div onclick="setPage(state.currentUser.role === 'pro' ? 'pro_dash' : 'customer_contracts')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">전자계약서</div><div style="width:40px"></div></div>
+                    <div class="padding">
+                        <div style="background-color:#fff; padding:20px; border-radius:5px; margin-bottom:30px; color:#000">
+                            <h2 style="text-align:center">표준 특수청소 도급 계약서</h2>
+                            <p>도급인(갑): ${e.reqUserId}</p>
+                            <p>수급인(을): ${e.proName}</p>
+                            <p>계약금액: ${Number(e.price).toLocaleString()}원</p>
+                            <p>작업일시: ${e.scheduleDate} ${e.scheduleTime}</p>
+                            <div style="font-size:12px; margin-top:20px; border-top:1px solid #ddd; padding-top:10px">
+                                제1조 (목적) 본 계약은... (생략)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="halfBtn ${e.customerSigned?"activeBtn":""}" style="${e.customerSigned?"border-color:var(--success); color:var(--success)":""}">고객 서명 ${e.customerSigned?"(완료)":"(대기)"}</div>
+                            <div class="halfBtn ${e.proSigned?"activeBtn":""}" style="${e.proSigned?"border-color:var(--success); color:var(--success)":""}">업체 서명 ${e.proSigned?"(완료)":"(대기)"}</div>
+                        </div>
+                        ${t&&!e.customerSigned||!t&&!e.proSigned?`
+                            <button class="primaryBtn" style="margin-top:30px" onclick="signContract()">위 내용에 동의하며 서명합니다</button>
+                        `:""}
+                        ${t||"signed"!==e.status?"":`
+                            <button class="primaryBtn" style="margin-top:15px; background-color:var(--success)" onclick="completeWork()">☑️ 현장 작업 완료 처리하기</button>
+                        `}
+                    </div>
+                </div>
+            `}function renderOptions(e,t,i){return`
+                <div class="row">
+                    ${e.map(e=>`
+                        <div class="halfBtn ${t===e?"activeBtn":""}" onclick="${i}('${e}')">
+                            <span style="font-size:12px; font-weight:bold">${e}</span>
+                        </div>
+                    `).join("")}
+                </div>
+            `}function renderMultiOptions(e,t,i){return`
+                <div class="row">
+                    ${e.map(e=>`
+                        <div class="halfBtn ${t.includes(e)?"activeBtn":""}" onclick="${i}('${e}')">
+                            <span style="font-size:12px; font-weight:bold">${e}</span>
+                        </div>
+                    `).join("")}
+                </div>
+            `}function renderCustomerRequest(){var e=state.requestForm;return`
+                <div class="bg">
+                    <div class="header">
+                        <div onclick="setPage('customer_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div>
+                        <div class="headerTitle">무료 견적 요청 (특청 안심)</div>
+                        <div style="width:40px"></div>
+                    </div>
+                    <div class="padding" style="padding-bottom:100px">
+                        <div style="background-color:rgba(229,9,20,0.1); padding:15px; border-radius:10px; border:1px solid var(--primary); margin-bottom:20px">
+                            <div style="color:var(--primary); font-weight:bold; font-size:13px; margin-bottom:5px">🛡️ 특청 안심매칭 안내</div>
+                            <div style="color:#fff; font-size:11px; line-height:1.5">특청은 100% 인허가 검증된 업체만 연결합니다. 허위 견적 및 작업 후 추가금 횡포로부터 고객님을 보호합니다.</div>
+                        </div>
+
+                        <div class="label">현장 종류 *</div>
+                        ${renderMultiOptions(["아파트","빌라","단독주택","오피스텔","상가/사무실","기타"],e.commonType,"toggleReqCommonType")}
+
+                        <div class="label">특수청소 유형 (중복 선택 가능) *</div>
+                        ${renderMultiOptions(["고독사","자살","강력범죄현장","쓰레기집","화재","침수","유품정리","악취제거"],e.tags,"toggleRequestTag")}
+
+                        ${0<e.tags.length?`
+                            <div class="dynamicCard">
+                                <div class="dynamicLabel">📍 면적 및 층수 공통 정보</div>
+                                <div class="row">
+                                    <input class="input" style="flex:1; margin-right:5px" type="number" placeholder="면적(평)" value="${e.area}" oninput="state.requestForm.area=this.value">
+                                    <input class="input" style="flex:1; margin-left:5px" type="number" placeholder="층수" value="${e.floor}" oninput="state.requestForm.floor=this.value">
+                                </div>
+                                ${renderOptions(["엘리베이터 있음","엘리베이터 없음"],e.elevator,"setReqElevator")}
+                                <div style="height:1px; background-color:#333; margin:15px 0"></div>
+
+                                ${e.tags.includes("고독사")||e.tags.includes("자살")?`
+                                    <div class="dynamicLabel">📍 [고독사/자살] 발견되기까지의 기간</div>
+                                    ${renderOptions(["1~3일","4~7일","1개월 이상","모름","기타"],e.detailDeath.period,"setDeathPeriod")}
+                                    <div class="dynamicLabel" style="margin-top:15px">📍 [고독사/자살] 바닥 재질</div>
+                                    ${renderOptions(["장판","강화마루","강마루","데코타일","모름","기타"],e.detailDeath.floor,"setDeathFloor")}
+                                    <div style="height:1px; background-color:#333; margin:15px 0"></div>
+                                `:""}
+
+                                ${e.tags.includes("쓰레기집")?`
+                                    <div class="dynamicLabel">📍 [쓰레기집] 주요 쓰레기 유형 (복수선택)</div>
+                                    ${renderMultiOptions(["배달쓰레기 및 생활쓰레기","가구 및 대형폐기물"],e.detailTrash.types,"toggleTrashType")}
+                                    <div class="dynamicLabel" style="margin-top:15px">📍 작업 범위 (이사 여부)</div>
+                                    ${renderOptions(["일부폐기 및 청소","전체폐기 및 청소"],e.detailTrash.moveType,"setTrashMoveType")}
+                                    <div style="height:1px; background-color:#333; margin:15px 0"></div>
+                                `:""}
+
+                                ${e.tags.includes("유품정리")?`
+                                    <div class="dynamicLabel">📍 [유품정리] 가구 및 가전 내역 (필수) *</div>
+                                    <textarea class="textArea" style="height:80px" placeholder="폐기하거나 정리해야 할 가구/가전의 종류와 갯수를 적어주세요." oninput="state.requestForm.detailInherit.furnitureDesc=this.value">${e.detailInherit.furnitureDesc}</textarea>
+                                    <div style="height:1px; background-color:#333; margin:15px 0"></div>
+                                `:""}
+                            </div>
+                        `:""}
+
+                        <div class="label">작업 희망 날짜 *</div>
+                        <div class="row">
+                            <div class="halfBtn ${"일주일 이내"===e.dateOption?"activeBtn":""}" style="width:32%" onclick="setReqDateOption('일주일 이내')">일주일 이내</div>
+                            <div class="halfBtn ${"협의 가능"===e.dateOption?"activeBtn":""}" style="width:32%" onclick="setReqDateOption('협의 가능')">협의 가능</div>
+                            <div class="halfBtn ${"날짜 지정"===e.dateOption?"activeBtn":""}" style="width:32%" onclick="setReqDateOption('날짜 지정')">날짜 지정</div>
+                        </div>
+                        ${"날짜 지정"===e.dateOption?`
+                            <div class="row" style="margin-top:5px">
+                                <input class="input" style="flex:1" placeholder="YYYY" oninput="state.requestForm.dateSpecific.y=this.value">
+                                <input class="input" style="flex:1; margin:0 5px" placeholder="MM" oninput="state.requestForm.dateSpecific.m=this.value">
+                                <input class="input" style="flex:1" placeholder="DD" oninput="state.requestForm.dateSpecific.d=this.value">
+                            </div>
+                        `:""}
+
+                        <div class="label">현장 주소 *</div>
+                        <div class="addressBox" onclick="openAddrModal()">${e.addr.sido?`${e.addr.sido} ${e.addr.sigungu} `+e.addr.dong:"📍 주소 검색/선택"}</div>
+                        
+                        <div class="label">대략적인 현장 상황 설명 *</div>
+                        <textarea class="textArea" placeholder="기타 특이사항을 적어주세요." oninput="state.requestForm.desc=this.value">${e.desc}</textarea>
+                        <button class="primaryBtn" style="margin-top:40px; margin-bottom:50px" onclick="handleSubmitRequest()">요청서 보내기</button>
+                    </div>
+                </div>
+            `}function renderAddrModal(){var e=state.modals;return`
+                <div class="modalOverlay">
+                    <div class="modalContent">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                            <div style="font-weight: bold;">주소 선택 (${e.addrStep}/3)</div>
+                            <div onclick="closeAddrModal()" style="cursor: pointer;">✖️</div>
+                        </div>
+                        <div class="tagWrap">
+                            ${1===e.addrStep?Object.keys(koreaAddressData).map(e=>`<div class="tagBtn" onclick="selectAddrStep1('${e}')">${e}</div>`).join(""):""}
+                            ${2===e.addrStep?Object.keys(koreaAddressData[e.tempSido]).map(e=>`<div class="tagBtn" onclick="selectAddrStep2('${e}')">${e}</div>`).join(""):""}
+                            ${3===e.addrStep?koreaAddressData[e.tempSido][e.tempSigungu].map(e=>`<div class="tagBtn" onclick="selectAddrStep3('${e}')">${e}</div>`).join(""):""}
+                        </div>
+                    </div>
+                </div>
+            `}function openAddrModal(){state.modals.addr=!0,state.modals.addrStep=1,render()}function closeAddrModal(){state.modals.addr=!1,render()}function selectAddrStep1(e){state.modals.tempSido=e,state.modals.addrStep=2,render()}function selectAddrStep2(e){state.modals.tempSigungu=e,state.modals.addrStep=3,render()}function selectAddrStep3(e){state.requestForm.addr={sido:state.modals.tempSido,sigungu:state.modals.tempSigungu,dong:e},state.modals.addr=!1,render()}function updateSignupForm(e,t){state.signupForm[e]=t,render()}function handleCheckId(){if(!state.signupForm.id)return alert("아이디를 입력해주세요.");state.usersDB.some(e=>e.id===state.signupForm.id)?alert("이미 사용 중인 아이디입니다."):(state.signupForm.isIdChecked=!0,alert("사용 가능한 아이디입니다."),render())}function handleAuth(){alert("본인인증 완료 (테스트)"),state.signupForm.isAuthDone=!0,state.signupForm.name="홍길동",render()}function handleSignup(){var e=state.signupForm;return e.isIdChecked?e.pw!==e.pwConfirm?alert("비밀번호가 일치하지 않습니다."):(e={...e,cash:0},state.usersDB.push(e),alert("가입 성공! 로그인해주세요."),void setPage("login")):alert("아이디 중복확인을 해주세요.")}function handleLogout(){state.currentUser=null,state.loginForm={id:"",pw:""},setPage("main")}function handleLogin(){const t=document.getElementById("loginId").value,i=document.getElementById("loginPw").value;var e=state.usersDB.find(e=>e.id===t&&e.pw===i);e?"admin"===(state.currentUser=e).role?setPage("admin_dash"):"customer"===e.role?setPage("customer_dash"):"gov"===e.role?setPage("gov_dash"):setPage("pro_dash"):alert("로그인 정보가 올바르지 않습니다.")}function sendChatMessage(){var e=document.getElementById("chatMsg").value;e&&(state.chatDB.push({sender:state.currentUser.id,text:e}),render())}function approvePro(t){var e=state.usersDB.find(e=>e.id===t);e.isApproved=!0,alert(e.compName+" 업체가 승인되었습니다."),render()}function toggleReqCommonType(e){var t=state.requestForm.commonType.indexOf(e);-1<t?state.requestForm.commonType.splice(t,1):state.requestForm.commonType.push(e),render()}function setReqElevator(e){state.requestForm.elevator=e,render()}function setDeathPeriod(e){state.requestForm.detailDeath.period=e,render()}function setDeathFloor(e){state.requestForm.detailDeath.floor=e,render()}function toggleTrashType(e){var t=state.requestForm.detailTrash.types.indexOf(e);-1<t?state.requestForm.detailTrash.types.splice(t,1):state.requestForm.detailTrash.types.push(e),render()}function setTrashMoveType(e){state.requestForm.detailTrash.moveType=e,render()}function setReqDateOption(e){state.requestForm.dateOption=e,render()}function toggleRequestTag(e){var t=state.requestForm.tags.indexOf(e);-1<t?state.requestForm.tags.splice(t,1):state.requestForm.tags.push(e),render()}function handleSubmitRequest(){if(0===state.requestForm.tags.length||!state.requestForm.desc)return alert("정보를 모두 입력해주세요.");alert("견적 요청이 접수되었습니다."),setPage("customer_dash")}function viewOrderDetails(t){state.selectedReq=state.requestsDB.find(e=>e.id===t),setPage("pro_request_detail")}function submitQuote(){var e=document.getElementById("quotePrice").value,t=document.getElementById("quoteMsg").value;if(!e||!t)return alert("금액과 메시지를 입력해주세요.");e={id:"q"+Date.now(),reqUserId:state.selectedReq.userId,reqId:state.selectedReq.id,proId:state.currentUser.id,proName:state.currentUser.compName,price:e,msg:t,status:"pending"};state.quotesDB.push(e),alert("견적 발송 완료!"),setPage("pro_dash")}function startPayment(t){var e=state.quotesDB.find(e=>e.id===t);state.paymentTargetQuote=e,confirm(Number(e.price).toLocaleString()+"원을 결제하시겠습니까?")&&(e.status="paid",alert("결제 완료!"),setPage("customer_dash"))}function manageSchedule(t){state.targetScheduleQuote=state.quotesDB.find(e=>e.id===t),setPage("pro_schedule_manage")}function confirmSchedule(){var e=document.getElementById("schedDate").value,t=document.getElementById("schedTime").value;if(!e||!t)return alert("일정을 입력해주세요.");state.targetScheduleQuote.scheduleDate=e,state.targetScheduleQuote.scheduleTime=t,state.targetScheduleQuote.status="contracted",alert("일정 확정 및 계약서가 생성되었습니다."),setPage("pro_dash")}function openContract(t){state.selectedContract=state.quotesDB.find(e=>e.id===t),setPage("e_contract")}function signContract(){var e=state.selectedContract;"pro"===state.currentUser.role?e.proSigned=!0:e.customerSigned=!0,e.proSigned&&e.customerSigned&&(e.status="signed"),alert("서명 완료!"),render()}function completeWork(){state.selectedContract.status="completed",alert("작업 완료 처리되었습니다."),setPage("pro_dash")}function renderGovProList(){return`
+                <div class="bg">
+                    <div class="header"><div onclick="setPage('gov_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">검증업체 상세 조회</div><div style="width:40px"></div></div>
+                    <div class="padding">
+                        ${state.usersDB.filter(e=>"pro"===e.role&&e.isApproved).map(e=>`
+                            <div class="menuCard">
+                                <div style="flex:1">
+                                    <div style="font-weight:bold; font-size:18px">${e.compName}</div>
+                                    <div style="color:var(--primary); font-size:12px; margin-top:5px">보유: ${e.keywords.slice(0,3).join(", ")}</div>
+                                </div>
+                                <div class="smallBtn" style="background-color:var(--primary)" onclick="alert('상세 서류 검토 후 계약을 진행합니다.')">선택</div>
+                            </div>
+                        `).join("")}
+                    </div>
+                </div>
+            `}function renderGovBidPost(){return`
+                <div class="bg">
+                    <div class="header"><div onclick="setPage('gov_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">입찰 공고 등록</div><div style="width:40px"></div></div>
+                    <div class="padding">
+                        <div class="label">공고 명칭 *</div>
+                        <input class="input" placeholder="예: 2026년 OO동 주거환경 개선사업">
+                        <div class="label">기초 금액 (예산 범위) *</div>
+                        <input class="input" type="number" placeholder="숫자만 입력">
+                        <div class="label">입찰 제한 자격 선택</div>
+                        <div class="tagWrap">
+                            <div class="tagBtn">S등급 업체만</div>
+                            <div class="tagBtn">폐기물 인허가 필수</div>
+                            <div class="tagBtn">관내 업체 우선</div>
+                        </div>
+                        <button class="primaryBtn" style="margin-top:30px" onclick="alert('공고 등록 완료!'); setPage('gov_dash')">공고 게시하기</button>
+                    </div>
+                </div>
+            `}function renderChatRoom(){return`
+                <div class="bg">
+                    <div class="header"><div onclick="setPage(state.currentUser.role==='pro'?'pro_dash' : 'customer_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">상담 채팅</div><div style="width:40px"></div></div>
+                    <div style="flex:1; padding:20px; overflow-y:auto" id="chatList">
+                        ${state.chatDB.map(e=>`
+                            <div class="chatBubble ${e.sender===state.currentUser.id?"myChat":"yourChat"}">${e.text}</div>
+                        `).join("")}
+                    </div>
+                    <div class="chatInputBar" style="position:sticky; bottom:0">
+                        <input class="chatChatInput" placeholder="메시지 입력..." id="chatMsg">
+                        <button class="sendBtn" onclick="sendChatMessage()">전송</button>
+                    </div>
+                </div>
+            `}function downloadPDF(){window.print()}function toggleReportPreview(){state.showReportPreview=!state.showReportPreview,render()}function writeReview(t){const i=state.quotesDB.find(e=>e.id===t);var e,r=prompt("평점을 입력해주세요 (1-5)","5"),a=prompt("후기를 입력해주세요");r&&a&&((e=state.usersDB.find(e=>e.id===i.proId)).reviews||(e.reviews=[]),e.reviews.push({rating:Number(r),text:a}),i.isReviewed=!0,alert("리뷰가 등록되었습니다!"),render())}function viewProProfile(t){state.viewingPro=state.usersDB.find(e=>e.id===t),setPage("customer_view_pro_profile")}function renderCustomerViewProProfile(){var e=state.viewingPro;return`
+                <div class="bg">
+                    <div class="header"><div onclick="setPage('customer_quotes')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">기획자 프로필</div><div style="width:40px"></div></div>
+                    <div class="padding">
+                        <h2 style="margin-bottom:5px">${e.compName}</h2>
+                        <div style="display:flex; flex-wrap:wrap; margin-bottom:15px">
+                            ${e.keywords.map(e=>`<div style="background-color:rgba(229,9,20,0.1); color:var(--primary); padding:3px 8px; border-radius:10px; margin-right:5px; font-size:11px; border:1px solid var(--primary)">${e}</div>`).join("")}
+                        </div>
+                        <div style="background-color:var(--surface); padding:15px; border-radius:10px">${e.intro}</div>
+                        <h3 style="margin-top:30px">고객 리뷰</h3>
+                        ${e.reviews.map(e=>`
+                            <div style="border-bottom:1px solid #222; padding:15px 0">
+                                <div style="color:var(--warning)">${"⭐".repeat(e.rating)}</div>
+                                <div style="color:var(--text-sub); font-size:13px; margin-top:5px">${e.text}</div>
+                            </div>
+                        `).join("")}
+                    </div>
+                </div>
+            `}window.onload=()=>{setTimeout(()=>{state.isLoading=!1,render()},1200)}</script></body></html>
