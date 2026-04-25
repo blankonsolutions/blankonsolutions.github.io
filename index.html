@@ -6,16 +6,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>특청 - 대한민국 No.1 특수청소 플랫폼</title>
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('special-cleaning-theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.documentElement.classList.add('light-theme');
+            }
+        })();
+    </script>
     <style>
         :root {
             --primary: #E50914;
             --bg: #000;
             --surface: #111;
             --text-main: #fff;
-            --text-sub: #aaa;
-            --text-dark: #444;
+            --text-sub: #ccc;
+            --text-dark: #888;
             --accent: #c9a050;
-            --border: rgba(255, 255, 255, 0.1);
+            --border: rgba(255, 255, 255, 0.15);
+        }
+
+        .light-theme {
+            --bg: #f8f9fa;
+            --surface: #ffffff;
+            --text-main: #111;
+            --text-sub: #555;
+            --text-dark: #888;
+            --border: rgba(0, 0, 0, 0.1);
+            --accent: #a67c00;
         }
 
         * {
@@ -28,7 +46,23 @@
 
         body {
             margin: 0; padding: 0; background-color: var(--bg); color: var(--text-main);
-            overflow-x: hidden;
+            overflow-x: hidden; transition: background-color 0.3s, color 0.3s;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            width: 44px;
+            height: 44px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; cursor: pointer;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
 
         .hero {
@@ -41,6 +75,9 @@
             padding: 20px;
             background: radial-gradient(circle at 50% 50%, #1a0505 0%, #000 70%);
             position: relative;
+        }
+        .light-theme .hero {
+            background: radial-gradient(circle at 50% 50%, #fff5f5 0%, #f8f9fa 70%);
         }
 
         .hero::before {
@@ -99,15 +136,16 @@
             justify-content: space-between;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid var(--border);
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--surface);
             backdrop-filter: blur(10px);
-            color: #fff;
+            color: var(--text-main);
         }
 
         .portal-btn:hover {
             transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.08);
+            background: var(--surface);
             border-color: var(--primary);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
         .btn-label {
@@ -124,7 +162,7 @@
         .company-intro {
             padding: 100px 20px;
             text-align: center;
-            background: #050505;
+            background: var(--bg);
         }
 
         .intro-card {
@@ -152,7 +190,7 @@
             margin-top: 30px;
             padding: 15px 30px;
             background: var(--accent);
-            color: #000;
+            color: #fff;
             text-decoration: none;
             border-radius: 12px;
             font-weight: 800;
@@ -168,8 +206,8 @@
             padding: 40px 20px;
             text-align: center;
             font-size: 12px;
-            color: #444;
-            border-top: 1px solid #111;
+            color: var(--text-dark);
+            border-top: 1px solid var(--border);
         }
 
         @keyframes fadeInDown {
@@ -185,6 +223,8 @@
 </head>
 
 <body>
+    <div class="theme-toggle" onclick="toggleTheme()" title="테마 변경">🌓</div>
+
     <section class="hero">
         <div class="logo-area">
             <div class="logo-sub">Platform for Special Environments</div>
@@ -214,7 +254,7 @@
                 </div>
                 <div class="btn-icon">🏛️</div>
             </a>
-            <a href="admin.html" class="portal-btn" style="border-color: #666;">
+            <a href="admin.html" class="portal-btn" style="border-color: var(--text-dark);">
                 <div class="btn-label">
                     <span class="btn-title">마스터 관리자</span>
                     <span class="btn-sub">플랫폼 운영 및 전용 툴</span>
@@ -234,15 +274,15 @@
     </section>
 
     <section style="padding: 40px 20px; max-width: 800px; margin: 0 auto;">
-        <div style="background: var(--surface); padding: 35px; border-radius: 20px; border: 1px solid #222; text-align: center; cursor: pointer;">
+        <div style="background: var(--surface); padding: 35px; border-radius: 20px; border: 1px solid var(--border); text-align: center; cursor: pointer;">
             <div style="font-size: 14px; color: var(--primary); font-weight: bold; margin-bottom: 20px;">PLATFORM STATS</div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
                 <div>
-                    <div style="font-size: 28px; font-weight: 800; color: #fff;">1,240+</div>
+                    <div style="font-size: 28px; font-weight: 800; color: var(--text-main);">1,240+</div>
                     <div style="font-size: 12px; color: var(--text-sub); margin-top: 8px;">누적 작업 건수</div>
                 </div>
                 <div>
-                    <div style="font-size: 28px; font-weight: 800; color: #fff;">100%</div>
+                    <div style="font-size: 28px; font-weight: 800; color: var(--text-main);">100%</div>
                     <div style="font-size: 12px; color: var(--text-sub); margin-top: 8px;">전문가 인증 비율</div>
                 </div>
             </div>
@@ -251,18 +291,18 @@
 
     <section class="padding" style="max-width: 800px; margin: 0 auto;">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <div style="background: var(--surface); padding: 20px; border-radius: 15px; border: 1px solid #222; cursor: pointer;">
+            <div style="background: var(--surface); padding: 20px; border-radius: 15px; border: 1px solid var(--border); cursor: pointer;">
                 <div style="font-size: 18px; margin-bottom: 10px;">📋 공지사항</div>
                 <div style="font-size: 12px; color: var(--text-sub);">특청 서비스 약관 변경 안내 및 새로운 소식</div>
             </div>
-            <div style="background: var(--surface); padding: 20px; border-radius: 15px; border: 1px solid #222; cursor: pointer;">
+            <div style="background: var(--surface); padding: 20px; border-radius: 15px; border: 1px solid var(--border); cursor: pointer;">
                 <div style="font-size: 18px; margin-bottom: 10px;">🤝 파트너십</div>
                 <div style="font-size: 12px; color: var(--text-sub);">기업 및 행정 기관 협력 문의</div>
             </div>
         </div>
     </section>
 
-    <footer class="padding" style="text-align: center; border-top: 1px solid #222; margin-top: 60px; padding: 40px 20px;">
+    <footer class="padding" style="text-align: center; border-top: 1px solid var(--border); margin-top: 60px; padding: 40px 20px;">
         <div style="font-size: 14px; color: var(--text-sub); margin-bottom: 15px;">
             고객센터 1588-XXXX | 평일 09:00 - 18:00
         </div>
@@ -275,6 +315,13 @@
             &copy; 2026 BLANKON SOLUTIONS. All rights reserved.
         </div>
     </footer>
+
+    <script>
+        function toggleTheme() {
+            const isLight = document.documentElement.classList.toggle('light-theme');
+            localStorage.setItem('special-cleaning-theme', isLight ? 'light' : 'dark');
+        }
+    </script>
 </body>
 
 </html>

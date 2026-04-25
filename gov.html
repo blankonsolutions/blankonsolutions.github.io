@@ -6,18 +6,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>특청 관공서 포털 - 행정 관리 시스템</title>
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('special-cleaning-theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.documentElement.classList.add('light-theme');
+            }
+        })();
+    </script>
     <style>
         :root {
             --primary: #28a745;
             --bg: #000;
             --surface: #111;
             --text-main: #fff;
-            --text-sub: #aaa;
-            --text-dark: #666;
+            --text-sub: #ccc; /* Improved from #aaa */
+            --text-dark: #888; /* Improved from #666 */
             --border: #333;
             --danger: #dc3545;
             --warning: #ffc107;
             --info: #00c2ff;
+        }
+
+        .light-theme {
+            --bg: #f8f9fa;
+            --surface: #ffffff;
+            --text-main: #111;
+            --text-sub: #555;
+            --text-dark: #888;
+            --border: #dee2e6;
         }
 
         * {
@@ -31,7 +48,9 @@
         body {
             margin: 0; padding: 0; background: #050505; color: var(--text-main);
             height: 100vh; overflow: hidden; display: flex; justify-content: center;
+            transition: background-color 0.3s, color 0.3s;
         }
+        .light-theme body { background-color: #f1f3f5; }
 
         #root {
             height: 100%; display: flex; flex-direction: column; width: 100%;
@@ -113,9 +132,14 @@
                 <div class="header">
                     ${isSub ? `<div class="backBtn" onclick="setPage('dash')">←</div>` : `<div onclick="location.href='index.html'" style="font-size:13px; border:1px solid #333; padding:6px 12px; border-radius:8px; cursor:pointer;">🏠 홈</div>`}
                     <div class="headerTitle">${getHeaderTitle()}</div>
-                    <div style="width:40px"></div>
+                    <div style="cursor:pointer; font-size:18px;" onclick="toggleTheme()">🌓</div>
                 </div>
             `;
+        }
+
+        function toggleTheme() {
+            const isLight = document.documentElement.classList.toggle('light-theme');
+            localStorage.setItem('special-cleaning-theme', isLight ? 'light' : 'dark');
         }
 
         function getHeaderTitle() {
