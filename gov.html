@@ -172,7 +172,7 @@
                             <div style="font-size:22px; font-weight:800; margin-top:8px; letter-spacing:-0.03em;">관공서 행정 마스터 포털</div>
                         </div>
 
-                        <div class="card" style="background:#1a1a1a; border-left: 4px solid var(--danger);">
+                        <div class="card" style="background:var(--surface-light); border-left: 4px solid var(--danger);">
                             <div style="font-size:12px; color:var(--danger); font-weight:bold; margin-bottom:8px;">실시간 긴급 경보</div>
                             <div style="font-size:15px; font-weight:bold; line-height:1.5;">관내 고위험군 가구 이상 활동 감지 (2건)</div>
                             <button class="primaryBtn" style="margin-top:15px; padding:10px; font-size:12px; background:var(--danger);" onclick="setPage('broadcast')">현장 상황 전파 실행</button>
@@ -196,7 +196,7 @@
                         <div style="margin-top:25px;">
                             <div style="font-weight:bold; margin-bottom:15px; font-size:14px; color:var(--text-dark);">최근 행정 처리 기록</div>
                             ${state.auditLogs.slice(0, 2).map(l => `
-                                <div style="display:flex; justify-content:space-between; font-size:12px; padding:10px 0; border-bottom:1px solid #222;">
+                                <div style="display:flex; justify-content:space-between; font-size:12px; padding:10px 0; border-bottom:1px solid var(--border);">
                                     <span style="color:var(--text-sub);">${l.time}</span>
                                     <span style="font-weight:bold;">${l.action}</span>
                                     <span style="color:var(--text-dark);">${l.actor}</span>
@@ -217,7 +217,7 @@
                                     <div style="font-weight:bold; font-size:16px;">${d.name}</div>
                                     <div class="status-pill ${d.risk==='상'?'status-warn':''}" style="color:${d.risk==='상'?'var(--danger)':'var(--success)'}">${d.risk} 위험</div>
                                 </div>
-                                <div style="height:8px; background:#222; border-radius:4px; overflow:hidden; margin-bottom:10px;">
+                                <div style="height:8px; background:var(--bg); border-radius:4px; overflow:hidden; margin-bottom:10px; border:1px solid var(--border);">
                                     <div style="height:100%; background:var(--primary); width:${d.activity}%"></div>
                                 </div>
                                 <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-dark);">
@@ -236,12 +236,12 @@
                         <div style="font-weight:bold; font-size:14px; margin-bottom:10px; color:var(--text-dark);">전파 대상 구역</div>
                         <div style="display:flex; gap:10px; margin-bottom:25px;">
                             <span class="status-pill status-ready">전체</span>
-                            <span class="status-pill" style="border:1px solid #333; color:#666;">역삼동</span>
-                            <span class="status-pill" style="border:1px solid #333; color:#666;">도곡동</span>
+                            <span class="status-pill" style="border:1px solid var(--border); color:var(--text-dark);">역삼동</span>
+                            <span class="status-pill" style="border:1px solid var(--border); color:var(--text-dark);">도곡동</span>
                         </div>
 
                         <div class="card" style="padding:10px;">
-                            <textarea style="width:100%; background:transparent; border:none; color:#fff; padding:15px; font-size:14px; border-radius:12px; outline:none;" rows="6" placeholder="전파할 상세 내용을 입력하세요. (예: 고독사 의심 현장 확인 등)"></textarea>
+                            <textarea style="width:100%; background:transparent; border:none; color:var(--text-main); padding:15px; font-size:14px; border-radius:12px; outline:none;" rows="6" placeholder="전파할 상세 내용을 입력하세요. (예: 고독사 의심 현장 확인 등)"></textarea>
                         </div>
                         <button class="primaryBtn" style="margin-top:20px; background:var(--danger);" onclick="alert('관중 전파 메시지가 전송되었습니다.')">즉시 전파 (관공서 긴급)</button>
                     </div>

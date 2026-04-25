@@ -172,7 +172,7 @@
                             <div style="font-size:22px; font-weight:800; margin-top:8px; letter-spacing:-0.03em;">특청 마스터 통합 제어</div>
                         </div>
 
-                        <div class="card" style="background:#1a1a1a; border-left: 4px solid var(--primary);">
+                        <div class="card" style="background:var(--surface-light); border-left: 4px solid var(--primary);">
                             <div style="font-size:12px; color:var(--primary); font-weight:bold; margin-bottom:8px;">오늘의 주요 지표</div>
                             <div style="display:flex; justify-content:space-between; align-items:center;">
                                 <div>
@@ -206,7 +206,7 @@
                         <div style="margin-top:25px;">
                             <div style="font-weight:bold; margin-bottom:15px; font-size:14px; color:var(--text-dark);">최근 시스템 로그</div>
                             ${state.auditLogs.slice(0, 3).map(l => `
-                                <div style="display:flex; justify-content:space-between; font-size:11px; padding:10px 0; border-bottom:1px solid #222;">
+                                <div style="display:flex; justify-content:space-between; font-size:11px; padding:10px 0; border-bottom:1px solid var(--border);">
                                     <span style="color:var(--text-sub);">${l.time}</span>
                                     <span style="font-weight:bold;">${l.action}</span>
                                     <span style="color:var(--text-dark);">${l.actor}</span>
@@ -225,10 +225,10 @@
                                         <div style="font-weight:bold; font-size:17px;">${v.name}</div>
                                         <div style="font-size:12px; color:var(--text-sub);">${v.type} 사업자 • ${v.date} 신청</div>
                                     </div>
-                                    <div style="font-size:11px; background:#222; padding:4px 8px; border-radius:5px;">서류 ${v.files}건</div>
+                                    <div style="font-size:11px; background:var(--surface-light); padding:4px 8px; border-radius:5px; border:1px solid var(--border);">서류 ${v.files}건</div>
                                 </div>
                                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                                    <button class="primaryBtn" style="padding:12px; background:#333; font-size:13px;" onclick="alert('서류 검토 모드')">검토</button>
+                                    <button class="primaryBtn" style="padding:12px; background:var(--surface-light); color:var(--text-main); font-size:13px; border:1px solid var(--border);" onclick="alert('서류 검토 모드')">검토</button>
                                     <button class="primaryBtn" style="padding:12px; font-size:13px;" onclick="alert('승인 완료')">최종 승인</button>
                                 </div>
                             </div>
