@@ -11,6 +11,7 @@
             --primary: #c9a050;
             --bg: #000;
             --surface: #111;
+            --surface-light: #1a1a1a;
             --surface-hover: #222;
             --text-main: #fff;
             --text-sub: #aaa;
@@ -50,10 +51,8 @@
         .headerTitle { font-weight: bold; font-size: 17px; }
         .backBtn, .homeBtn { cursor: pointer; }
 
-        .card {
-            background-color: var(--surface); padding: 25px; border-radius: 20px; transition: transform 0.2s, background-color 0.2s;
-            cursor: pointer; position: relative; overflow: hidden; border: 1px solid #222; margin-bottom: 20px;
-        }.card:active { background: var(--surface-hover); }
+        .card { background: var(--surface); padding: 24px; border-radius: 15px; border: 1px solid #222; margin-bottom: 20px; cursor: pointer; transition: background 0.2s; }
+        .card:active { background: var(--surface-hover); }
 
         .primaryBtn {
             width: 100%; padding: 18px; background: var(--primary); border: none;
@@ -61,19 +60,21 @@
             font-size: 15px;
         }
 
-        .chart-container { display: flex; align-items: flex-end; gap: 10px; height: 100px; margin-top: 25px; padding-bottom: 12px; border-bottom: 1px solid #333; }
+        .chart-container { display: flex; align-items: flex-end; gap: 10px; height: 120px; margin-top: 25px; padding-bottom: 12px; border-bottom: 1px solid #333; }
         .chart-bar { flex: 1; background: var(--primary); border-radius: 4px 4px 0 0; position: relative; cursor: pointer; }
+        .chart-bar:hover { opacity: 0.8; }
         .chart-bar::after { content: attr(data-label); position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%); font-size: 10px; color: var(--text-dark); }
 
         .nav {
             height: 75px; background: var(--surface); border-top: 1px solid #222;
             display: flex; justify-content: space-around; align-items: center; width: 100%;
+            padding-bottom: env(safe-area-inset-bottom);
         }
         .nav-item { color: var(--text-dark); font-size: 11px; text-align: center; cursor: pointer; }
         .nav-item.active { color: var(--primary); }
 
         .menuCard { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--surface); border-radius: 12px; margin-bottom: 12px; cursor: pointer; font-size: 14px; }
-        .portfolio-item { aspect-ratio: 4/3; background: #222; border-radius: 8px; border: 1px solid #333; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #444; cursor: pointer; }
+        .asset-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #222; }
 
         @media (min-width: 600px) { #root { max-width: 480px; border-left: 1px solid #333; border-right: 1px solid #333; box-shadow: 0 0 50px rgba(0,0,0,0.5); } }
     </style>
@@ -86,17 +87,19 @@
         let state = {
             page: 'dash', // dash, analytics, portfolio, assets, settlement, community, scorecard, partnership
             currentUser: { id: 'pro1', compName: '명품특수청소', name: '김대표', revenue: 15400000, rating: 4.9 },
-            revenueData: [20, 45, 30, 60, 85, 40, 55],
+            revenueData: [
+                { l: '월', v: 45 }, { l: '화', v: 30 }, { l: '수', v: 60 }, { l: '목', v: 85 }, { l: '금', v: 70 }, { l: '토', v: 95 }, { l: '일', v: 40 }
+            ],
             assets: [
                 { name: 'O3 오존발생기 (강력형)', status: '정상', stock: '2대' },
                 { name: '혈흔 분해 전용 효소 세제', status: '부족', stock: '2L' },
-                { name: '병원균 사멸 4급 암모늄 소독제', status: '정상', stock: '20L' },
-                { name: 'HEPA 필터 장착 산업용 청소기', status: '정상', stock: '1대' },
-                { name: '고성능 공기 정화기 (에어 스크러버)', status: '정상', stock: '1대' },
-                { name: '해충 구제용 방역 약품', status: '정상', stock: '15L' },
-                { name: '차폐용 고강도 특수 테이프', status: '보통', stock: '12롤' },
-                { name: '전신 방호복 (Level D)', status: '정상', stock: '24벌' },
-                { name: '방독면 및 정화통', status: '정상', stock: '6세트' }
+                { name: '병원균 사멸 소독제 (20L)', status: '정상', stock: '20L' },
+                { name: '산업용 HEPA 청소기', status: '정상', stock: '1대' },
+                { name: ' Level D 전신 방호복', status: '정상', stock: '24벌' }
+            ],
+            settlements: [
+                { id: 'S1', date: '2026-04-20', label: '역삼동 고독사 현장', amount: 2450000, status: '완료' },
+                { id: 'S2', date: '2026-04-15', label: '도곡동 화재 복구', amount: 4800000, status: '완료' }
             ],
             posts: [
                 { id: 'c1', title: '고독사 현장 특수 약품 추천 부탁드립니다.', author: '정클린' },
@@ -108,7 +111,7 @@
 
         function render() {
             const root = document.getElementById('root');
-            let hideNav = ['portfolio', 'assets', 'settlement', 'community', 'scorecard', 'partnership'].includes(state.page);
+            let hideNav = ['portfolio', 'assets', 'settlement', 'community', 'scorecard', 'partnership', 'analytics'].includes(state.page);
 
             root.innerHTML = `
                 ${renderHeader(hideNav)}
@@ -134,6 +137,9 @@
                 case 'scorecard': return '서비스 품질 진단';
                 case 'partnership': return '파트너십 센터';
                 case 'analytics': return '사업 데이터 분석';
+                case 'assets': return '재고 및 자산 관리';
+                case 'settlement': return '정산 내역 관리';
+                case 'portfolio': return '포트폴리오 관리';
                 default: return '비즈니스';
             }
         }
@@ -155,75 +161,169 @@
                     <div class="padding">
                         <div style="margin-bottom:30px;">
                             <div style="font-size:13px; color:var(--text-sub);">반가워요, ${state.currentUser.name} 님</div>
-                            <div style="font-size:22px; font-weight:800; margin-top:8px;">${state.currentUser.compName} <span style="font-size:12px; color:var(--primary);">VVIP</span></div>
+                            <div style="font-size:22px; font-weight:800; margin-top:8px; letter-spacing:-0.03em;">${state.currentUser.compName} <span style="font-size:12px; color:var(--primary);">인증업체</span></div>
                         </div>
 
-                        <div class="card" style="background:var(--primary); color:#000; border:none; box-shadow:0 10px 20px rgba(201,160,80,0.2);">
-                            <div style="font-size:13px; font-weight:bold;">이번 달 예상 매출</div>
-                            <div style="font-size:26px; font-weight:900; margin:12px 0;">${state.currentUser.revenue.toLocaleString()}원</div>
-                            <button style="width:100%; padding:10px; background:#000; color:var(--primary); border:none; border-radius:8px; font-size:11px; font-weight:bold;" onclick="setPage('analytics')">상세 대시보드 보기</button>
+                        <div class="card" style="background:var(--primary); color:#000; border:none; box-shadow:0 12px 24px rgba(201,160,80,0.3);" onclick="setPage('analytics')">
+                            <div style="font-size:13px; font-weight:bold;">이번 달 확정 수익</div>
+                            <div style="font-size:28px; font-weight:900; margin:12px 0;">${state.currentUser.revenue.toLocaleString()}원</div>
+                            <div style="font-size:11px; opacity:0.7;">전월 대비 12.5% 상승 (↑)</div>
                         </div>
 
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:25px;">
-                            <div class="card" onclick="setPage('scorecard')" style="margin-bottom:0; text-align:center;">
-                                <div style="font-size:24px; margin-bottom:8px;">⭐</div>
-                                <div style="font-size:13px; font-weight:bold;">품질 등급</div>
-                                <div style="font-size:11px; color:var(--text-sub); margin-top:4px;">상위 5% 유지중</div>
+                        <div style="font-weight:bold; margin-top:35px; margin-bottom:15px; font-size:16px;">현장 및 재고 상태</div>
+                        <div class="card" onclick="setPage('assets')">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                                <span style="font-weight:bold;">🛠️ 주요 장비/약품 현황</span>
+                                <span style="font-size:12px; color:var(--primary);">상세보기 ❯</span>
                             </div>
-                            <div class="card" onclick="setPage('community')" style="margin-bottom:0; text-align:center;">
-                                <div style="font-size:24px; margin-bottom:8px;">📢</div>
-                                <div style="font-size:13px; font-weight:bold;">프로 커뮤니티</div>
-                                <div style="font-size:11px; color:var(--text-sub); margin-top:4px;">참여 업체 4,200+</div>
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                                ${state.assets.slice(0, 2).map(a => `
+                                    <div style="background:#222; padding:12px; border-radius:10px; font-size:12px;">
+                                        <div style="color:var(--text-sub); margin-bottom:4px;">${a.name}</div>
+                                        <div style="font-weight:bold; color:${a.status==='정상'?'var(--success)':'var(--danger)'}">${a.status} (${a.stock})</div>
+                                    </div>
+                                `).join('')}
                             </div>
                         </div>
 
-                        <div style="font-weight:bold; margin-top:35px; margin-bottom:15px; font-size:16px;">주요 업무 링크</div>
-                        <div class="menuCard" onclick="alert('세금계산서 발행')"><span>📑 전자 세금계산서 관리</span><span>❯</span></div>
-                        <div class="menuCard" onclick="setPage('partnership')"><span>💼 신규 파트너십 제안</span><span>❯</span></div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:10px;">
+                            <div class="card" onclick="setPage('portfolio')" style="text-align:center;">
+                                <div style="font-size:24px; margin-bottom:10px;">🖼️</div>
+                                <div style="font-size:13px; font-weight:bold;">포트폴리오</div>
+                            </div>
+                            <div class="card" onclick="setPage('settlement')" style="text-align:center;">
+                                <div style="font-size:24px; margin-bottom:10px;">💳</div>
+                                <div style="font-size:13px; font-weight:bold;">정산 내역</div>
+                            </div>
+                        </div>
+
+                        <div style="font-weight:bold; margin-top:35px; margin-bottom:15px; font-size:16px;">파트너 서비스</div>
+                        <div class="menuCard" onclick="setPage('community')"><span>🤝 프로 커뮤니티</span><span>❯</span></div>
+                        <div class="menuCard" onclick="setPage('partnership')"><span>💼 신규 제안 / 기능 요청</span><span>❯</span></div>
+                    </div>
+                `;
+                case 'analytics': return `
+                    <div class="padding">
+                        <h2 style="font-size:22px; font-weight:800; margin-bottom:10px;">매출 및 성장 지표</h2>
+                        <p style="font-size:14px; color:var(--text-sub); margin-bottom:30px;">최근 7일간의 수익 변동 추이입니다.</p>
+                        
+                        <div class="chart-container">
+                            ${state.revenueData.map(d => `
+                                <div class="chart-bar" style="height:${d.v}%" data-label="${d.l}"></div>
+                            `).join('')}
+                        </div>
+                        
+                        <div style="margin-top:40px;">
+                            <div class="card" style="margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                    <div style="font-size:12px; color:var(--text-sub);">최고 매출일</div>
+                                    <div style="font-weight:bold; font-size:16px;">목요일 (1,250,000원)</div>
+                                </div>
+                                <span style="font-size:18px;">🔥</span>
+                            </div>
+                            <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                    <div style="font-size:12px; color:var(--text-sub);">월간 총 상담 건수</div>
+                                    <div style="font-weight:bold; font-size:16px;">124건</div>
+                                </div>
+                                <span style="font-size:18px;">💬</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                case 'assets': return `
+                    <div class="padding">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:25px;">
+                            <h2 style="margin:0;">재고 및 자산 목록</h2>
+                            <div style="font-size:12px; color:var(--primary); cursor:pointer;">+ 항목 추가</div>
+                        </div>
+                        <div class="card">
+                            ${state.assets.map(a => `
+                                <div class="asset-row">
+                                    <div>
+                                        <div style="font-weight:bold; font-size:15px;">${a.name}</div>
+                                        <div style="font-size:12px; color:var(--text-dark); margin-top:4px;">최근 정검: 2026-04-20</div>
+                                    </div>
+                                    <div style="text-align:right;">
+                                        <div style="font-weight:bold; color:${a.status==='정상'?'var(--success)':'var(--danger)'}">${a.status}</div>
+                                        <div style="font-size:12px; color:var(--text-sub);">${a.stock}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                case 'settlement': return `
+                    <div class="padding">
+                        <h2 style="margin-bottom:25px;">정산 내역 상세</h2>
+                        ${state.settlements.map(s => `
+                            <div class="menuCard" style="flex-direction:column; align-items:flex-start; gap:8px;">
+                                <div style="display:flex; justify-content:space-between; width:100%;">
+                                    <div style="font-weight:bold;">${s.label}</div>
+                                    <div style="color:var(--success); font-weight:bold;">+ ${s.amount.toLocaleString()}원</div>
+                                </div>
+                                <div style="font-size:12px; color:var(--text-dark);">${s.date} • 정산완료</div>
+                            </div>
+                        `).join('')}
+                        <div style="margin-top:30px; text-align:center; font-size:13px; color:var(--text-sub);">
+                            이번 달 총 정산 예정액: <b style="color:var(--text-main);">7,250,000원</b>
+                        </div>
+                    </div>
+                `;
+                case 'portfolio': return `
+                    <div class="padding">
+                        <h2 style="margin-bottom:25px;">포트폴리오 관리</h2>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                            <div style="aspect-ratio:1; background:#222; border:1px solid #333; border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer;">
+                                <span style="font-size:24px;">➕</span>
+                                <span style="font-size:11px; color:var(--text-sub); margin-top:8px;">새 현장 등록</span>
+                            </div>
+                            <div style="aspect-ratio:1; background:#222; border:1px solid #333; border-radius:12px; overflow:hidden; position:relative; cursor:pointer;">
+                                <div style="position:absolute; bottom:0; width:100%; padding:8px; background:rgba(0,0,0,0.7); font-size:10px; text-align:center;">역삼동 OO 빌라</div>
+                                <div style="width:100%; height:100%; background:linear-gradient(45deg, #111, #333);"></div>
+                            </div>
+                            <div style="aspect-ratio:1; background:#222; border:1px solid #333; border-radius:12px; overflow:hidden; position:relative; cursor:pointer;">
+                                <div style="position:absolute; bottom:0; width:100%; padding:8px; background:rgba(0,0,0,0.7); font-size:10px; text-align:center;">도곡동 화재현장</div>
+                                <div style="width:100%; height:100%; background:linear-gradient(45deg, #222, #111);"></div>
+                            </div>
+                        </div>
                     </div>
                 `;
                 case 'community': return `
                     <div class="padding">
-                        <div style="background:#222; padding:20px; border-radius:15px; margin-bottom:25px;">
-                            <div style="font-weight:bold; margin-bottom:5px;">프로들을 위한 실시간 정보 공유</div>
-                            <div style="font-size:12px; color:var(--text-sub);">현장 팁부터 행정 공고까지 함께 나누세요!</div>
+                        <div style="background:var(--surface-light); padding:24px; border-radius:15px; margin-bottom:25px; border-bottom:2px solid var(--primary);">
+                            <div style="font-weight:bold; margin-bottom:8px; font-size:16px;">프로 전용 실시간 정보망</div>
+                            <div style="font-size:12px; color:var(--text-sub);">현장의 무용담과 기술 노하우를 공유하세요.</div>
                         </div>
                         ${state.posts.map(p => `
                             <div class="menuCard" style="flex-direction:column; align-items:flex-start; gap:8px;">
                                 <div style="font-weight:bold;">${p.title}</div>
-                                <div style="font-size:11px; color:var(--text-dark);">작성자: ${p.author} • 5분 전</div>
+                                <div style="font-size:12px; color:var(--text-dark);">작성자: ${p.author} • 5분 전</div>
                             </div>
                         `).join('')}
                     </div>
                 `;
                 case 'scorecard': return `
-                    <div class="padding">
-                        <div style="text-align:center; margin-bottom:40px; margin-top:20px;">
-                            <div style="font-size:60px; margin-bottom:20px;">🎖️</div>
-                            <h2 style="font-size:24px; font-weight:800; margin-bottom:10px;">품질 스코어카드</h2>
-                            <p style="font-size:14px; color:var(--text-sub);">고객 평점 및 서비스 정확도를 기반으로 한<br>귀사의 비즈니스 신뢰 점수입니다.</p>
-                        </div>
-                        <div class="card">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><b>친절도/응대</b><span>98점</span></div>
-                            <div style="height:4px; background:#222; border-radius:2px; overflow:hidden;"><div style="width:98%; height:100%; background:var(--primary);"></div></div>
-                        </div>
-                        <div class="card">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><b>작업 시간 준수</b><span>92점</span></div>
-                            <div style="height:4px; background:#222; border-radius:2px; overflow:hidden;"><div style="width:92%; height:100%; background:var(--primary);"></div></div>
+                    <div class="padding" style="text-align:center;">
+                        <div style="margin-top:20px; font-size:60px; margin-bottom:20px;">⭐</div>
+                        <h2 style="font-weight:800; font-size:24px;">나의 품질 등급</h2>
+                        <p style="color:var(--text-sub); font-size:14px; margin-bottom:40px;">프로 점수를 관리하여 우선 매칭 기회를 얻으세요.</p>
+                        
+                        <div class="card" style="text-align:left;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:12px;"><span>평균 평점</span><span style="font-weight:bold; color:var(--warning);">4.9 / 5.0</span></div>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:12px;"><span>응답 속도</span><span style="font-weight:bold; color:var(--success);">쾌속 (98%)</span></div>
+                            <div style="display:flex; justify-content:space-between;"><span>작격증 검증</span><span style="font-weight:bold; color:var(--success);">완료</span></div>
                         </div>
                     </div>
                 `;
                 case 'partnership': return `
                     <div class="padding">
-                        <h2 style="margin-bottom:25px;">파트너십 문의</h2>
-                        <div style="background:#111; border:1px solid #333; padding:24px; border-radius:15px; margin-bottom:30px;">
-                            <p style="font-size:14px; color:var(--text-sub); line-height:1.7;">특청은 전국 행정 기관 및 대형 복지 단체와의 협력을 확대하고 있습니다. 상생을 위한 새로운 제안이 있으시다면 언제든 남겨주세요.</p>
+                        <h2 style="margin-bottom:25px;">파트너십 문의 및 제안</h2>
+                        <div class="card">
+                            <textarea style="width:100%; background:transparent; border:none; color:#fff; font-size:14px; outline:none;" rows="6" placeholder="기능 개선 아이디어나 파트너십 제안이 있으시다면 자유롭게 남겨주세요."></textarea>
                         </div>
-                        <button class="primaryBtn">제안하기 (1:1 메신저)</button>
+                        <button class="primaryBtn">제안 보내기</button>
                     </div>
-                `;
-                case 'analytics': return `
-                    <div class="padding">매출 분석 상세 대시보드 로딩 중... <br><br> <button class="primaryBtn" onclick="setPage('dash')">돌아가기</button></div>
                 `;
                 default: return ``;
             }
