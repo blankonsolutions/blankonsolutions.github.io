@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>특청 - 행정/관리자용</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <style>
+        :root {
+            --primary: #28a745; /* Success Green/Gov theme */
+            --bg: #000;
+            --surface: #111;
+            --text-main: #fff;
+            --text-sub: #aaa;
+            --border: #333;
+            --danger: #dc3545;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Pretendard Variable", sans-serif;
+        }
+
+        body {
+            margin: 0; padding: 0; background: var(--bg); color: var(--text-main);
+            height: 100vh; overflow: hidden;
+        }
+
+        #root { height: 100%; display: flex; flex-direction: column; }
+
+        .bg { flex: 1; overflow-y: auto; padding-bottom: 80px; }
+        .padding { padding: 20px; }
+
+        .header {
+            padding: 50px 20px 15px; background: var(--surface);
+            border-bottom: 1px solid var(--primary);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .headerTitle { font-weight: bold; font-size: 18px; }
+
+        .stat-card { background: var(--surface); padding: 20px; border-radius: 15px; border: 1px solid #222; margin-bottom: 20px; border-top: 3px solid var(--primary); }
+        .stat-label { font-size: 13px; color: var(--text-sub); }
+        .stat-value { font-size: 26px; font-weight: 800; color: var(--primary); margin-top: 5px; }
+
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .menu-item { background: var(--surface); padding: 20px; border-radius: 15px; border: 1px solid #333; text-align: center; cursor: pointer; }
+        .menu-icon { font-size: 24px; margin-bottom: 10px; }
+        .menu-label { font-size: 13px; font-weight: 600; }
+
+        .emergency-card { background: #1a0505; border: 1px solid var(--danger); padding: 15px; border-radius: 12px; display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .emergency-pulse { width: 10px; height: 10px; background: var(--danger); border-radius: 50%; animation: pulse 1s infinite; }
+        
+        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
+
+        .nav { position: fixed; bottom: 0; width: 100%; height: 60px; background: var(--surface); border-top: 1px solid #222; display: flex; justify-content: space-around; align-items: center; }
+        .nav-item { color: var(--text-sub); font-size: 11px; text-align: center; }
+        .nav-item.active { color: var(--primary); }
+
+        @media (min-width: 600px) { #root { max-width: 480px; margin: 0 auto; border: 1px solid #333; } }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script>
+        let state = {
+            page: 'dash', // dash, bids, report, monitoring
+            currentUser: { name: '이주무관', org: '광주광역시 서구청', budget: 45000000 }
+        };
+
+        function setPage(p) { state.page = p; render(); }
+
+        function render() {
+            const root = document.getElementById('root');
+            root.innerHTML = `
+                <div class="bg">
+                    ${renderContent()}
+                </div>
+                <div class="nav">
+                    <div class="nav-item ${state.page==='dash'?'active':''}" onclick="setPage('dash')">🏠 대시보드</div>
+                    <div class="nav-item ${state.page==='monitoring'?'active':''}" onclick="setPage('monitoring')">🚨 현황판</div>
+                    <div class="nav-item ${state.page==='bids'?'active':''}" onclick="setPage('bids')">⚖️ 입찰관리</div>
+                    <div class="nav-item ${state.page==='report'?'active':''}" onclick="setPage('report')">📄 행정지원</div>
+                </div>
+            `;
+        }
+
+        function renderContent() {
+            switch(state.page) {
+                case 'dash': return `
+                    <div class="header">
+                        <div class="headerTitle">행정 관리 포털</div>
+                        <div style="font-size:12px;">${state.currentUser.org}</div>
+                    </div>
+                    <div class="padding">
+                        <div class="stat-card">
+                            <div class="stat-label">집행 예산 잔액</div>
+                            <div class="stat-value">${state.currentUser.budget.toLocaleString()}원</div>
+                        </div>
+
+                        <div style="font-weight:bold; margin-bottom:15px; font-size:15px;">행정 바로가기</div>
+                        <div class="menu-grid">
+                            <div class="menu-item" onclick="setPage('monitoring')"><div class="menu-icon">📊</div><div class="menu-label">위험분석</div></div>
+                            <div class="menu-item" onclick="setPage('bids')"><div class="menu-icon">🤝</div><div class="menu-label">업체조회</div></div>
+                            <div class="menu-item" onclick="setPage('report')"><div class="menu-icon">📄</div><div class="menu-label">서류자동화</div></div>
+                            <div class="menu-item" onclick="location.href='index.html'"><div class="menu-icon">🚪</div><div class="menu-label">로그아웃</div></div>
+                        </div>
+
+                        <div class="emergency-card">
+                            <div class="emergency-pulse"></div>
+                            <div style="flex:1;">
+                                <div style="font-weight:bold; font-size:14px; color:var(--danger);">긴급 현장 발생</div>
+                                <div style="font-size:12px; color:#aaa; margin-top:30px">치평동 고독사 의심 현장 실시간 알림</div>
+                            </div>
+                            <button style="background:var(--danger); border:none; padding:8px 12px; border-radius:5px; color:#fff; font-weight:bold; font-size:11px;">대응요청</button>
+                        </div>
+                    </div>
+                `;
+                case 'monitoring': return `
+                    <div class="header"><div class="headerTitle">실시간 관제/위험도</div></div>
+                    <div class="padding">
+                        <div style="background:var(--surface); padding:20px; border-radius:15px; border:1px solid #333; margin-bottom:20px;">
+                            <h3 style="margin:0 0 15px 0; font-size:16px;">관내 위험 가구 분석</h3>
+                            <div style="height:150px; background:#222; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#555;">[위험분석 지도 데이터]</div>
+                        </div>
+                        <div class="card" style="background:#111; padding:15px; border-radius:10px; border:1px solid #222;">
+                            <div style="font-weight:bold; color:var(--primary);">A등급 위험 발견</div>
+                            <div style="font-size:14px; margin-top:5px;">화정동 1인 가구 집적 지역 모니터링 강화 필요</div>
+                        </div>
+                    </div>
+                `;
+                case 'bids': return `<div class="header"><div class="headerTitle">검증업체 및 입찰</div></div><div class="padding">업체 목록 조회 및 제한경쟁입찰 공고 등록 서비스입니다.</div>`;
+                case 'report': return `<div class="header"><div class="headerTitle">행정서류 지원</div></div><div class="padding">지출결의서 및 작업완료 보고서 PDF 자동 생성 서비스입니다.</div>`;
+            }
+        }
+
+        window.onload = render;
+    </script>
+</body>
+
+</html>

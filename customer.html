@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>특청 - 고객용</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <style>
+        :root {
+            --primary: #E50914;
+            --bg: #000;
+            --surface: #111;
+            --surface-hover: #222;
+            --text-main: #fff;
+            --text-sub: #aaa;
+            --text-dark: #666;
+            --border: #333;
+            --success: #28a745;
+            --warning: #FFD700;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #root {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bg {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            background-color: var(--bg);
+            overflow-y: auto;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .padding {
+            padding: 20px;
+        }
+
+        .header {
+            padding-top: 50px;
+            padding-bottom: 15px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 20px;
+            padding-right: 20px;
+            border-bottom: 1px solid #222;
+            background-color: var(--surface);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .headerTitle {
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .primaryBtn {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+            transition: opacity 0.2s;
+        }
+
+        .primaryBtn:active {
+            opacity: 0.7;
+        }
+
+        .proBtn {
+            width: 100%;
+            padding: 15px;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--surface);
+            color: #fff;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .input, .textArea {
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            background-color: var(--surface);
+            color: #fff;
+            width: 100%;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .textArea {
+            height: 100px;
+            resize: none;
+        }
+
+        .label {
+            font-size: 14px;
+            color: var(--text-sub);
+            margin-top: 20px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            display: block;
+        }
+
+        .menuCard {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--surface);
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid #222;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+
+        .row {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .halfBtn {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-sub);
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .activeBtn {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .dynamicCard {
+            background-color: #0d0d0d;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 10px;
+            border: 1px solid #222;
+            border-left: 4px solid var(--primary);
+        }
+
+        .dynamicLabel {
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .addressBox {
+            background-color: #1a1a1a;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            color: #fff;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        .modalOverlay {
+            position: fixed;
+            top:0; left:0; right:0; bottom:0;
+            background: rgba(0,0,0,0.85);
+            display:flex; justify-content:center; align-items:center;
+            z-index: 100; padding: 20px;
+        }
+        .modalContent {
+            background: var(--surface);
+            padding: 24px;
+            border-radius: 20px;
+            width:100%; max-width:400px;
+            border: 1px solid #333;
+        }
+
+        .tagBtn {
+            padding: 8px 12px;
+            background: #222;
+            border-radius: 20px;
+            border: 1px solid #333;
+            margin: 4px;
+            font-size: 13px;
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        /* Nav Tab Bar for Mobile */
+        .tabBar {
+            height: 70px;
+            background: var(--surface);
+            border-top: 1px solid #222;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .tabItem {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+        .tabItem.active {
+            color: var(--primary);
+        }
+        .tabIcon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        @media (min-width: 600px) {
+            #root {
+                max-width: 480px;
+                margin: 0 auto;
+                border-left: 1px solid #222;
+                border-right: 1px solid #222;
+                box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script>
+        // Mock Database for individual file demo
+        let state = {
+            page: 'dash', // dash, request, history, quotes, contracts, mypage
+            currentUser: { id: 'cus1', name: '테스트고객', phone: '010-1234-5678' },
+            requestsDB: [
+                { id: 'r1', tags: ['고독사'], commonType: ['아파트'], loc: '서울 강남구 역삼동', status: '견적 대기중', dateOption: '일주일 이내', area: '25', floor: '10', elevator: '있음', desc: '빠른 처리 부탁드립니다.' }
+            ],
+            quotesDB: [
+                { id: 'q1', proName: '명품특수청소', price: 1500000, msg: '고객님, 현장 경험이 풍부한 업체입니다.', status: 'pending', proId: 'pro1' }
+            ],
+            modals: { addr: false, addrStep: 1, tempSido: '', tempSigungu: '' },
+            requestForm: {
+                commonType: [], tags: [], area: '', floor: '', elevator: '',
+                addr: { sido: '', sigungu: '', dong: '' }, desc: '', dateOption: ''
+            }
+        };
+
+        const koreaAddressData = {
+            '서울특별시': { '강남구': ['역삼동', '청담동', '대치동'], '서초구': ['서초동', '반포동'] }
+        };
+
+        function setPage(p) {
+            state.page = p;
+            render();
+        }
+
+        function render() {
+            const root = document.getElementById('root');
+            let content = '';
+            
+            switch (state.page) {
+                case 'dash': content = renderDash(); break;
+                case 'request': content = renderRequest(); break;
+                case 'history': content = renderHistory(); break;
+                case 'quotes': content = renderQuotes(); break;
+                case 'contracts': content = renderContracts(); break;
+                case 'mypage': content = renderMyPage(); break;
+                case 'view_pro': content = renderProProfile(); break;
+            }
+
+            root.innerHTML = `
+                <div class="bg">${content}</div>
+                ${renderTabBar()}
+            `;
+        }
+
+        function renderTabBar() {
+            return `
+                <div class="tabBar">
+                    <div class="tabItem ${state.page === 'dash' ? 'active' : ''}" onclick="setPage('dash')"><div class="tabIcon">🏠</div>홈</div>
+                    <div class="tabItem ${state.page === 'history' ? 'active' : ''}" onclick="setPage('history')"><div class="tabIcon">📄</div>내요청</div>
+                    <div class="tabItem ${state.page === 'quotes' ? 'active' : ''}" onclick="setPage('quotes')"><div class="tabIcon">📩</div>견적함</div>
+                    <div class="tabItem ${state.page === 'mypage' ? 'active' : ''}" onclick="setPage('mypage')"><div class="tabIcon">👤</div>마이</div>
+                </div>
+            `;
+        }
+
+        function renderDash() {
+            return `
+                <div style="padding: 60px 20px 20px;">
+                    <div style="font-size: 24px; font-weight: 800; margin-bottom: 8px;">안녕하세요,</div>
+                    <div style="font-size: 24px; font-weight: 800; color: var(--primary); margin-bottom: 30px;">${state.currentUser.name} 님</div>
+                    
+                    <div style="background: linear-gradient(135deg, #E50914, #ff4d4d); padding: 25px; border-radius: 20px; color: #fff; margin-bottom: 30px; cursor: pointer;" onclick="setPage('request')">
+                        <div style="font-size: 14px; opacity: 0.9; margin-bottom: 5px;">현장 전문가가 필요하신가요?</div>
+                        <div style="font-size: 20px; font-weight: 800;">⚡ 무료 견적 요청하기</div>
+                    </div>
+
+                    <div style="font-weight: bold; margin-bottom: 15px;">이용 현황</div>
+                    <div class="menuCard" onclick="setPage('history')"><span>📄 나의 요청서 내역</span><span>❯</span></div>
+                    <div class="menuCard" onclick="setPage('quotes')"><span>📩 받은 견적함</span><span style="background:var(--primary); color:#fff; font-size:10px; padding:2px 6px; border-radius:10px;">${state.quotesDB.length}</span></div>
+                    <div class="menuCard" onclick="setPage('contracts')"><span>📋 계약 및 작업 관리</span><span>❯</span></div>
+                </div>
+            `;
+        }
+
+        function renderRequest() {
+            const f = state.requestForm;
+            return `
+                <div class="header">
+                    <div onclick="setPage('dash')" style="cursor:pointer">←</div>
+                    <div class="headerTitle">견적 요청</div>
+                    <div style="width:20px"></div>
+                </div>
+                <div class="padding" style="padding-bottom: 40px;">
+                    <div class="label">청소 유형 (중복 가능)</div>
+                    <div class="row">
+                        <div class="halfBtn ${f.tags.includes('고독사') ? 'activeBtn' : ''}" onclick="toggleTag('고독사')">고독사</div>
+                        <div class="halfBtn ${f.tags.includes('쓰레기집') ? 'activeBtn' : ''}" onclick="toggleTag('쓰레기집')">쓰레기집</div>
+                        <div class="halfBtn ${f.tags.includes('화재') ? 'activeBtn' : ''}" onclick="toggleTag('화재')">화재</div>
+                    </div>
+                    
+                    <div class="label">현장 주소</div>
+                    <div class="addressBox" onclick="alert('주소 검색은 데모입니다.')">📍 주소 검색</div>
+                    
+                    <div class="label">상세 상황 설명</div>
+                    <textarea class="textArea" placeholder="상세한 정보를 적어주시면 정확한 견적에 도움이 됩니다." oninput="state.requestForm.desc=this.value"></textarea>
+                    
+                    <button class="primaryBtn" style="margin-top: 20px;" onclick="submitReq()">요청서 발송</button>
+                </div>
+            `;
+        }
+
+        function renderHistory() {
+            return `
+                <div class="header">
+                    <div class="headerTitle">나의 요청 내역</div>
+                </div>
+                <div class="padding">
+                    ${state.requestsDB.map(r => `
+                        <div class="menuCard" style="display:block;">
+                            <div style="color:var(--primary); font-size:12px; font-weight:bold; margin-bottom:5px;">${r.status}</div>
+                            <div style="font-size:16px; font-weight:bold;">${r.tags.join(', ')}</div>
+                            <div style="color:var(--text-sub); font-size:13px; margin-top:5px;">${r.loc} / ${r.area}평</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderQuotes() {
+            return `
+                <div class="header">
+                    <div class="headerTitle">받은 견적함</div>
+                </div>
+                <div class="padding">
+                    ${state.quotesDB.map(q => `
+                        <div style="background:var(--surface); padding:20px; border-radius:15px; border:1px solid #333; margin-bottom:15px;">
+                            <div style="font-weight:bold; font-size:18px; margin-bottom:10px;">${q.proName}</div>
+                            <div style="color:var(--primary); font-size:22px; font-weight:800; margin-bottom:10px;">${q.price.toLocaleString()}원</div>
+                            <div style="color:var(--text-sub); font-size:14px; line-height:1.4; margin-bottom:20px;">${q.msg}</div>
+                            <button class="primaryBtn" onclick="alert('결제 단계로 이동합니다.')">채팅 상담 및 결제</button>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderContracts() {
+            return `
+                <div class="header">
+                    <div class="headerTitle">계약/작업 관리</div>
+                </div>
+                <div class="padding">
+                    <div style="color:var(--text-dark); text-align:center; padding:40px;">진행 중인 작업이 없습니다.</div>
+                </div>
+            `;
+        }
+
+        function renderMyPage() {
+            return `
+                <div class="header">
+                    <div class="headerTitle">마이페이지</div>
+                </div>
+                <div class="padding">
+                    <div style="background:var(--surface); padding:20px; border-radius:15px; margin-bottom:20px;">
+                        <div style="font-weight:bold; font-size:18px;">${state.currentUser.name}</div>
+                        <div style="color:var(--text-sub); font-size:14px;">${state.currentUser.phone}</div>
+                    </div>
+                    <div class="menuCard">💳 결제 수단</div>
+                    <div class="menuCard">📢 공지사항</div>
+                    <div class="menuCard" style="color:var(--primary)" onclick="location.href='index.html'">로그아웃 (홈으로)</div>
+                </div>
+            `;
+        }
+
+        function toggleTag(t) {
+            const idx = state.requestForm.tags.indexOf(t);
+            if(idx > -1) state.requestForm.tags.splice(idx, 1);
+            else state.requestForm.tags.push(t);
+            render();
+        }
+
+        function submitReq() {
+            alert('요청서가 발송되었습니다.');
+            setPage('history');
+        }
+
+        window.onload = render;
+    </script>
+</body>
+
+</html>
