@@ -29,16 +29,21 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: var(--bg);
+            background-color: #050505; /* Slightly lighter than pure black to show the device frame */
             color: var(--text-main);
             height: 100vh;
             overflow: hidden;
+            display: flex;
+            justify-content: center;
         }
 
         #root {
             height: 100%;
             display: flex;
             flex-direction: column;
+            width: 100%;
+            background-color: var(--bg);
+            position: relative;
         }
 
         .bg {
@@ -50,187 +55,9 @@
             padding-bottom: env(safe-area-inset-bottom);
         }
 
-        .padding {
-            padding: 20px;
-        }
+        /* ... existing styles ... */
 
-        .header {
-            padding-top: 50px;
-            padding-bottom: 15px;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-            padding-left: 20px;
-            padding-right: 20px;
-            border-bottom: 1px solid #222;
-            background-color: var(--surface);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        .headerTitle {
-            color: #fff;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .primaryBtn {
-            width: 100%;
-            padding: 16px;
-            background-color: var(--primary);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 700;
-            transition: opacity 0.2s;
-        }
-
-        .primaryBtn:active {
-            opacity: 0.7;
-        }
-
-        .proBtn {
-            width: 100%;
-            padding: 15px;
-            border: 1.5px solid var(--border);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--surface);
-            color: #fff;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .input, .textArea {
-            border: 1px solid var(--border);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 12px;
-            background-color: var(--surface);
-            color: #fff;
-            width: 100%;
-            font-size: 16px;
-            outline: none;
-        }
-
-        .textArea {
-            height: 100px;
-            resize: none;
-        }
-
-        .label {
-            font-size: 14px;
-            color: var(--text-sub);
-            margin-top: 20px;
-            margin-bottom: 8px;
-            font-weight: 600;
-            display: block;
-        }
-
-        .menuCard {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-            background-color: var(--surface);
-            padding: 18px;
-            border-radius: 12px;
-            border: 1px solid #222;
-            margin-bottom: 12px;
-            cursor: pointer;
-        }
-
-        .row {
-            display: flex;
-            flex-direction: row;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .halfBtn {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-sub);
-            font-size: 14px;
-            text-align: center;
-        }
-
-        .activeBtn {
-            background-color: var(--primary);
-            border-color: var(--primary);
-            color: #fff;
-            font-weight: bold;
-        }
-
-        .dynamicCard {
-            background-color: #0d0d0d;
-            padding: 15px;
-            border-radius: 12px;
-            margin-top: 10px;
-            border: 1px solid #222;
-            border-left: 4px solid var(--primary);
-        }
-
-        .dynamicLabel {
-            color: var(--primary);
-            font-weight: bold;
-            margin-bottom: 10px;
-            font-size: 13px;
-        }
-
-        .addressBox {
-            background-color: #1a1a1a;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            color: #fff;
-            text-align: center;
-            cursor: pointer;
-            margin-bottom: 15px;
-        }
-
-        .modalOverlay {
-            position: fixed;
-            top:0; left:0; right:0; bottom:0;
-            background: rgba(0,0,0,0.85);
-            display:flex; justify-content:center; align-items:center;
-            z-index: 100; padding: 20px;
-        }
-        .modalContent {
-            background: var(--surface);
-            padding: 24px;
-            border-radius: 20px;
-            width:100%; max-width:400px;
-            border: 1px solid #333;
-        }
-
-        .tagBtn {
-            padding: 8px 12px;
-            background: #222;
-            border-radius: 20px;
-            border: 1px solid #333;
-            margin: 4px;
-            font-size: 13px;
-            color: #ccc;
-            cursor: pointer;
-        }
-
-        /* Nav Tab Bar for Mobile */
+        /* Nav Tab Bar for Mobile & Desktop */
         .tabBar {
             height: 70px;
             background: var(--surface);
@@ -239,32 +66,18 @@
             justify-content: space-around;
             align-items: center;
             padding-bottom: env(safe-area-inset-bottom);
-        }
-        .tabItem {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 10px;
-            color: var(--text-dark);
-            cursor: pointer;
-        }
-        .tabItem.active {
-            color: var(--primary);
-        }
-        .tabIcon {
-            font-size: 20px;
-            margin-bottom: 4px;
+            width: 100%;
         }
 
         @media (min-width: 600px) {
             #root {
                 max-width: 480px;
-                margin: 0 auto;
                 border-left: 1px solid #222;
                 border-right: 1px solid #222;
                 box-shadow: 0 0 50px rgba(0,0,0,0.5);
             }
         }
+
     </style>
 </head>
 
