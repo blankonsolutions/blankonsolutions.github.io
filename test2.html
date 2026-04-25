@@ -1,0 +1,1870 @@
+import * as ImagePicker from 'expo-image-picker';
+import * as Notifications from 'expo-notifications';
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
+import { useEffect, useState } from 'react';
+import { Alert, FlatList, Image, KeyboardAvoidingView, Modal, Platform, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { WebView } from 'react-native-webview'; // 웹뷰 기능 추가
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
+
+export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState('main'); 
+  const [showReportPreview, setShowReportPreview] = useState(false);
+  const [usersDB, setUsersDB] = useState([
+    { id: 'admin123', pw: 'admin123', role: 'admin', name: '총괄관리자' },
+    { id: 'pro1', pw: '12345678', role: 'pro', name: '테스트업체', compName: '김도영특수청소', bizNum: '1234567890', status: '승인완료', isApproved: true, cash: 50000, 
+      keywords: ['고독사', '쓰레기집', '악취제거'],
+      docs: { biz: 'dummy_url', sanitation: 'dummy_url', disinfection: 'dummy_url', waste: 'dummy_url' },
+      intro: '고독사, 쓰레기집 완벽 복구 전문 업체입니다.', empCount: '5명', equip: '고압세척기, 오존살균기 3대', portfolios: [] 
+    },
+    { id: 'cus1', pw: '12345678', role: 'customer', name: '테스트고객', phone: '010-1234-5678', cash: 0, reviews: [] },
+    // 관공서 테스트용 임시 아이디 부여
+    { id: 'gov1', pw: '12345678', role: 'gov', name: '김주무관', phone: '010-9999-8888', govType: '지자체', govName: '광주광역시 본청', cash: 0, reviews: [] }
+  ]); 
+  const [requestsDB, setRequestsDB] = useState([]); 
+  const [quotesDB, setQuotesDB] = useState([
+    { id: 'dummy_contract_1', reqUserId: '광주광역시 본청 김주무관', proId: 'pro1', proName: '블랭크온 솔루션즈', price: 1500000, status: 'completed' }
+  ]); 
+  const [chatDB, setChatDB] = useState([]); 
+  const [currentUser, setCurrentUser] = useState(null); 
+
+  const [role, setRole] = useState('customer'); 
+  const [id, setId] = useState('');
+  const [pw, setPw] = useState('');
+  const [pwConfirm, setPwConfirm] = useState('');
+  const [isIdChecked, setIsIdChecked] = useState(false);
+  
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [agreePrivacy, setAgreePrivacy] = useState(false);
+  const [termsModalVisible, setTermsModalVisible] = useState(false);
+  const [termsType, setTermsType] = useState(''); 
+  const [agreePush, setAgreePush] = useState(false); 
+
+  const [isAuthDone, setIsAuthDone] = useState(false);
+  const [cusName, setCusName] = useState('');
+  const [cusDob, setCusDob] = useState('');
+  const [cusPhone, setCusPhone] = useState('');
+
+  const [govType, setGovType] = useState('');
+  const [govName, setGovName] = useState('');
+  const [govModalVisible, setGovModalVisible] = useState(false);
+  
+  const centralMinistries = ['보건복지부', '행정안전부', '국토교통부', '여성가족부', '환경부', '경찰청', '소방청'];
+  const localGovernments = ['서울특별시', '부산광역시', '대구광역시', '인천광역시', '광주광역시 본청', '광주광역시 동구청', '광주광역시 서구청', '광주광역시 남구청', '광주광역시 북구청', '광주광역시 광산구청', '대전광역시', '울산광역시', '세종특별자치시', '경기도', '강원특별자치도', '충청북도', '충청남도', '전북특별자치도', '전라남도', '경상북도', '경상남도', '제주특별자치도'];
+
+  const [bizType, setBizType] = useState('개인'); 
+  const [bizNum, setBizNum] = useState('');
+  const [isBizNumChecked, setIsBizNumChecked] = useState(false);
+  const [compName, setCompName] = useState('');
+  const [repName, setRepName] = useState('');
+  const [proPhone, setProPhone] = useState('');
+  const [dobOrCorp, setDobOrCorp] = useState('');
+  const [proKeywords, setProKeywords] = useState([]);
+  const [docs, setDocs] = useState({ biz: null, sanitation: null, disinfection: null, waste: null, waterTank: null });
+
+  const [adminModalVisible, setAdminModalVisible] = useState(false);
+  const [adminActionType, setAdminActionType] = useState(''); 
+  const [targetProId, setTargetProId] = useState(null);
+  const [targetProDocs, setTargetProDocs] = useState(null); 
+  const [adminForm, setAdminForm] = useState({ dept: '', name: '', empId: '', reason: '' });
+  const todayDate = new Date().toISOString().split('T'); 
+
+  const [reqTags, setReqTags] = useState([]);
+  const [reqCommonType, setReqCommonType] = useState([]); 
+  const [sido, setSido] = useState('');
+  const [sigungu, setSigungu] = useState('');
+  const [dong, setDong] = useState('');
+  const [reqArea, setReqArea] = useState('');
+  const [reqFloor, setReqFloor] = useState('');
+  const [reqElevator, setReqElevator] = useState('');
+  
+  const [detailDeath, setDetailDeath] = useState({ period: '', periodOther: '', floor: '', floorOther: '' });
+  const [detailCrime, setDetailCrime] = useState({ type: '', typeOther: '', locMain: '', locSub: '', locOther: '' });
+  const [detailTrash, setDetailTrash] = useState({ types: [], moveType: '', extraService: [] });
+  const [detailFire, setDetailFire] = useState({ degree: '', locMain: '', locSub: '', locOther: '' });
+  const [detailFlood, setDetailFlood] = useState({ type: '' });
+  const [detailInherit, setDetailInherit] = useState({ furnitureDesc: '' });
+  
+  const [reqDesc, setReqDesc] = useState('');
+  const [reqImages, setReqImages] = useState([]);
+  const [reqDateOption, setReqDateOption] = useState(''); 
+  const [reqYear, setReqYear] = useState('');
+  const [reqMonth, setReqMonth] = useState('');
+  const [reqDay, setReqDay] = useState('');
+
+  const [addrModalVisible, setAddrModalVisible] = useState(false);
+  const [addrStep, setAddrStep] = useState(1); 
+  const [tempSido, setTempSido] = useState('');
+  const [tempSigungu, setTempSigungu] = useState('');
+
+  const koreaAddressData = {
+    '서울특별시': { '강남구': ['역삼동', '청담동', '대치동', '삼성동'], '서초구': ['서초동', '반포동', '방배동'], '송파구': ['잠실동', '가락동'], '마포구': ['서교동', '연남동'], '강서구': ['마곡동', '화곡동'] },
+    '부산광역시': { '해운대구': ['우동', '중동', '반여동'], '수영구': ['광안동', '남천동'], '부산진구': ['서면', '부전동'], '동래구': ['부전동'] },
+    '대구광역시': { '수성구': ['범어동', '만촌동', '지산동'], '달서구': ['상인동', '월성동'], '중구': ['동성로', '삼덕동'] },
+    '인천광역시': { '연수구': ['송도동', '연수동'], '남동구': ['구월동', '논현동'], '부평구': ['부평동', '산곡동'] },
+    '광주광역시': { '서구': ['광천동', '치평동', '상무동', '풍암동'], '북구': ['운암동', '용봉동', '일곡동'], '동구': ['충장동', '동명동'], '남구': ['양림동', '봉선동'], '광산구': ['송정동', '수완동', '첨단동'] },
+    '대전광역시': { '서구': ['둔산동', '월평동'], '유성구': ['온천동', '노은동'], '중구': ['은행동', '선화동'] },
+    '울산광역시': { '남구': ['삼산동', '무거동'], '중구': ['성남동', '우정동'], '동구': ['전하동'] },
+    '세종특별자치시': { '세종시': ['나성동', '새롬동', '도담동', '아름동'] },
+    '경기도': { '수원시': ['영통동', '광교동', '인계동'], '성남시': ['분당동', '판교동', '정자동'], '용인시': ['이의동', '보정동'], '고양시': ['정자동', '백석동'] },
+    '강원특별자치도': { '춘천시': ['퇴계동', '석사동'], '원주시': ['무실동', '단구동'], '강릉시': ['단구동'] },
+    '충청북도': { '청주시': ['가경동', '오창읍'], '충주시': ['단구동', '연수동'] },
+    '충청남도': { '천안시': ['불당동', '두정동'], '아산시': ['불당동'] },
+    '전북특별자치도': { '전주시': ['효자동', '신시가지'], '익산시': ['신시가지'] },
+    '전라남도': { '나주시': ['빛가람동', '남평읍'], '순천시': ['왕지동', '연향동'], '목포시': ['옥암동', '상동'], '여수시': ['연향동', '조례동'] },
+    '경상북도': { '포항시': ['효자동'], '구미시': ['효자동'] },
+    '경상남도': { '창원시': ['상남동'], '진주시': ['상남동'] },
+    '제주특별자치도': { '제주시': ['노형동', '연동'], '서귀포시': ['동홍동', '서홍동'] }
+  };
+
+  const [selectedReq, setSelectedReq] = useState(null); 
+  const [selectedMyReq, setSelectedMyReq] = useState(null); 
+  const [selectedMySentQuote, setSelectedMySentQuote] = useState(null);
+
+  const [quotePrice, setQuotePrice] = useState('');
+  const [quoteMsg, setQuoteMsg] = useState('');
+  const [paymentTargetQuote, setPaymentTargetQuote] = useState(null); 
+  const [payMethod, setPayMethod] = useState('card');
+
+  const [targetScheduleQuote, setTargetScheduleQuote] = useState(null);
+  const [scheduleDate, setScheduleDate] = useState('');
+  const [scheduleTime, setScheduleTime] = useState('');
+
+  const [selectedContract, setSelectedContract] = useState(null);
+  const [reviewRating, setReviewRating] = useState('5');
+  const [reviewText, setReviewText] = useState('');
+
+  const [loginId, setLoginId] = useState('');
+  const [loginPw, setLoginPw] = useState('');
+  const [isFindAuthDone, setIsFindAuthDone] = useState(false);
+  const [findTargetId, setFindTargetId] = useState('');
+  const [findName, setFindName] = useState('');
+  const [findAuthCode, setFindAuthCode] = useState('');
+  const [chatInput, setChatInput] = useState('');
+
+  const [viewingPro, setViewingPro] = useState(null);
+  const [proIntro, setProIntro] = useState('');
+  const [proEmpCount, setProEmpCount] = useState('');
+  const [proEquip, setProEquip] = useState('');
+  const [proPortfolios, setProPortfolios] = useState([]);
+
+// 1. 입찰 및 예산 관련 데이터베이스 추가
+  const [bidsDB, setBidsDB] = useState([
+    { id: 'bid1', title: '서구청 관내 고독사 현장 긴급 복구', budget: 15000000, status: '입찰중', type: '제한경쟁', deadline: '2026-05-10', applicants: 0 }
+  ]);
+  const [govBudget, setGovBudget] = useState(50000000);
+  const [clearedCases, setClearedCases] = useState(12);
+  const requestPushPermission = async () => {
+    const { status } = await Notifications.requestPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert("알림", "기기 설정에서 푸시 알림을 허용해야 실시간 알림을 받을 수 있습니다.");
+    } else {
+      setAgreePush(true);
+    }
+  };
+
+  useEffect(() => {
+    const initApp = async () => {
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status !== 'granted') Alert.alert("알림 설정", "기기 설정에서 푸시 알림을 허용해주세요.");
+      setTimeout(() => setIsLoading(false), 1200);
+    };
+    initApp();
+  }, []);
+
+  const triggerLocalNotification = async (title, body) => {
+    await Notifications.scheduleNotificationAsync({ content: { title, body, sound: true }, trigger: null });
+  };
+
+  const handleDocUpload = (docType) => {
+    Alert.alert("서류 첨부", "사진을 가져올 방식을 선택해주세요.", [
+      { text: "📷 카메라로 촬영", onPress: () => pickImage(docType, true) },
+      { text: "🖼 갤러리에서 선택", onPress: () => pickImage(docType, false) },
+      { text: "취소", style: "cancel" }
+    ]);
+  };
+
+  const pickImage = async (docType, useCamera) => {
+    let result;
+    if (useCamera) {
+      const permission = await ImagePicker.requestCameraPermissionsAsync();
+      if (!permission.granted) return Alert.alert("권한 필요", "카메라 접근 권한이 필요합니다.");
+      result = await ImagePicker.launchCameraAsync({ quality: 0.5 });
+    } else {
+      const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permission.granted) return Alert.alert("권한 필요", "갤러리 접근 권한이 필요합니다.");
+      result = await ImagePicker.launchImageLibraryAsync({ quality: 0.5 });
+    }
+    if (!result.canceled) {
+      if(docType === 'request') {
+        if(reqImages.length >= 5) return Alert.alert("알림", "현장 사진은 최대 5장입니다.");
+        setReqImages([...reqImages, result.assets.uri]);
+      } else if(docType === 'portfolio') {
+        setProPortfolios([...proPortfolios, result.assets.uri]); 
+      } else {
+        setDocs({ ...docs, [docType]: result.assets.uri });
+      }
+      Alert.alert("첨부 완료", "사진이 등록되었습니다.");
+    }
+  };
+
+  const handleKakaoAuth = () => {
+    Alert.alert("인증 성공", "PASS / 카카오 본인인증이 완료되었습니다.");
+    setCusName("홍길동"); 
+    setCusDob("880512"); 
+    setCusPhone("01099998888"); 
+    setIsAuthDone(true);
+  };
+
+  const handleFindAuth = () => {
+    Alert.alert("인증 성공", "본인인증이 완료되었습니다.");
+    setIsFindAuthDone(true);
+  };
+
+  const requestAuthCode = () => Alert.alert("발송 완료", "입력하신 연락처로 인증번호가 발송되었습니다.");
+
+  const handleFindId = () => {
+    if(!isFindAuthDone) return Alert.alert("알림", "본인인증을 먼저 진행해주세요.");
+    const user = usersDB.find(u => u.name === findName);
+    if(user) Alert.alert("아이디 찾기", `고객님의 아이디는 [ ${user.id} ] 입니다.`);
+    else Alert.alert("조회 실패", "가입된 정보가 없습니다. (가입 시 실명을 정확히 입력해주세요)");
+  };
+
+  const handleFindPw = () => {
+    if(!findTargetId) return Alert.alert("알림", "조회하실 아이디를 입력해주세요.");
+    if(!isFindAuthDone) return Alert.alert("알림", "본인인증을 먼저 진행해주세요.");
+    const user = usersDB.find(u => u.id === findTargetId && u.name === findName);
+    if(user) Alert.alert("비밀번호 찾기", `고객님의 비밀번호는 [ ${user.pw} ] 입니다.`);
+    else Alert.alert("조회 실패", "아이디와 실명 정보가 일치하지 않습니다.");
+  };
+
+  const handleCheckId = () => {
+    if (!id) return Alert.alert("알림", "아이디를 입력해주세요.");
+    const idRegex = /^[a-z0-9]{8,14}$/;
+    if (!idRegex.test(id)) return Alert.alert("알림", "아이디는 영문 소문자/숫자 8~14자로 입력해주세요.");
+    if (usersDB.some(u => u.id === id)) { setIsIdChecked(false); Alert.alert("중복 확인", "이미 사용 중인 아이디입니다."); }
+    else { setIsIdChecked(true); Alert.alert("중복 확인", "사용 가능한 아이디입니다!"); }
+  };
+
+  const handleCheckBizNum = () => {
+    if (!bizNum || bizNum.length !== 10) return Alert.alert("알림", "사업자등록번호 10자리를 정확히 입력해주세요.");
+    if (usersDB.some(u => u.bizNum === bizNum)) { setIsBizNumChecked(false); Alert.alert("중복 확인", "이미 가입된 사업자번호입니다."); }
+    else { setIsBizNumChecked(true); Alert.alert("중복 확인", "가입 가능한 사업자번호입니다."); }
+  };
+
+  const handleSignup = () => {
+    if (!agreeTerms || !agreePrivacy) return Alert.alert("알림", "필수 약관에 모두 동의하셔야 합니다.");
+    if (!id || !pw || !pwConfirm) return Alert.alert("알림", "기본 계정 정보를 모두 입력해주세요.");
+    if (!isIdChecked) return Alert.alert("알림", "아이디 중복확인을 진행해주세요.");
+    if (pw.length < 8 || pw.length > 16) return Alert.alert("알림", "비밀번호는 8자 이상 16자 이하로 설정해주세요.");
+    if (pw !== pwConfirm) return Alert.alert("알림", "비밀번호가 일치하지 않습니다.");
+
+    let newUser = { id, pw, role, isApproved: false, docStatus: 'none', rejectReason: '', docs: null, cash: 0, reviews: [] }; 
+
+    if (role === 'customer' || role === 'gov') {
+      if(!isAuthDone) return Alert.alert("알림", "본인인증을 진행해주세요.");
+      
+      if(role === 'gov') {
+        if(!govType || !govName) return Alert.alert("알림", "소속 기관 정보를 모두 선택해주세요.");
+      }
+
+      newUser = { ...newUser, name: cusName, dob: cusDob, phone: cusPhone };
+      if(role === 'gov') {
+        newUser.govType = govType;
+        newUser.govName = govName;
+      }
+    } else {
+      if(!bizNum || !compName || !repName || !proPhone || !dobOrCorp) return Alert.alert("알림", "사업자 정보를 모두 입력해주세요.");
+      if(!isBizNumChecked) return Alert.alert("알림", "사업자번호 중복확인을 진행해주세요.");
+      if(proKeywords.length === 0) return Alert.alert("알림", "전문 분야 키워드를 1개 이상 선택해주세요.");
+      newUser = { ...newUser, bizType, bizNum, compName, repName, phone: proPhone, dobOrCorp, keywords: proKeywords, intro: '', empCount: '', equip: '', portfolios: [] }; 
+    }
+
+    setUsersDB([...usersDB, newUser]);
+    Alert.alert("가입 완료", "특청 회원이 되신 것을 환영합니다!\n로그인해주세요.");
+    setId(''); setPw(''); setPwConfirm(''); setIsIdChecked(false); setIsAuthDone(false);
+    setCusName(''); setCusDob(''); setCusPhone('');
+    setBizNum(''); setCompName(''); setRepName(''); setProPhone(''); setDobOrCorp(''); setIsBizNumChecked(false); setProKeywords([]);
+    setGovType(''); setGovName('');
+    setPage('login');
+  };
+
+  const handleLogin = () => {
+    if (!loginId || !loginPw) return Alert.alert("알림", "아이디와 비밀번호를 입력해주세요.");
+    const user = usersDB.find(u => u.id === loginId && u.pw === loginPw);
+    if (user) {
+      setCurrentUser(user);
+      if (user.role === 'admin') setPage('admin_dash');
+      else if (user.role === 'customer') setPage('customer_dash');
+      else if (user.role === 'gov') setPage('gov_dash');
+      else {
+        setProIntro(user.intro || ''); setProEmpCount(user.empCount || ''); 
+        setProEquip(user.equip || ''); setProPortfolios(user.portfolios || []);
+        setPage('pro_dash');
+      }
+      setLoginId(''); setLoginPw('');
+    } else Alert.alert("로그인 실패", "정보가 일치하지 않습니다.");
+  };
+
+  const openTerms = (type) => { setTermsType(type); setTermsModalVisible(true); };
+
+  const handleSignContract = () => {
+    const isCustomer = currentUser.role === 'customer' || currentUser.role === 'gov';
+    const updatedQuote = { ...selectedContract };
+    
+    if(isCustomer) updatedQuote.customerSigned = true;
+    else updatedQuote.proSigned = true;
+
+    if(updatedQuote.customerSigned && updatedQuote.proSigned) updatedQuote.status = 'signed';
+
+    setQuotesDB(quotesDB.map(q => q.id === selectedContract.id ? updatedQuote : q));
+    setSelectedContract(updatedQuote);
+    
+    Alert.alert("서명 완료", "전자서명이 성공적으로 접수되었습니다.");
+    triggerLocalNotification("전자계약 서명", "상대방이 전자계약서에 서명을 완료했습니다.");
+  };
+
+  const renderSignUp = () => (
+    <ScrollView style={styles.bg}>
+      <View style={styles.header}><TouchableOpacity onPress={() => setPage('main')}><Text style={{color: '#E50914'}}>← 뒤로</Text></TouchableOpacity><Text style={styles.headerTitle}>회원가입</Text><View style={{width:40}}/></View>
+      <View style={styles.padding}>
+        <View style={{backgroundColor: '#111', padding: 20, borderRadius: 10, borderWidth: 1, borderColor: '#333', marginBottom: 25}}>
+          <Text style={{color: '#fff', fontWeight: 'bold', marginBottom: 15, fontSize: 16}}>서비스 이용 동의</Text>
+          <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10}}>
+            <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} onPress={() => setAgreeTerms(!agreeTerms)}><Text style={{fontSize: 20, marginRight: 10}}>{agreeTerms ? '☑️' : '⬜'}</Text><Text style={{color: '#aaa'}}>(필수) 특청 서비스 이용약관 동의</Text></TouchableOpacity>
+            <TouchableOpacity onPress={() => openTerms('service')}><Text style={{color: '#666', textDecorationLine: 'underline'}}>[보기]</Text></TouchableOpacity>
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10}}>
+            <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} onPress={() => setAgreePrivacy(!agreePrivacy)}><Text style={{fontSize: 20, marginRight: 10}}>{agreePrivacy ? '☑️' : '⬜'}</Text><Text style={{color: '#aaa'}}>(필수) 개인정보 수집 및 이용 동의</Text></TouchableOpacity>
+            <TouchableOpacity onPress={() => openTerms('privacy')}><Text style={{color: '#666', textDecorationLine: 'underline'}}>[보기]</Text></TouchableOpacity>
+          </View>
+          <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}} onPress={() => {
+            if(!agreePush) requestPushPermission(); else setAgreePush(false);
+          }}>
+            <Text style={{fontSize: 20, marginRight: 10}}>{agreePush ? '☑️' : '⬜'}</Text><Text style={{color: '#aaa'}}>(선택) 견적/채팅 실시간 알림 수신 동의</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.label}>회원 유형 선택</Text>
+        <View style={styles.row}>
+          <TouchableOpacity style={[styles.halfBtn, {width: '32%'}, role === 'customer' && styles.activeBtn]} onPress={() => {setRole('customer'); setIsAuthDone(false);}}><Text style={role === 'customer' ? styles.activeText : {color: '#888', fontSize: 13}}>일반고객</Text></TouchableOpacity>
+          <TouchableOpacity style={[styles.halfBtn, {width: '32%'}, role === 'pro' && styles.activeBtn]} onPress={() => {setRole('pro'); setIsAuthDone(false);}}><Text style={role === 'pro' ? styles.activeText : {color: '#888', fontSize: 13}}>특수청소사</Text></TouchableOpacity>
+          <TouchableOpacity style={[styles.halfBtn, {width: '32%'}, role === 'gov' && styles.activeBtn]} onPress={() => {setRole('gov'); setIsAuthDone(false);}}><Text style={role === 'gov' ? styles.activeText : {color: '#888', fontSize: 13}}>관공서(B2G)</Text></TouchableOpacity>
+        </View>
+
+        <Text style={styles.label}>아이디 (소문자/숫자, 8~14자) *</Text>
+        <View style={styles.row}>
+          <TextInput placeholder="아이디 입력" placeholderTextColor="#666" style={[styles.input, {flex: 1, marginRight: 10, marginBottom: 0}]} value={id} onChangeText={(txt)=>{setId(txt); setIsIdChecked(false);}} autoCapitalize="none" />
+          <TouchableOpacity style={[styles.smallBtn, isIdChecked && {backgroundColor: '#28a745'}]} onPress={handleCheckId}><Text style={{color: '#fff', fontSize: 12}}>{isIdChecked ? '확인완료' : '중복확인'}</Text></TouchableOpacity>
+        </View>
+        <Text style={styles.label}>비밀번호 (8자~16자) *</Text>
+        <TextInput placeholder="비밀번호 입력" placeholderTextColor="#666" style={styles.input} secureTextEntry value={pw} onChangeText={setPw} />
+        <TextInput placeholder="비밀번호 확인" placeholderTextColor="#666" style={styles.input} secureTextEntry value={pwConfirm} onChangeText={setPwConfirm} />
+
+        {(role === 'customer' || role === 'gov') ? (
+          <>
+            <Text style={[styles.label, {color: '#E50914'}]}>{role === 'gov' ? '담당자 본인 인증 (필수)' : '본인 인증 (필수)'}</Text>
+            <TouchableOpacity style={{backgroundColor: isAuthDone ? '#1a0505' : '#111', padding: 15, borderRadius: 10, borderWidth: 1, borderColor: isAuthDone ? '#E50914' : '#333', alignItems: 'center', marginBottom: 15}} onPress={handleKakaoAuth}>
+              <Text style={{color: isAuthDone ? '#E50914' : '#fff', fontWeight: 'bold'}}>{isAuthDone ? '✅ 본인인증 완료' : '📱 통신사 / 카카오 / PASS 본인인증'}</Text>
+            </TouchableOpacity>
+            {isAuthDone && (
+              <View style={{backgroundColor: '#111', padding: 20, borderRadius: 10, borderWidth: 1, borderColor: '#333'}}>
+                <TextInput style={[styles.input, {color: '#888', backgroundColor: '#222'}]} value={`이름: ${cusName}`} editable={false} />
+                <TextInput style={[styles.input, {color: '#888', backgroundColor: '#222'}]} value={`생년월일: ${cusDob}`} editable={false} />
+                <TextInput style={[styles.input, {color: '#888', backgroundColor: '#222', marginBottom: 0}]} value={`연락처: ${cusPhone}`} editable={false} />
+              </View>
+            )}
+
+            {role === 'gov' && (
+              <>
+                <Text style={[styles.label, {color: '#E50914', marginTop: 25}]}>소속 기관 정보</Text>
+                <View style={styles.row}>
+                  <TouchableOpacity style={[styles.halfBtn, govType === '중앙부처' && styles.activeBtn]} onPress={() => {setGovType('중앙부처'); setGovName('');}}><Text style={govType === '중앙부처' ? styles.activeText : {color: '#888'}}>중앙부처</Text></TouchableOpacity>
+                  <TouchableOpacity style={[styles.halfBtn, govType === '지자체' && styles.activeBtn]} onPress={() => {setGovType('지자체'); setGovName('');}}><Text style={govType === '지자체' ? styles.activeText : {color: '#888'}}>지자체</Text></TouchableOpacity>
+                </View>
+                <TouchableOpacity style={[styles.input, {justifyContent: 'center', marginTop: 10}]} onPress={() => {
+                  if(!govType) return Alert.alert("알림", "중앙부처 또는 지자체를 먼저 선택해주세요.");
+                  setGovModalVisible(true);
+                }}>
+                  <Text style={{color: govName ? '#fff' : '#666'}}>{govName || '소속 기관 검색 및 선택'}</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </>
+        ) : (
+          <>
+            <Text style={[styles.label, {color: '#E50914'}]}>사업자 정보</Text>
+            <View style={styles.row}>
+              <TouchableOpacity style={[styles.halfBtn, bizType === '개인' && styles.activeBtn]} onPress={() => setBizType('개인')}><Text style={bizType === '개인' ? styles.activeText : {color: '#888'}}>개인사업자</Text></TouchableOpacity>
+              <TouchableOpacity style={[styles.halfBtn, bizType === '법인' && styles.activeBtn]} onPress={() => setBizType('법인')}><Text style={bizType === '법인' ? styles.activeText : {color: '#888'}}>법인사업자</Text></TouchableOpacity>
+            </View>
+            <Text style={styles.label}>사업자등록번호 *</Text>
+            <View style={styles.row}>
+              <TextInput placeholder="숫자 10자리" placeholderTextColor="#666" style={[styles.input, {flex: 1, marginRight: 10, marginBottom: 0}]} keyboardType="numeric" value={bizNum} onChangeText={(txt)=>{setBizNum(txt); setIsBizNumChecked(false);}} />
+              <TouchableOpacity style={[styles.smallBtn, isBizNumChecked && {backgroundColor: '#28a745'}]} onPress={handleCheckBizNum}><Text style={{color: '#fff', fontSize: 12}}>{isBizNumChecked ? '확인완료' : '중복확인'}</Text></TouchableOpacity>
+            </View>
+            <TextInput placeholder="상호명 *" placeholderTextColor="#666" style={styles.input} value={compName} onChangeText={setCompName} />
+            <TextInput placeholder="대표자명 *" placeholderTextColor="#666" style={styles.input} value={repName} onChangeText={setRepName} />
+            <TextInput placeholder="업체 연락처 *" placeholderTextColor="#666" style={styles.input} keyboardType="numeric" value={proPhone} onChangeText={setProPhone} />
+            <TextInput placeholder={bizType === '개인' ? "생년월일 (6자리) *" : "법인등록번호 (13자리) *"} placeholderTextColor="#666" style={styles.input} keyboardType="numeric" value={dobOrCorp} onChangeText={setDobOrCorp} />
+            
+            <Text style={[styles.label, {color: '#E50914', marginTop: 20}]}>전문 분야 키워드 선택 (복수 선택) *</Text>
+            <Text style={{color: '#888', fontSize: 12, marginBottom: 10}}>선택한 키워드에 따라 승인 시 필요한 허가증이 다릅니다.</Text>
+            <View style={styles.tagWrap}>
+              {['고독사', '자살', '강력범죄현장', '쓰레기집', '화재', '침수', '악취제거', '유품정리'].map(k => (
+                 <TouchableOpacity key={k} style={[styles.tagBtn, proKeywords.includes(k) && {backgroundColor: '#E50914', borderColor: '#E50914'}]} onPress={() => {
+                    if(proKeywords.includes(k)) setProKeywords(proKeywords.filter(x=>x!==k));
+                    else setProKeywords([...proKeywords, k]);
+                 }}><Text style={{color: proKeywords.includes(k)?'#fff':'#888', fontWeight: proKeywords.includes(k)?'bold':'normal'}}>{k}</Text></TouchableOpacity>
+              ))}
+            </View>
+          </>
+        )}
+        <TouchableOpacity style={[styles.primaryBtn, {marginTop: 30, marginBottom: 50}]} onPress={handleSignup}><Text style={styles.btnText}>가입 완료하기</Text></TouchableOpacity>
+
+        <Modal visible={termsModalVisible} transparent={true} animationType="fade">
+          <View style={styles.modalOverlay}>
+            <View style={[styles.modalContent, {height: '70%'}]}>
+              <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold', marginBottom: 20}}>{termsType === 'service' ? '서비스 이용약관' : '개인정보 처리방침'}</Text>
+              <ScrollView style={{backgroundColor: '#222', padding: 15, borderRadius: 10}}><Text style={{color: '#aaa', lineHeight: 22}}>제1조 (목적){'\n'}본 약관은 특청(이하 "회사")이 제공하는 플랫폼 서비스의 이용과 관련하여... (중략) {'\n\n'}제2조 (회원의 의무){'\n'}회원은 본 약관 및 회사가 공지하는 주의사항을 준수해야 하며... (실제 서비스 약관 내용이 들어갑니다.)</Text></ScrollView>
+              <TouchableOpacity style={[styles.primaryBtn, {marginTop: 20}]} onPress={() => setTermsModalVisible(false)}><Text style={styles.btnText}>확인</Text></TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
+        <Modal visible={govModalVisible} transparent={true} animationType="slide">
+          <View style={styles.modalOverlay}>
+            <View style={[styles.modalContent, {height: '80%', padding: 0}]}>
+              <View style={{padding: 20, borderBottomWidth: 1, borderColor: '#333', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold'}}>{govType} 목록</Text>
+                <TouchableOpacity onPress={() => setGovModalVisible(false)}><Text style={{color: '#666', fontSize: 20}}>X</Text></TouchableOpacity>
+              </View>
+              <ScrollView style={{padding: 10}}>
+                {(govType === '중앙부처' ? centralMinistries : localGovernments).map(gov => (
+                  <TouchableOpacity key={gov} style={{padding: 15, borderBottomWidth: 1, borderColor: '#222'}} onPress={() => {setGovName(gov); setGovModalVisible(false);}}>
+                    <Text style={{color: '#fff', fontSize: 16}}>{gov}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
+      </View>
+    </ScrollView>
+  );
+
+const renderGovDash = () => {
+    return (
+      <View style={styles.bg}>
+        <View style={{paddingTop: 70, paddingBottom: 20, paddingHorizontal: 30, backgroundColor: '#111', borderBottomWidth:1, borderColor:'#E50914'}}>
+          <Text style={{color: '#E50914', fontSize: 14, fontWeight: 'bold'}}>위기에서 일상으로</Text>
+          <Text style={{color: '#fff', fontSize: 22, fontWeight: 'bold', marginTop: 5}}>{currentUser.govName} {currentUser.name} 님</Text>
+        </View>
+        
+        <ScrollView style={styles.padding}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 25}}>
+            <View style={{backgroundColor: '#1a1a1a', padding: 15, borderRadius: 12, flex: 0.48, borderWidth: 1, borderColor: '#333'}}>
+              <Text style={{color: '#888', fontSize: 12}}>집행 예산 잔액</Text>
+              <Text style={{color: '#fff', fontSize: 16, fontWeight: 'bold', marginTop: 5}}>{govBudget.toLocaleString()}원</Text>
+            </View>
+            <View style={{backgroundColor: '#1a1a1a', padding: 15, borderRadius: 12, flex: 0.48, borderWidth: 1, borderColor: '#333'}}>
+              <Text style={{color: '#888', fontSize: 12}}>올해 구제 가구</Text>
+              <Text style={{color: '#E50914', fontSize: 18, fontWeight: 'bold', marginTop: 5}}>{clearedCases} 가구</Text>
+            </View>
+          </View>
+
+          <Text style={{color: '#E50914', fontSize: 16, fontWeight: 'bold', marginBottom: 15}}>B2G 행정 지원 서비스</Text>
+          
+          <TouchableOpacity style={styles.menuCard} onPress={() => setPage('gov_pro_list')}>
+            <Text style={{color:'#fff'}}>🤝 1인 수의계약 검증업체 조회</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuCard} onPress={() => setPage('gov_bid_post')}>
+            <Text style={{color:'#fff'}}>⚖️ 특청 제한경쟁입찰 공고 (역경매)</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles.menuCard} onPress={() => setPage('gov_report_center')}>
+            <Text style={{color:'#fff'}}>📄 업체 청구서류 수신 및 지출결의서 기안</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={[styles.menuCard, {backgroundColor: '#2b0000', borderColor: '#E50914'}]} onPress={() => setPage('gov_emergency_call')}>
+            <Text style={{color:'#fff', fontWeight: 'bold'}}>🚨 긴급 악취차단 선조치 요청</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuCard} onPress={() => setPage('gov_dashboard_webview')}>
+            <Text style={{color:'#fff'}}>📊 지역구 고립 위험도 분석 결과</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={[styles.menuCard, {marginTop: 30, marginBottom: 50}]} onPress={() => {setCurrentUser(null); setPage('main');}}>
+            <Text style={{color: '#666'}}>로그아웃</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </View>
+    );
+  };
+
+  // 대시보드 HTML을 앱 안에 띄워주는 새로운 화면 컴포넌트입니다.
+  const renderGovDashboardWebView = () => {
+    const dashboardHTML = `
+      <!DOCTYPE html>
+      <html lang="ko">
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <style>
+              body { font-family: 'Malgun Gothic', sans-serif; background-color: #f4f7f6; padding: 10px; }
+              .container { display: flex; flex-direction: column; background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; }
+              .left-panel { padding: 20px; background-color: #ffffff; border-bottom: 1px solid #ddd; }
+              .right-panel { padding: 20px; background-color: #f9fbfd; }
+              h2 { color: #333; margin-top: 0; font-size: 18px; border-bottom: 2px solid #0056b3; padding-bottom: 10px; }
+              .form-group { margin-bottom: 15px; }
+              label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; font-size: 14px; }
+              select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; background-color: #fcfcfc; }
+              .result-box { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+              .result-title { font-size: 14px; color: #777; font-weight: bold; margin-bottom: 10px; display: flex; justify-content: space-between; }
+              .risk-high { color: #d9534f; font-size: 22px; font-weight: bold; }
+              .risk-medium { color: #f0ad4e; font-size: 22px; font-weight: bold; }
+              .risk-low { color: #5cb85c; font-size: 22px; font-weight: bold; }
+              .desc-text { color: #333; line-height: 1.5; font-size: 14px; }
+              .badge { display: inline-block; padding: 6px 12px; border-radius: 20px; background: #e2eef9; color: #0056b3; font-size: 12px; font-weight: bold; margin-right: 5px; margin-bottom: 5px; border: 1px solid #b8d4f2; }
+              .badge-danger { background: #fde8e7; color: #d9534f; border-color: #f5c2c0; }
+              .progress-bar-bg { width: 100%; background-color: #e9ecef; border-radius: 5px; height: 10px; margin-top: 10px; overflow: hidden; }
+              .progress-bar-fill { height: 100%; width: 0%; transition: width 0.5s ease; }
+          </style>
+      </head>
+      <body>
+      <div class="container">
+          <div class="left-panel">
+              <h2>특청 현장 수집 데이터 (위기 신호)</h2>
+              <div class="form-group"><label>1. 연령대</label><select id="age" onchange="calculateRisk()"><option value="2030">2030 청년층</option><option value="4050">4050 중장년층</option><option value="60plus">60대 이상 노년층</option></select></div>
+              <div class="form-group"><label>2. 의뢰 주체</label><select id="requester" onchange="calculateRisk()"><option value="self">본인 (스스로 해결 의지 있음)</option><option value="family">가족/지인 (외부 단절 초기)</option><option value="landlord">건물주/관리인/이웃 (완전한 고립)</option></select></div>
+              <div class="form-group"><label>3. 주요 폐기물 특성</label><select id="waste" onchange="calculateRisk()"><option value="delivery">배달음식 용기 위주 (무기력증)</option><option value="alcohol">다량의 주류병 (알코올 의존)</option><option value="bills">미개봉 우편물/독촉장 (경제적 파탄)</option><option value="hoarding">수집 강박 (폐지, 잡동사니 산적)</option></select></div>
+              <div class="form-group"><label>4. 오염 및 악취 심각도</label><select id="odor" onchange="calculateRisk()"><option value="low">경미 (환기로 해결 가능)</option><option value="medium">보통 (음식물 부패 악취)</option><option value="high">심각 (침출수, 생물학적 오염)</option></select></div>
+              <div class="form-group"><label>5. 생활 인프라 상태</label><select id="utility" onchange="calculateRisk()"><option value="normal">정상 (전기, 수도 사용 가능)</option><option value="cut">단전/단수 상태 (극심한 생활고)</option></select></div>
+              <div class="form-group"><label>6. 서비스 이력</label><select id="history" onchange="calculateRisk()"><option value="first">최초 의뢰</option><option value="repeat">1년 내 재의뢰 (만성 고립)</option></select></div>
+          </div>
+          <div class="right-panel">
+              <h2>AI 고립 위험도 분석 결과</h2>
+              <div class="result-box"><div class="result-title"><span>통합 위험도 지수</span><span id="scoreText">0 / 100</span></div><div id="riskLevel" class="risk-low">관심 (Low) - 초기 개입 권장</div><div class="progress-bar-bg"><div id="progressBar" class="progress-bar-fill" style="background-color: #5cb85c; width: 0%;"></div></div></div>
+              <div class="result-box"><div class="result-title">상태 분석 보고서</div><div id="analysisText" class="desc-text">데이터를 입력하면 분석이 시작됩니다.</div></div>
+              <div class="result-box"><div class="result-title">지자체 연계행정 솔루션</div><div id="solutionTags"></div></div>
+          </div>
+      </div>
+      <script>
+          function calculateRisk() {
+              const age = document.getElementById('age').value;
+              const requester = document.getElementById('requester').value;
+              const waste = document.getElementById('waste').value;
+              const odor = document.getElementById('odor').value;
+              const utility = document.getElementById('utility').value;
+              const history = document.getElementById('history').value;
+              let score = 0; let analysis = "<strong>[발견 정황]</strong><br>"; let solutions = []; let urgentSolutions = [];
+              if (requester === 'self') analysis += "본인이 직접 의뢰하여 상황 개선 의지가 확인됩니다. ";
+              else if (requester === 'family') { score += 3; analysis += "가족/지인 의뢰. 소통 단절 초기. "; }
+              else if (requester === 'landlord') { score += 7; analysis += "타인에 의한 강제 발견. 완전한 고립. "; urgentSolutions.push("복지정책과 긴급 출동"); }
+              analysis += "<br><br><strong>[현장 상태]</strong><br>";
+              if (odor === 'high') { score += 8; analysis += "심각한 생물학적 오염 진행. "; }
+              else if (odor === 'medium') { score += 4; analysis += "일반적인 쓰레기집 수준 오염. "; }
+              if (waste === 'delivery') { score += 2; analysis += "무기력증 의심. "; if (age === '2030') solutions.push("청년 마음건강 바우처"); }
+              else if (waste === 'alcohol') { score += 5; analysis += "알코올 의존 및 우울증 위험. "; solutions.push("정신건강복지센터 연계"); }
+              else if (waste === 'bills') { score += 6; analysis += "경제적 파탄 상태 추정. "; urgentSolutions.push("긴급 생계비 지원"); solutions.push("신용회복 상담"); }
+              else if (waste === 'hoarding') { score += 5; analysis += "저장강박 증세 뚜렷. "; solutions.push("주거환경개선사업 연계"); }
+              if (utility === 'cut') { score += 7; analysis += "<span style='color:red; font-weight:bold;'>단전/단수 상태 (생존권 위협)</span> "; urgentSolutions.push("에너지 바우처 지원"); }
+              if (history === 'repeat') { score += 6; analysis += "<br><br><strong>[종합]</strong> 1년 내 재발 가구로 만성 고립 위험."; urgentSolutions.push("집중 관리 대상자 등록"); }
+              let percentScore = Math.min(Math.round((score / 35) * 100), 100);
+              const riskLevelEl = document.getElementById('riskLevel'); const barEl = document.getElementById('progressBar');
+              document.getElementById('scoreText').innerText = percentScore + " 점 / 100 점";
+              if (percentScore >= 70) { riskLevelEl.className = 'risk-high'; riskLevelEl.innerHTML = '위험 (High) - 고독사 임박'; barEl.style.backgroundColor = '#d9534f'; barEl.style.width = percentScore + '%'; }
+              else if (percentScore >= 40) { riskLevelEl.className = 'risk-medium'; riskLevelEl.innerHTML = '경고 (Medium) - 모니터링 필요'; barEl.style.backgroundColor = '#f0ad4e'; barEl.style.width = percentScore + '%'; }
+              else { riskLevelEl.className = 'risk-low'; riskLevelEl.innerHTML = '관심 (Low) - 단기 지원 권장'; barEl.style.backgroundColor = '#5cb85c'; barEl.style.width = percentScore + '%'; }
+              document.getElementById('analysisText').innerHTML = analysis;
+              let tagsHTML = "";
+              urgentSolutions.forEach(function(sol) { tagsHTML += '<span class="badge badge-danger">🚨 ' + sol + '</span>'; });
+              solutions.forEach(function(sol) { tagsHTML += '<span class="badge">' + sol + '</span>'; });
+              if (tagsHTML === "") tagsHTML = '<span class="badge">일반 1인가구 지원 안내</span>';
+              document.getElementById('solutionTags').innerHTML = tagsHTML;
+          }
+          calculateRisk();
+      </script>
+      </body>
+      </html>
+    `;
+
+    return (
+      <View style={styles.bg}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => setPage('gov_dash')}>
+            <Text style={{color: '#E50914'}}>← 뒤로</Text>
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>위험도 분석 대시보드</Text>
+          <View style={{width: 50}}/>
+        </View>
+        <WebView originWhitelist={['*']} source={{ html: dashboardHTML }} style={{ flex: 1 }} />
+      </View>
+    );
+  };
+
+  const renderCustomerDash = () => (
+    <View style={styles.bg}>
+      <View style={{paddingTop: 70, paddingBottom: 20, paddingHorizontal: 30, flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth:1, borderColor:'#222'}}>
+        <Text style={{color: '#fff', fontSize: 22, fontWeight: 'bold'}}>{currentUser.name} 고객님</Text>
+        <TouchableOpacity onPress={() => setPage('customer_mypage')}><Text style={{color: '#fff', fontSize: 20}}>⚙️</Text></TouchableOpacity>
+      </View>
+      <View style={styles.padding}>
+        <TouchableOpacity style={styles.primaryBtn} onPress={() => setPage('customer_request')}><Text style={styles.btnText}>⚡ 즉시 견적 요청하기</Text></TouchableOpacity>
+        <Text style={[styles.label, {marginTop: 40}]}>나의 이용 내역</Text>
+        
+        <TouchableOpacity style={styles.menuCard} onPress={()=>setPage('customer_req_history')}>
+          <Text style={{color:'#fff'}}>📄 나의 요청서 확인하기 ({requestsDB.filter(r=>r.userId === currentUser.id).length}건)</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuCard} onPress={() => setPage('customer_quotes')}>
+          <Text style={{color:'#fff'}}>💌 받은 견적 확인하기 ({quotesDB.filter(q=>q.reqUserId === currentUser.id && q.status === 'pending').length}건)</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity style={[styles.menuCard, {borderColor: '#E50914'}]} onPress={() => setPage('customer_contracts')}>
+          <Text style={{color:'#E50914', fontWeight: 'bold'}}>🤝 계약 및 작업내역 관리</Text>
+        </TouchableOpacity>
+        
+        <View style={{backgroundColor: 'rgba(229, 9, 20, 0.1)', padding: 20, borderRadius: 10, borderWidth: 1, borderColor: '#E50914', marginTop: 30}}>
+          <Text style={{color: '#fff', fontWeight: 'bold', marginBottom: 5}}>🛡 특청 안심결제 시스템 적용</Text>
+          <Text style={{color: '#aaa', fontSize: 12}}>고객님이 최종 승인하기 전까지 대금은 특청이 안전하게 보관합니다. 추가금 요구 걱정 끝!</Text>
+        </View>
+      </View>
+    </View>
+  );
+
+  const renderCustomerReqHistory = () => {
+    const myReqs = requestsDB.filter(r => r.userId === currentUser.id);
+    return (
+      <ScrollView style={styles.bg}>
+        <View style={styles.header}><TouchableOpacity onPress={() => setPage('customer_dash')}><Text style={{color: '#E50914'}}>← 뒤로</Text></TouchableOpacity><Text style={styles.headerTitle}>나의 요청서 목록</Text><View style={{width:50}}/></View>
+        <View style={styles.padding}>
+          {myReqs.length === 0 ? <Text style={{color: '#888', textAlign: 'center', marginTop: 50}}>작성하신 요청서가 없습니다.</Text> : null}
+          {myReqs.map(req => (
+            <TouchableOpacity key={req.id} style={{backgroundColor: '#111', padding: 20, borderRadius: 10, borderWidth: 1, borderColor: '#333', marginBottom: 15}} onPress={() => {
+              setSelectedMyReq(req); setPage('customer_req_detail');
+            }}>
+              <Text style={{color: '#E50914', fontWeight: 'bold', marginBottom: 5}}>상태: {req.status}</Text>
+              <Text style={{color: '#fff', fontSize: 16, fontWeight: 'bold'}}>{req.tags.join(', ')}</Text>
+              <Text style={{color: '#aaa', marginTop: 8}}>희망일: {req.dateOption === '날짜 지정' ? `${req.dateSpecific.y}년 ${req.dateSpecific.m}월 ${req.dateSpecific.d}일` : req.dateOption}</Text>
+              <Text style={{color: '#aaa', marginTop: 3}}>지역: {req.loc}</Text>
+              <Text style={{color: '#E50914', marginTop: 15, fontSize: 12, fontWeight: 'bold', textAlign: 'right'}}>상세보기 ❯</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
+    );
+  };
+
+  const renderCustomerReqDetail = () => (
+    <ScrollView style={styles.bg} contentContainerStyle={{paddingBottom: 80}}>
+      <View style={styles.header}><TouchableOpacity onPress={() => setPage('customer_req_history')}><Text style={{color: '#E50914'}}>← 목록으로</Text></TouchableOpacity><Text style={styles.headerTitle}>요청서 상세 내역</Text><View style={{width:50}}/></View>
+      <View style={styles.padding}>
+        <View style={{backgroundColor: '#111', padding: 20, borderRadius: 10, borderWidth: 1, borderColor: '#333'}}>
+          <Text style={{color: '#E50914', fontWeight: 'bold', marginBottom: 10}}>현장 기본 정보</Text>
+          <Text style={{color: '#fff', fontSize: 16, marginBottom: 5}}>종류: {selectedMyReq?.tags.join(', ')}</Text>
+          <Text style={{color: '#aaa', marginBottom: 5}}>작업 희망: {selectedMyReq?.dateOption === '날짜 지정' ? `${selectedMyReq.dateSpecific.y}년 ${selectedMyReq.dateSpecific.m}월 ${selectedMyReq.dateSpecific.d}일` : selectedMyReq?.dateOption}</Text>
+          <Text style={{color: '#aaa', marginBottom: 5}}>주소: {selectedMyReq?.loc}</Text>
+          <Text style={{color: '#aaa', marginBottom: 15}}>공통: {selectedMyReq?.area}평 / {selectedMyReq?.floor}층 / {selectedMyReq?.elevator}</Text>
+          
+          {(selectedMyReq?.tags.includes('고독사') || selectedMyReq?.tags.includes('자살')) && (
+            <Text style={{color: '#aaa', marginBottom: 5}}>[고독사 상세] 발견기간: {selectedMyReq.detailDeath.period === '기타' ? selectedMyReq.detailDeath.periodOther : selectedMyReq.detailDeath.period} / 바닥재질: {selectedMyReq.detailDeath.floor === '기타' ? selectedMyReq.detailDeath.floorOther : selectedMyReq.detailDeath.floor}</Text>
+          )}
+          {selectedMyReq?.tags.includes('강력범죄현장') && (
+             <Text style={{color: '#aaa', marginBottom: 5}}>[강력범죄 상세] 유형: {selectedMyReq.detailCrime.type === '기타' ? selectedMyReq.detailCrime.typeOther : selectedMyReq.detailCrime.type}</Text>
+          )}
+          
+          <View style={{height: 1, backgroundColor: '#222', marginVertical: 15}}/>
+          <Text style={{color: '#E50914', fontWeight: 'bold', marginBottom: 10}}>상황 설명</Text>
+          <Text style={{color: '#fff', lineHeight: 22}}>{selectedMyReq?.desc}</Text>
+        </View>
+      </View>
+    </ScrollView>
+  );
+
+  const renderCustomerContracts = () => {
+    const myContracts = quotesDB.filter(q => q.reqUserId === currentUser.id && ['paid', 'contracted', 'signed', 'completed'].includes(q.status));
+    return (
+      <ScrollView style={styles.bg}>
+        <View style={styles.header}><TouchableOpacity onPress={() => setPage('customer_dash')}><Text style={{color: '#E50914'}}>← 뒤로</Text></TouchableOpacity><Text style={styles.headerTitle}>전자계약 및 작업내역</Text><View style={{width:50}}/></View>
+        <View style={styles.padding}>
+          {myContracts.length === 0 ? <Text style={{color: '#888', textAlign: 'center', marginTop: 50}}>진행 중인 계약이 없습니다.</Text> : null}
+          {myContracts.map(c => (
+            <View key={c.id} style={{backgroundColor: '#1a0505', padding: 25, borderRadius: 15, borderWidth: 1, borderColor: '#E50914', marginBottom: 20}}>
+              <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10}}>
+                <Text style={{color: '#E50914', fontWeight: 'bold'}}>
+                  {c.status === 'paid' ? '💳 결제 완료 (업체 일정 조율 대기)' : c.status === 'contracted' ? '📝 서명 대기중' : c.status === 'signed' ? '🛠️ 작업 준비/진행중' : '✅ 작업 완료'}
+                </Text>
+              </View>
+              <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold'}}>{c.proName}</Text>
+              <Text style={{color: '#aaa', marginTop: 5}}>확정 일시: {c.scheduleDate ? `${c.scheduleDate} ${c.scheduleTime}` : '조율 중'}</Text>
+              <Text style={{color: '#aaa', marginTop: 5}}>결제 금액: {Number(c.price).toLocaleString()}원</Text>
+              
+              <View style={[styles.row, {marginTop: 20}]}>
+                {c.status !== 'paid' && (
+                  <TouchableOpacity style={[styles.halfBtn, {backgroundColor: '#222'}]} onPress={() => { setSelectedContract(c); setPage('e_contract'); }}>
+                    <Text style={{color: '#fff', fontWeight: 'bold'}}>계약서 보기/서명</Text>
+                  </TouchableOpacity>
+                )}
+                {c.status === 'completed' && !c.isReviewed ? (
+                  <TouchableOpacity style={[styles.halfBtn, {backgroundColor: '#E50914', borderColor: '#E50914'}]} onPress={() => { setSelectedContract(c); setPage('write_review'); }}>
+                    <Text style={{color: '#fff', fontWeight: 'bold'}}>⭐ 리뷰 작성하기</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity style={[styles.halfBtn, {backgroundColor: '#444'}]} onPress={() => setPage('chat_room')}><Text style={{color: '#fff'}}>담당자 채팅</Text></TouchableOpacity>
+                )}
+              </View>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+    );
+  };
+
+  const renderCustomerMyPage = () => (
+    <ScrollView style={styles.bg} contentContainerStyle={{paddingBottom: 80}}>
+      <View style={styles.header}><TouchableOpacity onPress={() => setPage('customer_dash')}><Text style={{color: '#E50914'}}>← 뒤로</Text></TouchableOpacity><Text style={styles.headerTitle}>마이페이지</Text><View style={{width:50}}/></View>
+      <View style={styles.padding}>
+        <View style={{backgroundColor: '#111', padding: 20, borderRadius: 10, marginBottom: 20}}><Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold'}}>{currentUser.name} 님</Text><Text style={{color: '#888', marginTop: 5}}>{currentUser.id}</Text></View>
+        <TouchableOpacity style={styles.menuCard} onPress={() => setPage('customer_edit_info')}><Text style={{color: '#fff'}}>내 정보 수정</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.menuCard} onPress={() => setPage('customer_pay_history')}><Text style={{color: '#fff'}}>결제 내역 관리</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.menuCard} onPress={() => setPage('customer_support')}><Text style={{color: '#fff'}}>고객센터</Text></TouchableOpacity>
+        <TouchableOpacity style={[styles.menuCard, {borderColor: '#E50914'}]} onPress={() => {setCurrentUser(null); setPage('main');}}><Text style={{color: '#E50914'}}>로그아웃</Text></TouchableOpacity>
+      </View>
+    </ScrollView>
+  );
+
+  const renderPlaceholderScreen = (title, backPage) => (
+    <View style={styles.bg}>
+      <View style={styles.header}><TouchableOpacity onPress={() => setPage(backPage)}><Text style={{color: '#E50914'}}>← 뒤로</Text></TouchableOpacity><Text style={styles.headerTitle}>{title}</Text><View style={{width:50}}/></View>
+      <View style={[styles.padding, {alignItems: 'center', marginTop: 50}]}><Text style={{color: '#fff', fontSize: 18}}>현재 준비 중인 메뉴입니다.</Text></View>
+    </View>
+  );
+
+  const renderCustomerRequest = () => {
+    const toggleTag = (tag) => { if(reqTags.includes(tag)) setReqTags(reqTags.filter(t => t !== tag)); else setReqTags([...reqTags, tag]); };
+    const toggleCommonType = (type) => { if(reqCommonType.includes(type)) setReqCommonType(reqCommonType.filter(t => t !== type)); else setReqCommonType([...reqCommonType, type]); };
+    const toggleTrashType = (type) => { if(detailTrash.types.includes(type)) setDetailTrash({...detailTrash, types: detailTrash.types.filter(t => t !== type)}); else setDetailTrash({...detailTrash, types: [...detailTrash.types, type]}); };
+    const toggleTrashService = (service) => { if(detailTrash.extraService.includes(service)) setDetailTrash({...detailTrash, extraService: detailTrash.extraService.filter(s => s !== service)}); else setDetailTrash({...detailTrash, extraService: [...detailTrash.extraService, service]}); };
+    
+    const tagList = ['고독사', '자살', '강력범죄현장', '쓰레기집', '화재', '침수', '악취제거', '유품정리'];
+    const commonList = ['아파트', '빌라', '상업공간', '야외'];
+    
+    const renderOptions = (list, currentVal, setter) => (
+      <View style={styles.tagWrap}>
+        {list.map(item => (
+          <TouchableOpacity key={item} style={[styles.tagBtn, {backgroundColor: currentVal === item ? '#fff' : '#111'}]} onPress={() => setter(item)}>
+            <Text style={{color: currentVal === item ? '#000' : '#888', fontWeight: currentVal === item ? 'bold' : 'normal'}}>{item}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+
+    const renderMultiOptions = (list, currentList, toggleFunc) => (
+      <View style={styles.tagWrap}>
+        {list.map(item => (
+          <TouchableOpacity key={item} style={[styles.tagBtn, {backgroundColor: currentList.includes(item) ? '#fff' : '#111'}]} onPress={() => toggleFunc(item)}>
+            <Text style={{color: currentList.includes(item) ? '#000' : '#888', fontWeight: currentList.includes(item) ? 'bold' : 'normal'}}>{item}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+
+    return (
+      <ScrollView style={styles.bg}>
+        <View style={styles.header}><TouchableOpacity onPress={() => setPage('customer_dash')}><Text style={{color: '#E50914'}}>← 취소</Text></TouchableOpacity><Text style={styles.headerTitle}>요청서 작성</Text><View style={{width:50}}/></View>
+        <View style={styles.padding}>
+          <Text style={styles.label}>현장 종류 선택 (복수 선택 가능) *</Text>
+          {renderMultiOptions(commonList, reqCommonType, toggleCommonType)}
+
+          <Text style={styles.label}>특수청소 유형 선택 *</Text>
+          <View style={styles.row}>
+            {tagList.map(t => (
+              <TouchableOpacity key={t} style={[styles.tagBtn, reqTags.includes(t) && {backgroundColor: '#E50914', borderColor: '#E50914'}]} onPress={() => toggleTag(t)}>
+                <Text style={{color: reqTags.includes(t) ? '#fff' : '#888', fontWeight: reqTags.includes(t)?'bold':'normal'}}>{t}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {reqTags.length > 0 && (
+            <View style={styles.dynamicCard}>
+              <Text style={{color: '#E50914', fontWeight: 'bold', fontSize: 16, marginBottom: 20}}>상세 현장 정보 입력</Text>
+              
+              <Text style={styles.dynamicLabel}>📍 면적 및 층수 공통 정보</Text>
+              <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10}}>
+                <TextInput placeholder="면적(평)" placeholderTextColor="#666" keyboardType="numeric" style={[styles.input, {flex: 1, marginRight: 5}]} value={reqArea} onChangeText={setReqArea}/>
+                <TextInput placeholder="층수" placeholderTextColor="#666" keyboardType="numeric" style={[styles.input, {flex: 1, marginLeft: 5}]} value={reqFloor} onChangeText={setReqFloor}/>
+              </View>
+              {renderOptions(['엘리베이터 있음', '엘리베이터 없음'], reqElevator, setReqElevator)}
+              <View style={{height: 1, backgroundColor: '#333', marginVertical: 15}} />
+
+              {(reqTags.includes('고독사') || reqTags.includes('자살')) && (
+                <View style={{marginBottom: 15}}>
+                  <Text style={styles.dynamicLabel}>📍 [고독사/자살] 발견되기까지의 기간</Text>
+                  {renderOptions(['1~3일', '4~7일', '1개월 이상', '모름', '기타'], detailDeath.period, (v)=>setDetailDeath({...detailDeath, period: v}))}
+                  
+                  <Text style={[styles.dynamicLabel, {marginTop: 15}]}>📍 [고독사/자살] 바닥 재질</Text>
+                  {renderOptions(['장판', '강화마루', '강마루', '데코타일', '모름', '기타'], detailDeath.floor, (v)=>setDetailDeath({...detailDeath, floor: v}))}
+                  {detailDeath.floor === '기타' && <TextInput placeholder="재질을 직접 입력하세요 (예: 대리석)" placeholderTextColor="#666" style={[styles.input, {marginTop: 5, backgroundColor: '#000'}]} value={detailDeath.floorOther} onChangeText={(t)=>setDetailDeath({...detailDeath, floorOther: t})}/>}
+                  
+                  <View style={{backgroundColor: 'rgba(229, 9, 20, 0.1)', padding: 10, borderRadius: 5, marginTop: 10}}>
+                    <Text style={{color: '#E50914', fontSize: 11, fontWeight: 'bold'}}>⚠️ 사망위치 및 바닥재질을 잘못 선택하실 경우, 현장 상황에 따른 추가 비용이 발생할 수 있습니다.</Text>
+                  </View>
+                  <View style={{height: 1, backgroundColor: '#333', marginVertical: 15}} />
+                </View>
+              )}
+              
+              {(reqTags.includes('강력범죄현장') || (reqTags.includes('강력범죄현장') && detailCrime.type === '방화')) && (
+                <View style={{marginBottom: 15}}>
+                  <Text style={styles.dynamicLabel}>📍 [강력범죄] 범죄 유형</Text>
+                  {renderOptions(['살인(미수)', '폭행', '방화', '기타'], detailCrime.type, (v)=>setDetailCrime({...detailCrime, type: v}))}
+                  
+                  <Text style={[styles.dynamicLabel, {marginTop: 15}]}>📍 사건 발생 및 오염 위치</Text>
+                  {renderOptions(['실내', '실외'], detailCrime.locMain, (v)=>setDetailCrime({...detailCrime, locMain: v, locSub: ''}))}
+                  
+                  {detailCrime.locMain === '실내' && renderOptions(['방', '거실', '화장실', '베란다', '기타'], detailCrime.locSub, (v)=>setDetailCrime({...detailCrime, locSub: v}))}
+                  {detailCrime.locMain === '실외' && renderOptions(['계단', '복도', '마당', '기타'], detailCrime.locSub, (v)=>setDetailCrime({...detailCrime, locSub: v}))}
+                  {detailCrime.locSub === '기타' && <TextInput placeholder="상세 위치를 입력해주세요" placeholderTextColor="#666" style={[styles.input, {marginTop: 5, backgroundColor: '#000'}]} value={detailCrime.locOther} onChangeText={(t)=>setDetailCrime({...detailCrime, locOther: t})}/>}
+                  
+                  {detailCrime.type === '방화' && (
+                    <View style={{marginTop: 15}}>
+                      <Text style={styles.dynamicLabel}>📍 방화(화재) 소실 정도</Text>
+                      {renderOptions(['일부소실', '전소'], detailFire.degree, (v)=>setDetailFire({...detailFire, degree: v}))}
+                      <Text style={{color: '#888', fontSize: 11, marginTop: 5}}>※ 도배지, 목재 등 마감재에 따른 그을음 제거는 한계가 있을 수 있습니다.</Text>
+                    </View>
+                  )}
+                  <View style={{height: 1, backgroundColor: '#333', marginVertical: 15}} />
+                </View>
+              )}
+
+              {reqTags.includes('쓰레기집') && (
+                <View style={{marginBottom: 15}}>
+                  <Text style={styles.dynamicLabel}>📍 [쓰레기집] 주요 쓰레기 유형 (복수선택)</Text>
+                  {renderMultiOptions(['배달쓰레기 및 생활쓰레기', '가구 및 대형폐기물'], detailTrash.types, toggleTrashType)}
+                  
+                  <Text style={[styles.dynamicLabel, {marginTop: 15}]}>📍 작업 범위 (이사 여부)</Text>
+                  {renderOptions(['일부폐기 및 청소', '전체폐기 및 청소'], detailTrash.moveType, (v)=>setDetailTrash({...detailTrash, moveType: v}))}
+                  
+                  <Text style={[styles.dynamicLabel, {marginTop: 15}]}>📍 추가 원하는 서비스</Text>
+                  {renderMultiOptions(['방역소독'], detailTrash.extraService, toggleTrashService)}
+                  <View style={{height: 1, backgroundColor: '#333', marginVertical: 15}} />
+                </View>
+              )}
+
+              {reqTags.includes('화재') && detailCrime.type !== '방화' && (
+                <View style={{marginBottom: 15}}>
+                  <Text style={styles.dynamicLabel}>📍 [화재] 소실 정도 및 위치</Text>
+                  {renderOptions(['일부소실', '전소'], detailFire.degree, (v)=>setDetailFire({...detailFire, degree: v}))}
+                  
+                  <Text style={[styles.dynamicLabel, {marginTop: 15}]}>📍 발생 및 오염 위치</Text>
+                  {renderOptions(['실내', '실외'], detailFire.locMain, (v)=>setDetailFire({...detailFire, locMain: v, locSub: ''}))}
+                  {detailFire.locMain === '실내' && renderOptions(['방', '거실', '화장실', '베란다', '기타'], detailFire.locSub, (v)=>setDetailFire({...detailFire, locSub: v}))}
+                  {detailFire.locMain === '실외' && renderOptions(['계단', '복도', '마당', '기타'], detailFire.locSub, (v)=>setDetailFire({...detailFire, locSub: v}))}
+                  
+                  <Text style={{color: '#888', fontSize: 11, marginTop: 10}}>※ 참고: 도배지 및 목재 등 마감재에 흡착된 그을음 제거는 자재 특성상 한계가 있을 수 있습니다.</Text>
+                  <View style={{height: 1, backgroundColor: '#333', marginVertical: 15}} />
+                </View>
+              )}
+
+              {reqTags.includes('침수') && (
+                <View style={{marginBottom: 15}}>
+                  <Text style={styles.dynamicLabel}>📍 [침수] 침수 유형 선택</Text>
+                  {renderOptions(['일반침수', '집수정', '저수조'], detailFlood.type, (v)=>setDetailFlood({...detailFlood, type: v}))}
+                  <View style={{height: 1, backgroundColor: '#333', marginVertical: 15}} />
+                </View>
+              )}
+
+              {reqTags.includes('유품정리') && (
+                <View style={{marginBottom: 15}}>
+                  <Text style={styles.dynamicLabel}>📍 [유품정리] 가구 및 가전 내역 (필수) *</Text>
+                  <TextInput placeholder="폐기하거나 정리해야 할 가구/가전의 종류와 갯수를 적어주세요." placeholderTextColor="#666" style={[styles.textArea, {height: 80, backgroundColor: '#000'}]} multiline value={detailInherit.furnitureDesc} onChangeText={(t)=>setDetailInherit({...detailInherit, furnitureDesc: t})}/>
+                  <View style={{height: 1, backgroundColor: '#333', marginVertical: 15}} />
+                </View>
+              )}
+            </View>
+          )}
+
+          <Text style={styles.label}>작업 희망 날짜 *</Text>
+          <View style={styles.row}>
+            <TouchableOpacity style={[styles.halfBtn, {width: '32%', padding: 10}, reqDateOption === '일주일 이내' && styles.activeBtn]} onPress={() => setReqDateOption('일주일 이내')}><Text style={{color: reqDateOption === '일주일 이내' ? '#fff' : '#888', fontSize: 12, fontWeight: 'bold'}}>일주일 이내</Text></TouchableOpacity>
+            <TouchableOpacity style={[styles.halfBtn, {width: '32%', padding: 10}, reqDateOption === '협의 가능' && styles.activeBtn]} onPress={() => setReqDateOption('협의 가능')}><Text style={{color: reqDateOption === '협의 가능' ? '#fff' : '#888', fontSize: 12, fontWeight: 'bold'}}>협의 가능</Text></TouchableOpacity>
+            <TouchableOpacity style={[styles.halfBtn, {width: '32%', padding: 10}, reqDateOption === '날짜 지정' && styles.activeBtn]} onPress={() => setReqDateOption('날짜 지정')}><Text style={{color: reqDateOption === '날짜 지정' ? '#fff' : '#888', fontSize: 12, fontWeight: 'bold'}}>날짜 지정</Text></TouchableOpacity>
+          </View>
+          {reqDateOption === '날짜 지정' && (
+            <View style={[styles.row, {marginTop: 5}]}><TextInput style={[styles.input, {flex: 1, marginRight: 5}]} placeholder="YYYY (년)" placeholderTextColor="#666" keyboardType="numeric" maxLength={4} value={reqYear} onChangeText={setReqYear}/><TextInput style={[styles.input, {flex: 1, marginHorizontal: 5}]} placeholder="MM (월)" placeholderTextColor="#666" keyboardType="numeric" maxLength={2} value={reqMonth} onChangeText={setReqMonth}/><TextInput style={[styles.input, {flex: 1, marginLeft: 5}]} placeholder="DD (일)" placeholderTextColor="#666" keyboardType="numeric" maxLength={2} value={reqDay} onChangeText={setReqDay}/></View>
+          )}
+
+          <Text style={styles.label}>현장 주소 *</Text>
+          <View style={{backgroundColor: '#111', padding: 15, borderRadius: 10, borderWidth: 1, borderColor: '#333', marginBottom: 15}}>
+            <Text style={{color: '#aaa', marginBottom: 10, fontSize: 12}}>지역 선택 (광역시/도 → 시/군/구 → 동/읍/면)</Text>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <TouchableOpacity style={styles.addressBox} onPress={()=>{setAddrStep(1); setAddrModalVisible(true);}}><Text style={{color: sido ? '#fff' : '#666'}}>{sido || '광역시/도'}</Text></TouchableOpacity>
+              <TouchableOpacity style={styles.addressBox} onPress={()=>{if(!sido)return Alert.alert("알림","광역시/도를 선택하세요"); setAddrStep(2); setAddrModalVisible(true);}}><Text style={{color: sigungu ? '#fff' : '#666'}}>{sigungu || '시/군/구'}</Text></TouchableOpacity>
+              <TouchableOpacity style={styles.addressBox} onPress={()=>{if(!sigungu)return Alert.alert("알림","시/군/구를 선택하세요"); setAddrStep(3); setAddrModalVisible(true);}}><Text style={{color: dong ? '#fff' : '#666'}}>{dong || '동/읍/면'}</Text></TouchableOpacity>
+            </View>
+          </View>
+
+          <TextInput placeholder="나머지 상세 주소 (예: 101동 202호)" placeholderTextColor="#666" style={styles.input} />
+          <Text style={styles.label}>대략적인 현장 상황 설명 *</Text>
+          <TextInput placeholder="기타 특이사항을 적어주세요." placeholderTextColor="#444" style={styles.textArea} multiline value={reqDesc} onChangeText={setReqDesc} />
+
+          <Text style={styles.label}>현장 사진 첨부 (선택)</Text>
+          <TouchableOpacity style={styles.cameraBtn} onPress={() => handleDocUpload('request')}><Text style={{color: '#fff'}}>📷 카메라/갤러리 사진 올리기 ({reqImages.length}/5)</Text></TouchableOpacity>
+
+          <TouchableOpacity style={[styles.primaryBtn, {marginTop: 40, marginBottom: 50}]} onPress={() => { 
+            if(reqCommonType.length === 0) return Alert.alert("알림", "현장 종류(아파트, 빌라 등)를 선택해주세요.");
+            if(reqTags.length === 0) return Alert.alert("알림", "특수청소 유형을 최소 1개 이상 선택해주세요.");
+            if(reqTags.includes('유품정리') && !detailInherit.furnitureDesc) return Alert.alert("알림", "유품정리 대상 가구 및 가전 내역을 입력해주세요.");
+            if(!reqDateOption) return Alert.alert("알림", "작업 희망 날짜 옵션을 선택해주세요.");
+            if(!sido || !sigungu || !dong) return Alert.alert("알림", "현장 주소를 리스트에서 모두 선택해주세요.");
+            if(!reqArea || !reqFloor || !reqElevator) return Alert.alert("알림", "공통 정보(면적/층수/엘리베이터)를 입력해주세요.");
+
+            const dateSpecific = reqDateOption === '날짜 지정' ? { y: reqYear, m: reqMonth, d: reqDay } : null;
+            const newReq = { 
+              id: Date.now().toString(), userId: currentUser.id, tags: reqTags, commonType: reqCommonType, loc: `${sido} ${sigungu} ${dong}`, 
+              area: reqArea, floor: reqFloor, elevator: reqElevator, detailDeath, detailCrime, detailTrash, detailFire, detailFlood, detailInherit,
+              dateOption: reqDateOption, dateSpecific, desc: reqDesc, images: reqImages, status: '견적 대기중' 
+            };
+            setRequestsDB([newReq, ...requestsDB]);
+            
+            Alert.alert("요청 완료", "성공적으로 요청서가 등록되었습니다."); 
+            triggerLocalNotification("🚨 신규 오더 알림", `[${sigungu}] 지역에 ${reqTags.join(', ')} 요청이 등록되었습니다.`); 
+
+            setReqTags([]); setReqCommonType([]); setDetailDeath({period:'', periodOther:'', floor:'', floorOther:''}); setDetailCrime({type:'', typeOther:'', locMain:'', locSub:'', locOther:''});
+            setDetailTrash({types:[], moveType:'', extraService:[]}); setDetailFire({degree:'', locMain:'', locSub:'', locOther:''}); setDetailFlood({type:''}); setDetailInherit({furnitureDesc:''});
+            setReqArea(''); setReqFloor(''); setReqElevator(''); setSido(''); setSigungu(''); setDong(''); setReqDesc(''); setReqImages([]);
+            setReqDateOption(''); setReqYear(''); setReqMonth(''); setReqDay('');
+            setPage('customer_dash'); 
+          }}><Text style={styles.btnText}>요청서 보내기</Text></TouchableOpacity>
+        </View>
+
+        <Modal visible={addrModalVisible} transparent={true} animationType="slide">
+          <View style={styles.modalOverlay}>
+            <View style={[styles.modalContent, {height: '80%', padding: 0}]}>
+              <View style={{padding: 20, borderBottomWidth: 1, borderColor: '#333', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold'}}>{addrStep === 1 ? '광역시/도 선택' : addrStep === 2 ? '시/군/구 선택' : '동/읍/면 선택'}</Text>
+                <TouchableOpacity onPress={() => setAddrModalVisible(false)}><Text style={{color: '#666', fontSize: 20}}>X</Text></TouchableOpacity>
+              </View>
+              <ScrollView style={{padding: 10}}>
+                {addrStep === 1 && Object.keys(koreaAddressData).map(s => (
+                  <TouchableOpacity key={s} style={{padding: 15, borderBottomWidth: 1, borderColor: '#222'}} onPress={() => {setSido(s); setTempSido(s); setSigungu(''); setDong(''); setAddrStep(2);}}>
+                    <Text style={{color: '#fff', fontSize: 16}}>{s}</Text>
+                  </TouchableOpacity>
+                ))}
+                {addrStep === 2 && tempSido && Object.keys(koreaAddressData[tempSido]).map(g => (
+                  <TouchableOpacity key={g} style={{padding: 15, borderBottomWidth: 1, borderColor: '#222'}} onPress={() => {setSigungu(g); setTempSigungu(g); setDong(''); setAddrStep(3);}}>
+                    <Text style={{color: '#fff', fontSize: 16}}>{g}</Text>
+                  </TouchableOpacity>
+                ))}
+                {addrStep === 3 && tempSigungu && koreaAddressData[tempSido][tempSigungu].map(d => (
+                  <TouchableOpacity key={d} style={{padding: 15, borderBottomWidth: 1, borderColor: '#222'}} onPress={() => {setDong(d); setAddrModalVisible(false);}}>
+                    <Text style={{color: '#fff', fontSize: 16}}>{d}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
+      </ScrollView>
+    );
+  };
+
+  const renderCustomerQuotes = () => {
+    const myQuotes = quotesDB.filter(q => q.reqUserId === currentUser.id && q.status === 'pending');
+    return (
+      <ScrollView style={styles.bg}>
+        <View style={styles.header}><TouchableOpacity onPress={() => setPage('customer_dash')}><Text style={{color: '#E50914'}}>← 뒤로</Text></TouchableOpacity><Text style={styles.headerTitle}>받은 견적함</Text><View style={{width:50}}/></View>
+        <View style={styles.padding}>
+          {myQuotes.length === 0 ? <Text style={{color: '#888', textAlign: 'center', marginTop: 50}}>도착한 견적이 없습니다.</Text> : null}
+          {myQuotes.map(q => {
+            const proUser = usersDB.find(u => u.id === q.proId);
+            return (
+              <View key={q.id} style={{backgroundColor: '#111', padding: 25, borderRadius: 15, borderWidth: 1, borderColor: '#333', marginBottom: 20}}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                  <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold'}}>{q.proName}</Text>
+                  <View style={{backgroundColor: 'rgba(40, 167, 69, 0.2)', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12, borderWidth: 1, borderColor: '#28a745'}}><Text style={{fontSize: 10, color: '#28a745', fontWeight: 'bold'}}>🛡️ 인증업체</Text></View>
+                </View>
+                <Text style={{color: '#E50914', fontSize: 24, fontWeight: 'bold', marginVertical: 15}}>{Number(q.price).toLocaleString()}원</Text>
+                <Text style={{color: '#aaa', marginBottom: 20, lineHeight: 22}}>{q.msg}</Text>
+                
+                <TouchableOpacity style={{backgroundColor: '#222', padding: 12, borderRadius: 8, alignItems: 'center', marginBottom: 15, borderWidth: 1, borderColor: '#444'}} onPress={() => {
+                  setViewingPro(proUser); setPage('customer_view_pro_profile');
+                }}><Text style={{color: '#fff', fontWeight: 'bold'}}>📄 업체 프로필 및 리뷰 보기</Text></TouchableOpacity>
+
+                <View style={styles.row}>
+                  <TouchableOpacity style={[styles.halfBtn, {backgroundColor: '#222'}]} onPress={() => setPage('chat_room')}><Text style={{color: '#fff'}}>💬 문의하기</Text></TouchableOpacity>
+                  <TouchableOpacity style={[styles.halfBtn, {backgroundColor: '#E50914', borderColor: '#E50914'}]} onPress={() => {setPaymentTargetQuote(q); setPage('payment');}}><Text style={{color: '#fff', fontWeight: 'bold'}}>결제 진행</Text></TouchableOpacity>
+                </View>
+              </View>
+            )
+          })}
+        </View>
+      </ScrollView>
+    );
+  };
+
+  const renderCustomerViewProProfile = () => {
+    if(!viewingPro) return null;
+    return (
+      <ScrollView style={styles.bg}>
+        <View style={styles.header}><TouchableOpacity onPress={() => setPage('customer_quotes')}><Text style={{color: '#E50914'}}>← 뒤로</Text></TouchableOpacity><Text style={styles.headerTitle}>업체 프로필</Text><View style={{width:50}}/></View>
+        <View style={styles.padding}>
+          <Text style={{color: '#fff', fontSize: 24, fontWeight: 'bold', marginBottom: 10}}>{viewingPro.compName}</Text>
+          <View style={{flexDirection: 'row', flexWrap: 'wrap', marginBottom: 20}}>
+            {viewingPro.keywords?.map(k => (
+              <View key={k} style={{backgroundColor: 'rgba(229, 9, 20, 0.2)', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 20, borderWidth: 1, borderColor: '#E50914', marginRight: 5, marginBottom: 5}}>
+                <Text style={{color: '#E50914', fontSize: 12, fontWeight: 'bold'}}>{k} 전문</Text>
+              </View>
+            ))}
+          </View>
+          <View style={{backgroundColor: '#111', padding: 20, borderRadius: 10, borderWidth: 1, borderColor: '#333', marginBottom: 20}}>
+            <Text style={{color: '#aaa', lineHeight: 22}}>{viewingPro.intro || '등록된 소개가 없습니다.'}</Text>
+            <View style={{height: 1, backgroundColor: '#222', marginVertical: 15}}/>
+            <Text style={{color: '#888', marginBottom: 5}}>👨‍🔧 직원 수: <Text style={{color: '#fff'}}>{viewingPro.empCount || '-'}</Text></Text>
+            <Text style={{color: '#888'}}>🛠️ 보유 장비: <Text style={{color: '#fff'}}>{viewingPro.equip || '-'}</Text></Text>
+          </View>
+          <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold', marginBottom: 15}}>작업 포트폴리오</Text>
+          {viewingPro.portfolios && viewingPro.portfolios.length > 0 ? (
+             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{marginBottom: 30}}>
+               {viewingPro.portfolios.map((img, idx) => (
+                 <Image key={idx} source={{uri: img}} style={{width: 200, height: 150, borderRadius: 10, marginRight: 10}} />
+               ))}
+             </ScrollView>
+          ) : <Text style={{color: '#666', marginBottom: 30}}>등록된 포트폴리오가 없습니다.</Text>}
+          <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold', marginBottom: 15}}>고객 리뷰 ({viewingPro.reviews?.length || 0}건)</Text>
+          {viewingPro.reviews && viewingPro.reviews.length > 0 ? (
+            viewingPro.reviews.map((r, i) => (
+              <View key={i} style={{backgroundColor: '#111', padding: 20, borderRadius: 10, borderWidth: 1, borderColor: '#333', marginBottom: 10}}>
+                <Text style={{color: '#FFD700', marginBottom: 5}}>{'⭐'.repeat(r.rating)} {r.rating}.0</Text>
+                <Text style={{color: '#fff', fontSize: 14, lineHeight: 20}}>{r.text}</Text>
+              </View>
+            ))
+          ) : <Text style={{color: '#666'}}>아직 등록된 리뷰가 없습니다.</Text>}
+        </View>
+      </ScrollView>
+    );
+  };
+
+  const renderPayment = () => (
+    <View style={styles.bg}>
+      <View style={styles.header}><TouchableOpacity onPress={() => setPage('customer_quotes')}><Text style={{color: '#E50914'}}>← 뒤로</Text></TouchableOpacity><Text style={styles.headerTitle}>안심 결제</Text><View style={{width:50}}/></View>
+      <ScrollView style={styles.padding}>
+        <View style={{backgroundColor: '#111', padding: 20, borderRadius: 10, borderWidth: 1, borderColor: '#333', marginBottom: 20}}>
+          <Text style={{color: '#888', marginBottom: 5}}>결제 대상 업체</Text>
+          <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold'}}>{paymentTargetQuote?.proName}</Text>
+          <View style={{height: 1, backgroundColor: '#333', marginVertical: 15}}/>
+          <Text style={{color: '#888', marginBottom: 5}}>총 결제 금액</Text>
+          <Text style={{color: '#E50914', fontSize: 26, fontWeight: 'bold'}}>{Number(paymentTargetQuote?.price).toLocaleString()}원</Text>
+        </View>
+        <Text style={styles.label}>결제 수단 선택</Text>
+        <View style={styles.row}>
+          <TouchableOpacity style={[styles.halfBtn, payMethod === 'card' && styles.activeBtn]} onPress={() => setPayMethod('card')}><Text style={payMethod === 'card' ? styles.activeText : {color: '#888'}}>💳 신용/체크카드</Text></TouchableOpacity>
+          <TouchableOpacity style={[styles.halfBtn, payMethod === 'transfer' && styles.activeBtn]} onPress={() => setPayMethod('transfer')}><Text style={payMethod === 'transfer' ? styles.activeText : {color: '#888'}}>🏦 실시간 계좌이체</Text></TouchableOpacity>
+        </View>
+        
+        {payMethod === 'card' && (
+          <View><TextInput placeholder="카드번호 16자리" placeholderTextColor="#666" style={styles.input} keyboardType="numeric"/><View style={styles.row}><TextInput placeholder="MM/YY" placeholderTextColor="#666" style={[styles.input, {flex: 1, marginRight: 5}]} /><TextInput placeholder="CVC" placeholderTextColor="#666" style={[styles.input, {flex: 1, marginLeft: 5}]} secureTextEntry /></View></View>
+        )}
+        
+        <TouchableOpacity style={[styles.primaryBtn, {marginTop: 30, marginBottom: 50}]} onPress={() => {
+          setQuotesDB(quotesDB.map(q => q.id === paymentTargetQuote.id ? {...q, status: 'paid'} : q));
+          Alert.alert("결제 완료", "특청 안심결제가 안전하게 완료되었습니다.");
+          triggerLocalNotification("결제 완료 알림", "고객님이 결제를 완료했습니다. 일정을 확정해주세요."); 
+          setPage('customer_dash');
+        }}><Text style={styles.btnText}>{Number(paymentTargetQuote?.price).toLocaleString()}원 결제하기</Text></TouchableOpacity>
+      </ScrollView>
+    </View>
+  );
+
+  const renderWriteReview = () => {
+    return (
+      <View style={styles.bg}>
+        <View style={styles.header}><TouchableOpacity onPress={() => setPage('customer_contracts')}><Text style={{color: '#E50914'}}>← 취소</Text></TouchableOpacity><Text style={styles.headerTitle}>리뷰 작성</Text><View style={{width:50}}/></View>
+        <ScrollView style={styles.padding}>
+          <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold', marginBottom: 15}}>{selectedContract?.proName} 어떠셨나요?</Text>
+          <View style={{flexDirection: 'row', justifyContent: 'center', marginBottom: 30}}>
+            {[1,2,3,4,5].map(num => (
+              <TouchableOpacity key={num} onPress={()=>setReviewRating(num.toString())}>
+                <Text style={{fontSize: 40, color: num <= Number(reviewRating) ? '#FFD700' : '#444'}}>⭐</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          <Text style={styles.label}>상세 후기 작성</Text>
+          <TextInput placeholder="다른 고객들에게 도움이 될 수 있도록 솔직한 후기를 남겨주세요." placeholderTextColor="#666" style={[styles.textArea, {height: 150}]} multiline value={reviewText} onChangeText={setReviewText}/>
+          <TouchableOpacity style={[styles.primaryBtn, {marginTop: 40}]} onPress={() => {
+            if(!reviewText) return Alert.alert("알림", "리뷰 내용을 입력해주세요.");
+            setUsersDB(usersDB.map(u => {
+              if(u.id === selectedContract.proId) {
+                const newReview = { rating: Number(reviewRating), text: reviewText };
+                return {...u, reviews: [...(u.reviews||[]), newReview]};
+              }
+              return u;
+            }));
+            setQuotesDB(quotesDB.map(q => q.id === selectedContract.id ? {...q, isReviewed: true} : q));
+            Alert.alert("작성 완료", "소중한 리뷰가 등록되었습니다.");
+            setReviewRating('5'); setReviewText(''); setPage('customer_contracts');
+          }}><Text style={styles.btnText}>리뷰 등록하기</Text></TouchableOpacity>
+        </ScrollView>
+      </View>
+    );
+  };
+
+  const renderEContract = () => {
+    const isCustomer = currentUser.role === 'customer' || currentUser.role === 'gov';
+    return (
+      <ScrollView style={styles.bg}>
+        <View style={styles.header}><TouchableOpacity onPress={() => setPage(isCustomer ? 'customer_contracts' : 'pro_contract_status')}><Text style={{color: '#E50914'}}>← 뒤로</Text></TouchableOpacity><Text style={styles.headerTitle}>특수청소 전자계약서</Text><View style={{width:50}}/></View>
+        <View style={styles.padding}>
+          <View style={{backgroundColor: '#fff', padding: 20, borderRadius: 5, marginBottom: 30}}>
+            <Text style={{color: '#000', fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 20}}>표준 특수청소 도급 계약서</Text>
+            <Text style={{color: '#000', marginBottom: 10, lineHeight: 22}}>도급인 (고객 ID): {selectedContract?.reqUserId}</Text>
+            <Text style={{color: '#000', marginBottom: 10, lineHeight: 22}}>수급인 (업체명): {selectedContract?.proName}</Text>
+            <Text style={{color: '#000', marginBottom: 10, lineHeight: 22}}>작업 예정일: {selectedContract?.scheduleDate} {selectedContract?.scheduleTime}</Text>
+            <Text style={{color: '#000', marginBottom: 20, lineHeight: 22}}>계약 금액: 금 {Number(selectedContract?.price).toLocaleString()} 원정</Text>
+            <Text style={{color: '#333', fontSize: 12, lineHeight: 18}}>제 1조. 수급인은 도급인이 요청한 장소에서 특수청소 및 소독/방역 작업을 성실히 수행한다.{"\n"}제 2조. 본 계약의 대금은 특청 플랫폼의 안심결제(에스크로) 시스템을 통해 보관되며, 작업 완료 후 도급인의 승인 시 수급인에게 지급된다.{"\n"}(이하 생략)</Text>
+          </View>
+          
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 30}}>
+            <View style={{flex: 1, backgroundColor: '#111', padding: 15, borderRadius: 10, marginRight: 5, alignItems: 'center', borderWidth: 1, borderColor: selectedContract?.customerSigned ? '#28a745' : '#444'}}>
+              <Text style={{color: '#888', marginBottom: 10}}>고객 서명란</Text>
+              <Text style={{color: selectedContract?.customerSigned ? '#28a745' : '#E50914', fontWeight: 'bold'}}>{selectedContract?.customerSigned ? '(서명완료)' : '미서명'}</Text>
+            </View>
+            <View style={{flex: 1, backgroundColor: '#111', padding: 15, borderRadius: 10, marginLeft: 5, alignItems: 'center', borderWidth: 1, borderColor: selectedContract?.proSigned ? '#28a745' : '#444'}}>
+              <Text style={{color: '#888', marginBottom: 10}}>업체 서명란</Text>
+              <Text style={{color: selectedContract?.proSigned ? '#28a745' : '#E50914', fontWeight: 'bold'}}>{selectedContract?.proSigned ? '(서명완료)' : '미서명'}</Text>
+            </View>
+          </View>
+
+          {((isCustomer && !selectedContract?.customerSigned) || (!isCustomer && !selectedContract?.proSigned)) && selectedContract?.status !== 'completed' && (
+            <TouchableOpacity style={styles.primaryBtn} onPress={handleSignContract}><Text style={styles.btnText}>위 계약 내용에 동의하며 서명합니다</Text></TouchableOpacity>
+          )}
+
+          {!isCustomer && selectedContract?.status === 'signed' && (
+            <TouchableOpacity style={[styles.primaryBtn, {backgroundColor: '#28a745', marginTop: 10}]} onPress={() => {
+              Alert.alert("작업 완료", "작업 완료 처리가 되었습니다. 고객에게 리뷰 작성을 요청합니다.");
+              setQuotesDB(quotesDB.map(q => q.id === selectedContract.id ? {...q, status: 'completed'} : q));
+              triggerLocalNotification("작업 완료", "업체가 작업을 완료했습니다. 검수 후 리뷰를 남겨주세요.");
+              setPage('pro_contract_status');
+            }}><Text style={styles.btnText}>☑️ 현장 작업 완료 처리하기</Text></TouchableOpacity>
+          )}
+        </View>
+      </ScrollView>
+    );
+  };
+
+  const renderChatRoom = () => (
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.bg}>
+      <View style={styles.header}><TouchableOpacity onPress={() => setPage(currentUser.role === 'customer' || currentUser.role === 'gov' ? 'customer_dash' : 'pro_dash')}><Text style={{color: '#E50914'}}>← 뒤로</Text></TouchableOpacity><Text style={styles.headerTitle}>상담 채팅</Text><View style={{width: 40}}/></View>
+      <FlatList data={chatDB} keyExtractor={(item, index) => index.toString()} style={{flex: 1, padding: 20}} renderItem={({item}) => (
+          <View style={[styles.chatBubble, item.sender === currentUser.id ? styles.myChat : styles.yourChat]}><Text style={{color: item.sender === currentUser.id ? '#fff' : '#ddd'}}>{item.text}</Text></View>
+      )}/>
+      <View style={[styles.chatInputBar, { paddingBottom: Platform.OS === 'ios' ? 45 : 35 }]}>
+        <TextInput style={styles.chatChatInput} placeholder="메시지 입력..." placeholderTextColor="#666" value={chatInput} onChangeText={setChatInput} />
+        <TouchableOpacity style={styles.sendBtn} onPress={() => {
+          if(!chatInput) return;
+          setChatDB([...chatDB, {sender: currentUser.id, text: chatInput}]);
+          triggerLocalNotification("새 메시지", "채팅방에 새로운 메시지가 도착했습니다."); 
+          setChatInput('');
+        }}><Text style={{color: '#fff', fontWeight: 'bold'}}>전송</Text></TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
+  );
+
+  const renderAdminDash = () => {
+    const pendingPros = usersDB.filter(u => u.role === 'pro' && u.docStatus === 'pending');
+    const openAdminModal = (proId, proDocs, type) => {
+      setTargetProId(proId); setTargetProDocs(proDocs); setAdminActionType(type);
+      setAdminForm({ dept: '', name: '', empId: '', reason: '' }); setAdminModalVisible(true);
+    };
+    const submitAdminAction = () => {
+      if(!adminForm.dept || !adminForm.name || !adminForm.empId) return Alert.alert("알림", "결재자 정보를 모두 입력하세요.");
+      if(adminActionType === 'reject' && !adminForm.reason) return Alert.alert("알림", "반려 사유를 필수로 적어주세요.");
+      setUsersDB(usersDB.map(u => {
+        if(u.id === targetProId) {
+          if(adminActionType === 'approve') return { ...u, isApproved: true, docStatus: 'approved', rejectReason: '' };
+          else return { ...u, isApproved: false, docStatus: 'rejected', rejectReason: adminForm.reason };
+        }
+        return u;
+      }));
+      Alert.alert("결재 완료", `${adminActionType === 'approve' ? '승인' : '반려'} 처리되었습니다.`);
+      setAdminModalVisible(false);
+    };
+    return (
+      <View style={styles.bg}>
+        <View style={{paddingTop: 70, paddingBottom: 20, paddingHorizontal: 30, backgroundColor: '#E50914', flexDirection: 'row', justifyContent: 'space-between'}}><Text style={{color: '#fff', fontSize: 22, fontWeight: 'bold'}}>⚙️ 관리자 결재 센터</Text><TouchableOpacity onPress={() => {setCurrentUser(null); setPage('main');}}><Text style={{color: '#fff'}}>로그아웃</Text></TouchableOpacity></View>
+        <ScrollView style={styles.padding}>
+          <Text style={[styles.label, {color: '#fff', fontSize: 18, marginTop: 10}]}>서류 심사 대기열 ({pendingPros.length}건)</Text>
+          {pendingPros.map(pro => (
+            <View key={pro.id} style={styles.menuCard}>
+              <View style={{flex: 1}}><Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold'}}>{pro.compName}</Text><Text style={{color: '#aaa', marginTop: 5}}>사업자: {pro.bizNum}</Text></View>
+              <View style={{justifyContent: 'space-between'}}>
+                <TouchableOpacity style={[styles.smallBtn, {backgroundColor: '#28a745', marginBottom: 10}]} onPress={() => openAdminModal(pro.id, pro.docs, 'approve')}><Text style={{color: '#fff', fontWeight: 'bold'}}>서류확인/승인</Text></TouchableOpacity>
+                <TouchableOpacity style={[styles.smallBtn, {backgroundColor: '#E50914'}]} onPress={() => openAdminModal(pro.id, pro.docs, 'reject')}><Text style={{color: '#fff', fontWeight: 'bold'}}>반려</Text></TouchableOpacity>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
+        <Modal visible={adminModalVisible} transparent={true} animationType="slide">
+          <ScrollView style={styles.modalOverlay} contentContainerStyle={{paddingVertical: 50}}>
+            <View style={styles.modalContent}>
+              <Text style={{fontSize: 20, fontWeight: 'bold', color: '#fff', marginBottom: 20}}>{adminActionType === 'approve' ? '✅ 업체 최종 승인 결재' : '🚫 업체 서류 반려 결재'}</Text>
+              {targetProDocs && (
+                <View style={{marginBottom: 20, padding: 10, backgroundColor: '#222', borderRadius: 10}}>
+                  <Text style={{color: '#fff', fontWeight: 'bold', marginBottom: 10}}>📸 첨부된 심사 서류 확인</Text>
+                  {targetProDocs.biz && <Image source={{uri: targetProDocs.biz}} style={{width: '100%', height: 100, marginBottom: 5, borderRadius: 5}} resizeMode="cover" />}
+                  {targetProDocs.sanitation && <Image source={{uri: targetProDocs.sanitation}} style={{width: '100%', height: 100, marginBottom: 5, borderRadius: 5}} resizeMode="cover" />}
+                  {targetProDocs.disinfection && <Image source={{uri: targetProDocs.disinfection}} style={{width: '100%', height: 100, marginBottom: 5, borderRadius: 5}} resizeMode="cover" />}
+                  {targetProDocs.waste && <Image source={{uri: targetProDocs.waste}} style={{width: '100%', height: 100, marginBottom: 5, borderRadius: 5}} resizeMode="cover" />}
+                  {targetProDocs.waterTank && <Image source={{uri: targetProDocs.waterTank}} style={{width: '100%', height: 100, marginBottom: 5, borderRadius: 5}} resizeMode="cover" />}
+                </View>
+              )}
+              <Text style={styles.modalLabel}>결재 일자</Text><TextInput style={[styles.input, {backgroundColor: '#222', color: '#888'}]} value={todayDate} editable={false} />
+              <Text style={styles.modalLabel}>담당 부서 *</Text><TextInput style={styles.input} placeholderTextColor="#666" onChangeText={t => setAdminForm({...adminForm, dept: t})} />
+              <View style={styles.row}>
+                <View style={{flex: 1, marginRight: 10}}><Text style={styles.modalLabel}>결재자 이름 *</Text><TextInput style={styles.input} placeholderTextColor="#666" onChangeText={t => setAdminForm({...adminForm, name: t})} /></View>
+                <View style={{flex: 1}}><Text style={styles.modalLabel}>사원번호 *</Text><TextInput style={styles.input} placeholderTextColor="#666" keyboardType="numeric" onChangeText={t => setAdminForm({...adminForm, empId: t})} /></View>
+              </View>
+              {adminActionType === 'reject' && (<><Text style={[styles.modalLabel, {color: '#E50914'}]}>반려 사유 *</Text><TextInput style={[styles.textArea, {height: 80}]} placeholderTextColor="#666" multiline onChangeText={t => setAdminForm({...adminForm, reason: t})} /></>)}
+              <View style={[styles.row, {marginTop: 20}]}>
+                <TouchableOpacity style={[styles.halfBtn, {backgroundColor: '#444'}]} onPress={() => setAdminModalVisible(false)}><Text style={{color: '#fff'}}>취소</Text></TouchableOpacity>
+                <TouchableOpacity style={[styles.halfBtn, {backgroundColor: adminActionType === 'approve' ? '#28a745' : '#E50914'}]} onPress={submitAdminAction}><Text style={{color: '#fff', fontWeight: 'bold'}}>결재 완료</Text></TouchableOpacity>
+              </View>
+            </View>
+          </ScrollView>
+        </Modal>
+      </View>
+    );
+  };
+
+  const renderProDash = () => {
+    const updatedUser = usersDB.find(u => u.id === currentUser.id);
+    const needsSanitation = updatedUser.keywords?.some(k => ['고독사', '자살', '강력범죄현장', '화재', '악취제거'].includes(k));
+    const needsWaste = updatedUser.keywords?.some(k => ['쓰레기집', '유품정리'].includes(k));
+    const needsWaterTank = updatedUser.keywords?.some(k => k === '침수');
+
+    const requestApproval = () => {
+      let isReady = docs.biz; 
+      if(needsSanitation) isReady = isReady && docs.sanitation && docs.disinfection;
+      if(needsWaterTank) isReady = isReady && docs.waterTank;
+
+      if(isReady) {
+        setUsersDB(usersDB.map(u => u.id === updatedUser.id ? {...u, docStatus: 'pending', docs} : u));
+        Alert.alert("심사 요청 완료", "관리자에게 서류가 전달되었습니다.");
+      } else Alert.alert("알림", "선택하신 전문 분야에 필요한 필수 서류를 모두 첨부해주세요.");
+    };
+
+    const paidOrders = quotesDB.filter(q => q.proId === currentUser.id && q.status === 'paid');
+
+    return (
+      <ScrollView style={styles.bg}>
+        <View style={{backgroundColor: '#111', padding: 30, paddingTop: 70, borderBottomWidth: 1, borderBottomColor: '#E50914', flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={{color: '#fff', fontSize: 20, fontWeight: 'bold'}}>{updatedUser.compName} 대표님</Text>
+          <TouchableOpacity onPress={() => setPage('pro_mypage')}><Text style={{color: '#fff', fontSize: 20}}>⚙️</Text></TouchableOpacity>
+        </View>
+        {!updatedUser.isApproved ? (
+          <View style={styles.padding}>
+            {updatedUser.docStatus === 'pending' ? (
+              <View style={{alignItems: 'center', marginTop: 50}}><Text style={{color: '#FFD700', fontSize: 60, marginBottom: 20}}>⏳</Text><Text style={{color: '#fff', fontSize: 20, fontWeight: 'bold'}}>심사 진행 중</Text></View>
+            ) : (
+              <>
+                <Text style={{color: '#E50914', fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>⚠️ 권한이 없습니다.</Text>
+                {updatedUser.docStatus === 'rejected' && (<View style={{backgroundColor: 'rgba(229, 9, 20, 0.1)', padding: 15, borderRadius: 10, borderWidth: 1, borderColor: '#E50914', marginBottom: 20}}><Text style={{color: '#E50914', fontWeight: 'bold', marginBottom: 5}}>서류 심사 반려 안내</Text><Text style={{color: '#fff'}}>{updatedUser.rejectReason}</Text></View>)}
+                <Text style={{color: '#aaa', marginBottom: 20, lineHeight: 22}}>활동을 위해 아래 허가증 사진을 첨부해 주세요.</Text>
+                
+                <TouchableOpacity style={[styles.uploadBox, docs.biz && {borderColor: '#28a745'}]} onPress={() => handleDocUpload('biz')}><Text style={{color: docs.biz ? '#28a745' : '#888'}}>{docs.biz ? '✅ 첨부됨' : '📷 [공통필수] 사업자등록증 첨부'}</Text></TouchableOpacity>
+                
+                {needsSanitation && (
+                  <>
+                    <TouchableOpacity style={[styles.uploadBox, docs.sanitation && {borderColor: '#28a745'}]} onPress={() => handleDocUpload('sanitation')}><Text style={{color: docs.sanitation ? '#28a745' : '#888'}}>{docs.sanitation ? '✅ 첨부됨' : '📷 [특수/방역필수] 건물위생관리업 첨부'}</Text></TouchableOpacity>
+                    <TouchableOpacity style={[styles.uploadBox, docs.disinfection && {borderColor: '#28a745'}]} onPress={() => handleDocUpload('disinfection')}><Text style={{color: docs.disinfection ? '#28a745' : '#888'}}>{docs.disinfection ? '✅ 첨부됨' : '📷 [특수/방역필수] 소독업 신고증 첨부'}</Text></TouchableOpacity>
+                  </>
+                )}
+                
+                {needsWaste && (
+                   <TouchableOpacity style={[styles.uploadBox, docs.waste && {borderColor: '#28a745'}]} onPress={() => handleDocUpload('waste')}><Text style={{color: docs.waste ? '#28a745' : '#888'}}>{docs.waste ? '✅ 첨부됨' : '📷 [선택] 폐기물수집운반업 첨부 (인증마크 부여)'}</Text></TouchableOpacity>
+                )}
+
+                {needsWaterTank && (
+                   <TouchableOpacity style={[styles.uploadBox, docs.waterTank && {borderColor: '#28a745'}]} onPress={() => handleDocUpload('waterTank')}><Text style={{color: docs.waterTank ? '#28a745' : '#888'}}>{docs.waterTank ? '✅ 첨부됨' : '📷 [침수필수] 저수조청소업 신고증 첨부'}</Text></TouchableOpacity>
+                )}
+
+                <TouchableOpacity style={[styles.primaryBtn, {marginTop: 30}]} onPress={requestApproval}><Text style={styles.btnText}>심사 요청하기</Text></TouchableOpacity>
+              </>
+            )}
+          </View>
+        ) : (
+          <View style={styles.padding}>
+            <Text style={[styles.label, {marginTop: 0, color:'#28a745', marginBottom: 20}]}>✅ 승인 완료: 오더 수신 중</Text>
+            
+            {paidOrders.length > 0 && (
+              <View style={{marginBottom: 20}}>
+                <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold', marginBottom: 15}}>💸 결제 완료된 오더 (일정 조율 대기)</Text>
+                {paidOrders.map(order => (
+                  <View key={order.id} style={{backgroundColor: '#1a0505', padding: 25, borderRadius: 15, borderWidth: 1, borderColor: '#E50914', marginBottom: 15}}>
+                    <Text style={{color: '#E50914', fontWeight: 'bold', marginBottom: 5}}>고객 결제 완료</Text>
+                    <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold'}}>총 {Number(order.price).toLocaleString()}원</Text>
+                    <TouchableOpacity style={[styles.primaryBtn, {marginTop: 15, paddingVertical: 12}]} onPress={() => { setTargetScheduleQuote(order); setPage('pro_schedule_manage'); }}>
+                      <Text style={{color: '#fff', fontWeight: 'bold'}}>일정 확정 및 계약 진행</Text>
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </View>
+            )}
+
+            <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold', marginBottom: 15}}>실시간 도착 오더</Text>
+            {requestsDB.length === 0 ? <Text style={{color: '#888', textAlign: 'center', marginTop: 30}}>새로운 오더가 없습니다.</Text> : null}
+            {requestsDB.map(req => (
+              <View key={req.id} style={{backgroundColor: '#111', padding: 25, borderRadius: 15, borderWidth: 1, borderColor: '#333', marginBottom: 15}}>
+                <Text style={{color: '#E50914', fontWeight: 'bold', marginBottom: 5}}>🚨 [매칭 대기]</Text>
+                <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold'}}>[{req.loc.split(' ')}] {req.tags.join(', ')}</Text>
+                <Text style={{color: '#aaa', marginTop: 8}}>유형: {req.commonType.join(', ')}</Text>
+                <Text style={{color: '#aaa', marginTop: 3}}>희망일: {req.dateOption === '날짜 지정' ? `${req.dateSpecific.y}/${req.dateSpecific.m}/${req.dateSpecific.d}` : req.dateOption}</Text>
+                <TouchableOpacity style={[styles.primaryBtn, {marginTop: 20, paddingVertical: 12}]} onPress={() => { setSelectedReq(req); setPage('pro_request_detail'); }}>
+                  <Text style={{color: '#fff', fontWeight: 'bold'}}>상세보기 및 견적작성</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+        )}
+      </ScrollView>
+    );
+  };
+
+  const renderProRequestDetail = () => {
+    const handleSendQuote = () => {
+      if(!quotePrice || !quoteMsg) return Alert.alert("알림", "견적 금액과 메시지를 입력해주세요.");
+      const newQuote = { id: Date.now(), reqUserId: selectedReq.userId, reqId: selectedReq.id, proId: currentUser.id, proName: currentUser.compName, price: quotePrice, msg: quoteMsg, isVerified: true, status: 'pending' };
+      setQuotesDB([newQuote, ...quotesDB]);
+      Alert.alert("견적 발송 완료", "고객님께 견적서가 안전하게 전달되었습니다.");
+      triggerLocalNotification("💌 견적 도착", `${currentUser.compName} 업체로부터 새로운 견적이 도착했습니다.`); 
+      setQuotePrice(''); setQuoteMsg(''); setPage('pro_dash');
+    };
+
+    return (
+      <ScrollView style={styles.bg}>
+        <View style={styles.header}><TouchableOpacity onPress={() => setPage('pro_dash')}><Text style={{color: '#E50914'}}>← 뒤로</Text></TouchableOpacity><Text style={styles.headerTitle}>오더 상세 및 견적</Text><View style={{width:50}}/></View>
+        <View style={styles.padding}>
+          <View style={{backgroundColor: '#111', padding: 20, borderRadius: 10, borderWidth: 1, borderColor: '#333', marginBottom: 20}}>
+            <Text style={{color: '#E50914', fontWeight: 'bold', marginBottom: 10}}>📄 고객 요청 상세 내용</Text>
+            <Text style={{color: '#fff', fontSize: 16, marginBottom: 5}}>현장: {selectedReq?.commonType.join(', ')} ({selectedReq?.tags.join(', ')})</Text>
+            <Text style={{color: '#aaa', marginBottom: 5}}>주소: {selectedReq?.loc}</Text>
+            <Text style={{color: '#aaa', marginBottom: 5}}>공통: {selectedReq?.area}평 / {selectedReq?.floor}층 / {selectedReq?.elevator}</Text>
+            
+            {selectedReq?.tags.includes('고독사') && (
+              <Text style={{color: '#FFD700', fontSize: 12, marginBottom: 5}}>※ 발견기간: {selectedReq.detailDeath.period} / 바닥: {selectedReq.detailDeath.floor}</Text>
+            )}
+            {selectedReq?.tags.includes('쓰레기집') && (
+              <Text style={{color: '#FFD700', fontSize: 12, marginBottom: 5}}>※ 유형: {selectedReq.detailTrash.types.join(', ')} / 범위: {selectedReq.detailTrash.moveType}</Text>
+            )}
+            
+            <Text style={{color: '#aaa', marginTop: 10}}>상황 설명: {selectedReq?.desc}</Text>
+          </View>
+
+          <TouchableOpacity style={[styles.proBtn, {marginBottom: 30, borderColor: '#fff'}]} onPress={() => setPage('chat_room')}><Text style={{color: '#fff', fontWeight: 'bold'}}>💬 고객과 먼저 채팅 상담하기</Text></TouchableOpacity>
+
+          <Text style={styles.label}>견적 금액 제안 (숫자만 입력) *</Text>
+          <TextInput placeholder="예: 1500000" placeholderTextColor="#666" style={styles.input} keyboardType="numeric" value={quotePrice} onChangeText={setQuotePrice} />
+          <Text style={styles.label}>고객에게 보낼 메시지 *</Text>
+          <TextInput placeholder="전문성이나 추가 설명을 어필해보세요." placeholderTextColor="#444" style={styles.textArea} multiline value={quoteMsg} onChangeText={setQuoteMsg} />
+          <TouchableOpacity style={[styles.primaryBtn, {marginTop: 30, marginBottom: 50}]} onPress={handleSendQuote}><Text style={styles.btnText}>고객에게 견적 보내기</Text></TouchableOpacity>
+        </View>
+      </ScrollView>
+    );
+  };
+
+  const renderProScheduleManage = () => (
+    <ScrollView style={styles.bg}>
+      <View style={styles.header}><TouchableOpacity onPress={() => setPage('pro_dash')}><Text style={{color: '#E50914'}}>← 뒤로</Text></TouchableOpacity><Text style={styles.headerTitle}>계약 및 일정 확정</Text><View style={{width:50}}/></View>
+      <View style={styles.padding}>
+        <View style={{backgroundColor: '#111', padding: 20, borderRadius: 10, borderWidth: 1, borderColor: '#333', marginBottom: 20}}>
+          <Text style={{color: '#888', marginBottom: 5}}>고객 결제 금액</Text>
+          <Text style={{color: '#E50914', fontSize: 24, fontWeight: 'bold', marginBottom: 15}}>{Number(targetScheduleQuote?.price).toLocaleString()}원</Text>
+          <Text style={{color: '#fff'}}>고객 ID: {targetScheduleQuote?.reqUserId}</Text>
+        </View>
+
+        <Text style={styles.label}>작업 예정 일자 (날짜 입력)</Text>
+        <TextInput placeholder="예: 2026년 4월 15일" placeholderTextColor="#666" style={styles.input} value={scheduleDate} onChangeText={setScheduleDate} />
+        <Text style={styles.label}>작업 시작 시간</Text>
+        <TextInput placeholder="예: 오전 09시 30분" placeholderTextColor="#666" style={styles.input} value={scheduleTime} onChangeText={setScheduleTime} />
+
+        <TouchableOpacity style={[styles.primaryBtn, {marginTop: 30}]} onPress={() => {
+          if(!scheduleDate || !scheduleTime) return Alert.alert("알림", "일정을 모두 입력해주세요.");
+          setQuotesDB(quotesDB.map(q => q.id === targetScheduleQuote.id ? {...q, status: 'contracted', scheduleDate, scheduleTime} : q));
+          Alert.alert("계약 준비", "일정이 확정되었습니다. 전자계약서에 서명해주세요.");
+          triggerLocalNotification("계약 확정 알림", "특수청소 일정이 조율되었습니다. 전자계약서에 서명해주세요."); 
+          setPage('pro_contract_status');
+        }}><Text style={styles.btnText}>일정 확정 및 계약서 생성</Text></TouchableOpacity>
+      </View>
+    </ScrollView>
+  );
+
+  const renderProMyPage = () => (
+    <ScrollView style={styles.bg} contentContainerStyle={{paddingBottom: 80}}>
+      <View style={styles.header}><TouchableOpacity onPress={() => setPage('pro_dash')}><Text style={{color: '#E50914'}}>← 뒤로</Text></TouchableOpacity><Text style={styles.headerTitle}>설정 및 내 정보</Text><View style={{width:50}}/></View>
+      <View style={styles.padding}>
+        <View style={{backgroundColor: '#111', padding: 25, borderRadius: 15, marginBottom: 20, borderWidth: 1, borderColor: '#333'}}>
+          <Text style={{color: '#aaa'}}>현재 보유 캐시</Text>
+          <Text style={{color: '#E50914', fontSize: 32, fontWeight: 'bold', marginTop: 10}}>{currentUser?.cash?.toLocaleString() || 0} P</Text>
+          <TouchableOpacity style={[styles.smallBtn, {width: '100%', marginTop: 20, backgroundColor: '#222'}]} onPress={()=>Alert.alert("충전", "PG 연동 준비 중")}><Text style={{color: '#fff', fontWeight: 'bold'}}>💸 캐시 충전하기</Text></TouchableOpacity>
+        </View>
+
+        <TouchableOpacity style={styles.menuCard} onPress={() => setPage('pro_sent_quotes')}><Text style={{color: '#fff'}}>📨 나의 견적 발송 내역</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.menuCard} onPress={() => setPage('pro_profile_edit')}><Text style={{color: '#fff'}}>👤 업체 프로필 및 포트폴리오 수정</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.menuCard} onPress={() => setPage('pro_contract_status')}><Text style={{color: '#fff'}}>🤝 전자계약 및 작업 관리</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.menuCard} onPress={() => setPage('pro_license_status')}><Text style={{color: '#fff'}}>📋 나의 인허가증 및 서류 현황</Text></TouchableOpacity>
+        <TouchableOpacity style={[styles.menuCard, {borderColor: '#E50914'}]} onPress={() => {setCurrentUser(null); setPage('main');}}><Text style={{color: '#E50914'}}>로그아웃</Text></TouchableOpacity>
+      </View>
+    </ScrollView>
+  );
+
+  const renderProSentQuotes = () => {
+    const mySentQuotes = quotesDB.filter(q => q.proId === currentUser.id);
+    return (
+      <ScrollView style={styles.bg}>
+        <View style={styles.header}><TouchableOpacity onPress={() => setPage('pro_mypage')}><Text style={{color: '#E50914'}}>← 뒤로</Text></TouchableOpacity><Text style={styles.headerTitle}>견적 발송 내역</Text><View style={{width:50}}/></View>
+        <View style={styles.padding}>
+          {mySentQuotes.length === 0 ? <Text style={{color: '#888', textAlign: 'center', marginTop: 50}}>발송한 견적이 없습니다.</Text> : null}
+          {mySentQuotes.map(q => (
+            <TouchableOpacity key={q.id} style={{backgroundColor: '#111', padding: 20, borderRadius: 10, borderWidth: 1, borderColor: '#333', marginBottom: 15}} onPress={() => {
+              setSelectedMySentQuote(q); setPage('pro_sent_quote_detail');
+            }}>
+              <Text style={{color: '#E50914', fontWeight: 'bold', marginBottom: 5}}>상태: {q.status === 'pending' ? '고객 확인 중' : q.status === 'paid' ? '고객 결제 완료' : '계약 진행/완료됨'}</Text>
+              <Text style={{color: '#fff', fontSize: 16, fontWeight: 'bold'}}>제안 금액: {Number(q.price).toLocaleString()}원</Text>
+              <Text style={{color: '#E50914', marginTop: 15, fontSize: 12, fontWeight: 'bold', textAlign: 'right'}}>상세보기 및 원본 확인 ❯</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
+    );
+  };
+
+  const renderProSentQuoteDetail = () => {
+    const req = requestsDB.find(r => r.id === selectedMySentQuote?.reqId);
+    return (
+      <ScrollView style={styles.bg} contentContainerStyle={{paddingBottom: 80}}>
+        <View style={styles.header}><TouchableOpacity onPress={() => setPage('pro_sent_quotes')}><Text style={{color: '#E50914'}}>← 목록으로</Text></TouchableOpacity><Text style={styles.headerTitle}>견적 발송 상세</Text><View style={{width:50}}/></View>
+        <View style={styles.padding}>
+          <View style={{backgroundColor: '#1a0505', padding: 20, borderRadius: 10, borderWidth: 1, borderColor: '#E50914', marginBottom: 20}}>
+            <Text style={{color: '#E50914', fontWeight: 'bold', marginBottom: 10}}>내가 보낸 견적 내용</Text>
+            <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>제안 금액: {Number(selectedMySentQuote?.price).toLocaleString()}원</Text>
+            <Text style={{color: '#aaa', lineHeight: 20}}>메시지: {selectedMySentQuote?.msg}</Text>
+          </View>
+          {req && (
+            <View style={{backgroundColor: '#111', padding: 20, borderRadius: 10, borderWidth: 1, borderColor: '#333'}}>
+              <Text style={{color: '#E50914', fontWeight: 'bold', marginBottom: 10}}>고객 요청 원본</Text>
+              <Text style={{color: '#fff', fontSize: 16, marginBottom: 5}}>{req.commonType.join(', ')} ({req.tags.join(', ')})</Text>
+              <Text style={{color: '#aaa', marginBottom: 5}}>주소: {req.loc}</Text>
+              <Text style={{color: '#fff', lineHeight: 22}}>{req.desc}</Text>
+            </View>
+          )}
+        </View>
+      </ScrollView>
+    );
+  };
+
+ const renderProContractStatus = () => {
+    const myContracts = quotesDB.filter(q => q.proId === currentUser.id && ['contracted', 'signed', 'completed'].includes(q.status));
+    return (
+      <ScrollView style={styles.bg}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => setPage('pro_mypage')}><Text style={{color: '#E50914'}}>← 뒤로</Text></TouchableOpacity>
+          <Text style={styles.headerTitle}>전자계약 및 작업 관리</Text>
+          <View style={{width:50}}/>
+        </View>
+        <View style={styles.padding}>
+          {myContracts.map(c => (
+            <View key={c.id} style={{backgroundColor: '#1a0505', padding: 20, borderRadius: 10, borderWidth: 1, borderColor: '#E50914', marginBottom: 15}}>
+              <Text style={{color: '#E50914', fontWeight: 'bold', marginBottom: 5}}>{c.status === 'contracted' ? '📝 서명 대기중' : c.status === 'completed' ? '✅ 작업 완료 (청구 대기)' : '🛠️ 작업 중'}</Text>
+              <Text style={{color: '#fff', fontSize: 16}}>고객/관공서 ID: {c.reqUserId} ({Number(c.price).toLocaleString()}원)</Text>
+              
+              {c.status !== 'completed' ? (
+                <TouchableOpacity style={[styles.primaryBtn, {marginTop: 15, paddingVertical: 10}]} onPress={() => { setSelectedContract(c); setPage('e_contract'); }}>
+                  <Text style={styles.btnText}>계약서 열람 및 서명 관리</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity style={[styles.primaryBtn, {backgroundColor: '#28a745', marginTop: 15, paddingVertical: 10}]} onPress={() => setPage('pro_submit_report')}>
+                  <Text style={styles.btnText}>📄 관공서 대금 청구 및 서류 제출</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+    );
+  };
+
+  // 신규 추가: 업체가 관공서로 행정 서류 꾸러미를 전송하는 화면
+  const renderProSubmitReport = () => {
+    return (
+      <ScrollView style={styles.bg}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => setPage('pro_contract_status')}><Text style={{color: '#E50914'}}>← 뒤로</Text></TouchableOpacity>
+          <Text style={styles.headerTitle}>관공서 대금 청구</Text>
+          <View style={{width: 50}}/>
+        </View>
+        <View style={styles.padding}>
+          <Text style={{color: '#aaa', marginBottom: 20}}>작업이 완료되었습니다. 담당 공무원에게 대금 지급을 청구하기 위한 증빙 서류를 전송합니다.</Text>
+          
+          <View style={{backgroundColor: '#111', padding: 20, borderRadius: 10, borderWidth: 1, borderColor: '#333', marginBottom: 20}}>
+            <Text style={{color: '#E50914', fontWeight: 'bold', marginBottom: 15}}>첨부 서류 꾸러미 (자동 동기화)</Text>
+            <Text style={{color: '#aaa', marginBottom: 10}}>✅ 작업 전/후 (Before & After) 완료 사진</Text>
+            <Text style={{color: '#aaa', marginBottom: 10}}>✅ 사업자등록증 사본 (가입 시 정보)</Text>
+            <Text style={{color: '#aaa', marginBottom: 10}}>✅ 건물위생관리업 / 소독업 신고증 사본</Text>
+            <Text style={{color: '#aaa', marginBottom: 10}}>✅ 법인/대표자 명의 통장사본</Text>
+            <View style={{height: 1, backgroundColor: '#222', marginVertical: 15}}/>
+            <Text style={{color: '#28a745', fontWeight: 'bold', marginBottom: 5}}>🔌 홈택스 연동 전자세금계산서</Text>
+            <Text style={{color: '#666', fontSize: 12}}>청구와 동시에 관공서 사업자번호로 자동 발행됩니다.</Text>
+          </View>
+
+          <TouchableOpacity style={[styles.primaryBtn, {marginTop: 10}]} onPress={() => {
+            Alert.alert("전송 완료", "담당 공무원에게 청구 서류 일체가 성공적으로 전송되었습니다.");
+            setPage('pro_contract_status');
+          }}>
+            <Text style={styles.btnText}>서류 꾸러미 공무원에게 전송하기</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    );
+  };
+
+  const renderProLicenseStatus = () => {
+    const updatedUser = usersDB.find(u => u.id === currentUser.id);
+    return (
+      <ScrollView style={styles.bg}>
+        <View style={styles.header}><TouchableOpacity onPress={() => setPage('pro_mypage')}><Text style={{color: '#E50914'}}>← 뒤로</Text></TouchableOpacity><Text style={styles.headerTitle}>나의 서류 현황</Text><View style={{width:50}}/></View>
+        <View style={styles.padding}>
+          <View style={{backgroundColor: '#111', padding: 20, borderRadius: 10, borderWidth: 1, borderColor: '#333'}}>
+             <Text style={{color: '#fff', fontSize: 16, marginBottom: 15}}>전문 분야: <Text style={{color: '#E50914'}}>{updatedUser.keywords.join(', ')}</Text></Text>
+             <Text style={{color: '#888', marginBottom: 10}}>✔️ 사업자등록증: {updatedUser.docs?.biz ? '등록완료' : '미등록'}</Text>
+             <Text style={{color: '#888', marginBottom: 10}}>✔️ 건물위생/소독업: {updatedUser.docs?.sanitation ? '등록완료' : '미등록'}</Text>
+             <Text style={{color: '#888', marginBottom: 10}}>✔️ 폐기물수집운반업: {updatedUser.docs?.waste ? '등록완료(인증업체)' : '미등록'}</Text>
+             <Text style={{color: '#888', marginBottom: 10}}>✔️ 저수조청소업: {updatedUser.docs?.waterTank ? '등록완료(침수전문)' : '미등록'}</Text>
+          </View>
+        </View>
+      </ScrollView>
+    );
+  };
+
+  const renderProProfileEdit = () => (
+    <ScrollView style={styles.bg}>
+      <View style={styles.header}><TouchableOpacity onPress={() => setPage('pro_mypage')}><Text style={{color: '#E50914'}}>← 뒤로</Text></TouchableOpacity><Text style={styles.headerTitle}>프로필 수정</Text><View style={{width:50}}/></View>
+      <View style={styles.padding}>
+        <Text style={styles.label}>상세 업체 소개</Text>
+        <TextInput placeholder="인사말을 적어주세요." placeholderTextColor="#444" style={styles.textArea} multiline value={proIntro} onChangeText={setProIntro} />
+        <TouchableOpacity style={[styles.primaryBtn, {marginTop: 40, marginBottom: 50}]} onPress={() => {
+          setUsersDB(usersDB.map(u => u.id === currentUser.id ? {...u, intro: proIntro, empCount: proEmpCount, equip: proEquip, portfolios: proPortfolios} : u));
+          Alert.alert("저장 완료", "프로필이 업데이트되었습니다."); 
+          setPage('pro_mypage');
+        }}><Text style={styles.btnText}>저장하기</Text></TouchableOpacity>
+      </View>
+    </ScrollView>
+  );
+
+  const renderProPaymentHistory = () => (
+    <View style={styles.bg}>
+      <View style={styles.header}><TouchableOpacity onPress={() => setPage('pro_mypage')}><Text style={{color: '#E50914'}}>← 뒤로</Text></TouchableOpacity><Text style={styles.headerTitle}>결제 내역</Text><View style={{width:50}}/></View>
+      <View style={styles.padding}><Text style={{color: '#fff'}}>준비 중입니다.</Text></View>
+    </View>
+  );
+
+const renderGovBidPost = () => (
+    <ScrollView style={styles.bg}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => setPage('gov_dash')}><Text style={{color: '#E50914'}}>← 뒤로</Text></TouchableOpacity>
+        <Text style={styles.headerTitle}>입찰 공고 등록</Text>
+        <View style={{width: 50}}/>
+      </View>
+      <View style={styles.padding}>
+        <Text style={styles.label}>공고 명칭 *</Text>
+        <TextInput placeholder="예: 2026년 OO동 주거환경 개선사업" placeholderTextColor="#666" style={styles.input} />
+        <Text style={styles.label}>기초 금액 (예산 범위) *</Text>
+        <TextInput placeholder="숫자만 입력" placeholderTextColor="#666" style={styles.input} keyboardType="numeric" />
+        <Text style={styles.label}>입찰 제한 자격 선택</Text>
+        <View style={styles.tagWrap}>
+          {['S등급 업체만', '폐기물 인허가 필수', '관내 업체 우선'].map(tag => (
+            <TouchableOpacity key={tag} style={styles.tagBtn}><Text style={{color: '#888'}}>{tag}</Text></TouchableOpacity>
+          ))}
+        </View>
+        <TouchableOpacity style={[styles.primaryBtn, {marginTop: 30}]} onPress={() => {
+          Alert.alert("공고 등록", "특청 인증 업체들에게 입찰 알림이 발송되었습니다.");
+          setPage('gov_dash');
+        }}>
+          <Text style={styles.btnText}>공고 게시하기</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
+  );
+
+  const renderGovProList = () => {
+    const approvedPros = usersDB.filter(u => u.role === 'pro' && u.isApproved);
+    return (
+      <ScrollView style={styles.bg}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => setPage('gov_dash')}><Text style={{color: '#E50914'}}>← 뒤로</Text></TouchableOpacity>
+          <Text style={styles.headerTitle}>검증업체 상세 조회</Text>
+          <View style={{width: 50}}/>
+        </View>
+        <View style={styles.padding}>
+          {approvedPros.map(pro => (
+            <View key={pro.id} style={styles.menuCard}>
+              <View style={{flex: 1}}>
+                <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold'}}>{pro.compName}</Text>
+                <Text style={{color: '#E50914', fontSize: 12, marginTop: 5}}>보유: {pro.keywords?.slice(0, 3).join(', ')}</Text>
+                <View style={{flexDirection: 'row', marginTop: 10}}>
+                   <View style={{backgroundColor: '#222', padding: 5, borderRadius: 4, marginRight: 5}}><Text style={{color: '#aaa', fontSize: 10}}>비즈니스 인증</Text></View>
+                   {pro.docs?.sanitation && <View style={{backgroundColor: '#222', padding: 5, borderRadius: 4}}><Text style={{color: '#aaa', fontSize: 10}}>위생/소독 인증</Text></View>}
+                </View>
+              </View>
+              <TouchableOpacity style={[styles.smallBtn, {backgroundColor: '#E50914'}]} onPress={() => Alert.alert("수의계약", "상세 서류 검토 후 계약을 진행합니다.")}>
+                <Text style={{color: '#fff', fontSize: 12}}>선택</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+    );
+  };
+
+// 3번 기능: 결과보고서 센터 화면
+// 3번 기능: 결과보고서 센터 화면 (웹뷰 시뮬레이터 연동)
+ // B2G 3번 기능: 공무원 서류 수신 및 내부 기안 센터
+ 
+
+
+const renderGovReportCenter = () => {
+    // PDF 생성 및 다운로드 함수
+    const downloadPDF = async () => {
+      const htmlContent = `
+        <html>
+          <head>
+            <style>
+              body { font-family: 'Malgun Gothic', sans-serif; padding: 40px; color: #333; }
+              .watermark { position: absolute; top: 30%; left: 15%; font-size: 150px; color: rgba(229, 9, 20, 0.1); transform: rotate(-30deg); z-index: -1; font-weight: bold; letter-spacing: 10px; }
+              table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+              th, td { border: 1px solid #444; padding: 12px; text-align: center; }
+              th { background-color: #f2f2f2; font-weight: bold; }
+              h1 { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; letter-spacing: 5px; }
+            </style>
+          </head>
+          <body>
+            <div class="watermark">(예시)</div>
+            <h1>지 출 결 의 서</h1>
+            <p style="font-size: 16px;"><b>건명:</b> 광주 서구 관내 고독사 현장 특수청소 대금 지출</p>
+            <p style="font-size: 16px;"><b>수급인:</b> 김도영특수청소 (123-45-67890)</p>
+            <p style="font-size: 16px;"><b>청구금액:</b> 금 1,500,000 원 (VAT 포함)</p>
+            <table>
+              <tr><th>항목</th><th>규격/내역</th><th>수량</th><th>금액(원)</th></tr>
+              <tr><td>특수현장 인건비</td><td>전문인력</td><td>3인</td><td>600,000</td></tr>
+              <tr><td>폐기물 처리비</td><td>지정폐기물 포함</td><td>1식</td><td>500,000</td></tr>
+              <tr><td>약품 및 방역</td><td>특수약품/오존살균</td><td>1식</td><td>400,000</td></tr>
+            </table>
+            <br><br>
+            <p style="text-align: right; font-size: 16px;">위와 같이 용역이 완료되어 대금을 청구합니다.</p>
+            <p style="text-align: right; font-weight: bold; font-size: 20px; margin-top: 20px;">청구인: 김도영특수청소 (인)</p>
+          </body>
+        </html>
+      `;
+
+      try {
+        if (Platform.OS === 'web') {
+          // 웹 화면(컴퓨터)에서는 바로 인쇄/PDF 저장 창을 띄웁니다
+          await Print.printAsync({ html: htmlContent });
+        } else {
+          // 스마트폰에서는 PDF 파일로 만든 뒤 공유(저장) 창을 띄웁니다
+          const { uri } = await Print.printToFileAsync({ html: htmlContent });
+          await Sharing.shareAsync(uri);
+        }
+      } catch (error) {
+        Alert.alert('알림', 'PDF 생성 중 오류가 발생했습니다.');
+      }
+    };
+
+    return (
+      <ScrollView style={styles.bg}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => { setShowReportPreview(false); setPage('gov_dash'); }}>
+            <Text style={{color: '#E50914'}}>← 뒤로</Text>
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>수행보고 및 지출결의</Text>
+          <View style={{width: 50}}/>
+        </View>
+        
+        <View style={styles.padding}>
+          <View style={{backgroundColor: 'rgba(229, 9, 20, 0.1)', padding: 15, borderRadius: 10, borderWidth: 1, borderColor: '#E50914', marginBottom: 20}}>
+            <Text style={{color: '#E50914', fontWeight: 'bold', marginBottom: 5}}>🏢 행정 자동화 시스템</Text>
+            <Text style={{color: '#fff', fontSize: 12, lineHeight: 18}}>업체가 전송한 서류를 검토하고, 시스템이 규격에 맞게 생성한 PDF 지출결의서를 최종 승인합니다.</Text>
+          </View>
+
+          <Text style={{color: '#fff', fontSize: 16, fontWeight: 'bold', marginBottom: 15}}>📥 업체 제출 서류 수신함</Text>
+
+          <View style={{backgroundColor: '#111', padding: 20, borderRadius: 10, borderWidth: 1, borderColor: '#333', marginBottom: 15}}>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10}}>
+              <Text style={{color: '#E50914', fontWeight: 'bold'}}>미결재 (청구 대기)</Text>
+              <Text style={{color: '#888', fontSize: 12}}>2026-04-23 수신</Text>
+            </View>
+            <Text style={{color: '#fff', fontSize: 16, fontWeight: 'bold'}}>[서구] 고독사 현장 특수청소 수의계약</Text>
+            <Text style={{color: '#aaa', marginTop: 5}}>수행업체: 김도영특수청소</Text>
+            <Text style={{color: '#aaa', marginTop: 5}}>청구금액: 1,500,000 원</Text>
+
+            {!showReportPreview ? (
+              <TouchableOpacity 
+                style={[styles.primaryBtn, {marginTop: 20, backgroundColor: '#444'}]} 
+                onPress={() => setShowReportPreview(true)}
+              >
+                <Text style={{color: '#fff', fontWeight: 'bold'}}>👀 지출결의서 미리보기</Text>
+              </TouchableOpacity>
+            ) : (
+              <View>
+                <View style={{backgroundColor: '#fff', padding: 15, borderRadius: 5, marginTop: 20, borderWidth: 1, borderColor: '#ddd'}}>
+                  <View style={{flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 2, borderColor: '#000', paddingBottom: 10, marginBottom: 10}}>
+                    <Text style={{color: '#000', fontSize: 14, fontWeight: 'bold'}}>지출결의서 (기안용)</Text>
+                    <Text style={{color: '#000', fontSize: 10}}>결재: 담당 ➡️ 과장</Text>
+                  </View>
+                  <Text style={{color: '#333', fontSize: 11, marginBottom: 5}}>• 건명: 광주 서구 관내 고독사 현장 복구 대금 지출</Text>
+                  <Text style={{color: '#333', fontSize: 11, marginBottom: 5}}>• 일시: 2026. 04. 23</Text>
+                  <Text style={{color: '#333', fontSize: 11, marginBottom: 15}}>• 청구금액: 금 1,500,000 원 (VAT 포함)</Text>
+                  <Text style={{color: '#666', fontSize: 10, fontStyle: 'italic', lineHeight: 15}}>
+                    본 건은 특수청소 현장 수습이 완료되었음을 확인하여 대금을 지급하고자 합니다.
+                  </Text>
+                </View>
+
+                {/* PDF 생성 버튼 연동 완료 */}
+                <TouchableOpacity 
+                  style={[styles.primaryBtn, {marginTop: 15}]} 
+                  onPress={async () => {
+                    await downloadPDF(); // PDF 다운로드 실행
+                    Alert.alert("승인 완료", "지출결의서가 PDF로 생성되어 그룹웨어로 전송되었습니다.");
+                    setShowReportPreview(false);
+                    setPage('gov_dash');
+                  }}
+                >
+                  <Text style={{color: '#fff', fontWeight: 'bold'}}>✅ PDF 다운로드 및 기안 올리기</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+        </View>
+      </ScrollView>
+    );
+  };
+
+
+  if (isLoading) return (
+    <View style={styles.splashContainer}><StatusBar barStyle="light-content" /><Text style={styles.splashSub}>대한민국 1등 특수청소 전문가 매칭</Text><Text style={styles.splashTitle}>특수청소 전문 중개 플랫폼</Text><Text style={styles.splashBrand}>특청</Text></View>
+  );
+
+  return (
+    <View style={{flex: 1, backgroundColor: '#000'}}>
+      <StatusBar barStyle="light-content" />
+      {page === 'main' && (
+        <View style={styles.mainContainer}>
+          <Text style={styles.mainSubTitle}>특수현장, 전문가가 답입니다</Text><Text style={styles.mainLogo}>특청</Text>
+          <View style={{width: '100%'}}>
+            <TouchableOpacity style={styles.primaryBtn} onPress={() => setPage('login')}><Text style={styles.btnText}>로그인</Text></TouchableOpacity>
+            <TouchableOpacity style={[styles.proBtn, {marginTop: 15}]} onPress={() => setPage('signup')}><Text style={styles.proBtnText}>회원가입</Text></TouchableOpacity>
+          </View>
+        </View>
+      )}
+      
+      {page === 'login' && (
+        <View style={[styles.bg, styles.padding, {justifyContent: 'center'}]}>
+          <Text style={styles.formTitle}>LOGIN</Text>
+          <View style={styles.inputWrapper}><TextInput placeholder="아이디" placeholderTextColor="#666" style={[styles.input, {flex: 1, marginBottom: 0}]} value={loginId} onChangeText={setLoginId} autoCapitalize="none" /></View>
+          <View style={styles.inputWrapper}><TextInput placeholder="비밀번호" placeholderTextColor="#666" style={[styles.input, {flex: 1, marginBottom: 0}]} secureTextEntry value={loginPw} onChangeText={setLoginPw} /></View>
+          <TouchableOpacity style={styles.primaryBtn} onPress={handleLogin}><Text style={styles.btnText}>로그인</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => setPage('main')} style={{marginTop: 30, alignItems: 'center'}}><Text style={{color: '#666'}}>← 홈으로 돌아가기</Text></TouchableOpacity>
+        </View>
+      )}
+
+      {page === 'signup' && renderSignUp()}
+      {page === 'customer_dash' && renderCustomerDash()}
+      {page === 'gov_dash' && renderGovDash()}
+      {page === 'gov_dashboard_webview' && renderGovDashboardWebView()}
+      {page === 'gov_bid_post' && renderGovBidPost()}
+      {page === 'gov_pro_list' && renderGovProList()}
+      {page === 'gov_report_center' && renderGovReportCenter()}
+      {page === 'gov_emergency_call' && renderGovEmergencyCall()}
+      {page === 'customer_mypage' && renderCustomerMyPage()}
+      {page === 'customer_req_history' && renderCustomerReqHistory()}
+      {page === 'customer_req_detail' && renderCustomerReqDetail()}
+      {page === 'customer_contracts' && renderCustomerContracts()}
+      {page === 'customer_edit_info' && renderPlaceholderScreen('내 정보 수정', 'customer_mypage')}
+      {page === 'customer_pay_history' && renderPlaceholderScreen('결제 내역 관리', 'customer_mypage')}
+      {page === 'customer_support' && renderPlaceholderScreen('고객센터', 'customer_mypage')}
+      {page === 'customer_request' && renderCustomerRequest()}
+      {page === 'customer_quotes' && renderCustomerQuotes()}
+      {page === 'customer_view_pro_profile' && renderCustomerViewProProfile()}
+      {page === 'payment' && renderPayment()}
+      {page === 'write_review' && renderWriteReview()}
+      {page === 'e_contract' && renderEContract()}
+      
+      {page === 'chat_room' && renderChatRoom()}
+      {page === 'admin_dash' && renderAdminDash()}
+      
+      {page === 'pro_dash' && renderProDash()}
+      {page === 'pro_mypage' && renderProMyPage()}
+      {page === 'pro_sent_quotes' && renderProSentQuotes()}
+      {page === 'pro_sent_quote_detail' && renderProSentQuoteDetail()}
+      {page === 'pro_contract_status' && renderProContractStatus()}
+      {page === 'pro_license_status' && renderProLicenseStatus()}
+      {page === 'pro_profile_edit' && renderProProfileEdit()}
+      {page === 'pro_payment_history' && renderProPaymentHistory()}
+      {page === 'pro_request_detail' && renderProRequestDetail()}
+      {page === 'pro_schedule_manage' && renderProScheduleManage()}
+      {page === 'pro_submit_report' && renderProSubmitReport()}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  bg: { flex: 1, backgroundColor: '#000' },
+  padding: { padding: 30 },
+  mainContainer: { flex: 1, backgroundColor: '#000', justifyContent: 'center', alignItems: 'center', padding: 30 },
+  mainSubTitle: { color: '#E50914', fontSize: 15, fontWeight: 'bold', marginBottom: 10 },
+  mainLogo: { fontSize: 70, fontWeight: 'bold', color: '#fff', marginBottom: 60, letterSpacing: -4 },
+  primaryBtn: { width: '100%', padding: 18, backgroundColor: '#E50914', borderRadius: 10, alignItems: 'center' },
+  btnText: { color: '#fff', fontSize: 17, fontWeight: 'bold' },
+  proBtn: { width: '100%', padding: 17, borderWidth: 1.5, borderColor: '#333', borderRadius: 10, alignItems: 'center', backgroundColor: '#111' },
+  proBtnText: { color: '#fff', fontWeight: 'bold', fontSize: 17 },
+  formTitle: { fontSize: 32, fontWeight: 'bold', color: '#fff', marginBottom: 30, textAlign: 'center' },
+  label: { fontSize: 14, color: '#aaa', marginTop: 25, marginBottom: 10, fontWeight: 'bold' },
+  input: { borderWidth: 1, borderColor: '#333', padding: 15, borderRadius: 10, marginBottom: 12, backgroundColor: '#111', color: '#fff' },
+  inputWrapper: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#111', borderRadius: 10, borderWidth: 1, borderColor: '#333', marginBottom: 12 },
+  row: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10, flexWrap: 'wrap' },
+  halfBtn: { width: '48%', padding: 15, borderWidth: 1, borderColor: '#333', borderRadius: 10, alignItems: 'center' },
+  smallBtn: { width: 85, height: 50, backgroundColor: '#444', borderRadius: 10, justifyContent: 'center', alignItems: 'center' },
+  activeBtn: { backgroundColor: '#E50914', borderColor: '#E50914' },
+  activeText: { color: '#fff', fontWeight: 'bold' },
+  header: { paddingTop: 60, paddingBottom: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, borderBottomWidth: 1, borderBottomColor: '#222', backgroundColor: '#111' },
+  headerTitle: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  textArea: { borderWidth: 1, borderColor: '#333', padding: 20, borderRadius: 15, height: 120, textAlignVertical: 'top', backgroundColor: '#111', color: '#fff' },
+  splashContainer: { flex: 1, backgroundColor: '#000', justifyContent: 'center', alignItems: 'center' },
+  splashTitle: { fontSize: 16, color: '#E50914', fontWeight: 'bold', letterSpacing: 2 },
+  splashSub: { fontSize: 13, color: '#888', marginBottom: 8 },
+  splashBrand: { fontSize: 65, fontWeight: 'bold', color: '#fff', letterSpacing: -2 },
+  uploadBox: { height: 60, backgroundColor: '#111', borderStyle: 'dashed', borderWidth: 1, borderColor: '#444', borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginVertical: 5 },
+  menuCard: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#111', padding: 20, borderRadius: 10, borderWidth: 1, borderColor: '#222', marginBottom: 15 },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.8)', justifyContent: 'center', padding: 20 },
+  modalContent: { backgroundColor: '#111', padding: 25, borderRadius: 15, borderWidth: 1, borderColor: '#333' },
+  modalLabel: { color: '#aaa', fontSize: 12, marginBottom: 8, marginTop: 15, fontWeight: 'bold' },
+  tagBtn: { paddingHorizontal: 15, paddingVertical: 10, backgroundColor: '#222', borderRadius: 20, marginBottom: 10, marginRight: 8, borderWidth: 1, borderColor: '#333' },
+  cameraBtn: { padding: 15, backgroundColor: '#222', borderRadius: 10, alignItems: 'center', borderWidth: 1, borderColor: '#444' },
+  tagWrap: { flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -5 },
+  dynamicCard: { backgroundColor: '#0a0a0a', padding: 20, borderRadius: 15, marginTop: 15, borderWidth: 1, borderColor: '#222', borderLeftWidth: 3, borderLeftColor: '#E50914' },
+  dynamicLabel: { color: '#E50914', fontWeight: 'bold', marginBottom: 10, fontSize: 13 },
+  addressBox: { flex: 1, backgroundColor: '#222', padding: 12, borderRadius: 8, marginHorizontal: 3, alignItems: 'center', borderWidth: 1, borderColor: '#444' },
+  chatBubble: { padding: 15, borderRadius: 15, marginBottom: 10, maxWidth: '80%' },
+  myChat: { alignSelf: 'flex-end', backgroundColor: '#E50914' },
+  yourChat: { alignSelf: 'flex-start', backgroundColor: '#333' },
+  chatInputBar: { flexDirection: 'row', padding: 15, paddingBottom: Platform.OS === 'ios' ? 45 : 35, backgroundColor: '#111', borderTopWidth: 1, borderColor: '#222' },
+  chatChatInput: { flex: 1, color: '#fff', backgroundColor: '#222', borderRadius: 20, paddingHorizontal: 15, height: 45 },
+  sendBtn: { marginLeft: 10, backgroundColor: '#E50914', borderRadius: 20, paddingHorizontal: 20, justifyContent: 'center' }
+});
