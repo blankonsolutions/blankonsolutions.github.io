@@ -1,10 +1,718 @@
-<!doctype html><html lang=ko><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><title>특청 - 특수청소 전문 중개 플랫폼</title><style>:root{--primary:#E50914;--bg:#000;--surface:#111;--surface-hover:#222;--text-main:#fff;--text-sub:#aaa;--text-dark:#666;--border:#333;--success:#28a745;--warning:#FFD700}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}body{margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background-color:var(--bg);color:var(--text-main);height:100vh;overflow:hidden}#root{height:100%;display:flex;flex-direction:column}.bg{display:flex;flex-direction:column;flex:1;background-color:var(--bg);overflow-y:auto}.padding{padding:30px}.mainContainer{flex:1;background-color:var(--bg);display:flex;flex-direction:column;justify-content:center;align-items:center;padding:30px}.mainSubTitle{color:var(--primary);font-size:15px;font-weight:700;margin-bottom:10px}.mainLogo{font-size:70px;font-weight:700;color:#fff;margin-bottom:60px;letter-spacing:-4px;line-height:1}.primaryBtn{width:100%;padding:18px;background-color:var(--primary);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;border:none;cursor:pointer;font-size:17px;font-weight:700;transition:opacity .2s}.primaryBtn:active{opacity:.7}.btnText{color:#fff;font-size:17px;font-weight:700}.proBtn{width:100%;padding:17px;border:1.5px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;background-color:var(--surface);color:#fff;cursor:pointer}.proBtnText{color:#fff;font-weight:700;font-size:17px}.formTitle{font-size:32px;font-weight:700;color:#fff;margin-bottom:30px;text-align:center}.label{font-size:14px;color:var(--text-sub);margin-top:25px;margin-bottom:10px;font-weight:700;display:block}.input{border:1px solid var(--border);padding:15px;border-radius:10px;margin-bottom:12px;background-color:var(--surface);color:#fff;width:100%;font-size:16px;outline:0}.input::placeholder{color:var(--text-dark)}.inputWrapper{display:flex;flex-direction:row;align-items:center;background-color:var(--surface);border-radius:10px;border:1px solid var(--border);margin-bottom:12px}.row{display:flex;flex-direction:row;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:10px}.halfBtn{flex:1;padding:15px;border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-sub)}.smallBtn{width:85px;height:50px;background-color:#444;border-radius:10px;display:flex;justify-content:center;align-items:center;border:none;color:#fff;cursor:pointer}.activeBtn{background-color:var(--primary);border-color:var(--primary);color:#fff}.activeText{color:#fff;font-weight:700}.header{padding-top:60px;padding-bottom:20px;display:flex;flex-direction:row;justify-content:space-between;align-items:center;padding-left:20px;padding-right:20px;border-bottom:1px solid #222;background-color:var(--surface);position:sticky;top:0;z-index:10}.headerTitle{color:#fff;font-size:18px;font-weight:700}.textArea{border:1px solid var(--border);padding:20px;border-radius:15px;height:120px;background-color:var(--surface);color:#fff;width:100%;font-size:16px;outline:0;resize:none}.splashContainer{flex:1;background-color:var(--bg);display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh}.splashTitle{font-size:16px;color:var(--primary);font-weight:700;letter-spacing:2px}.splashSub{font-size:13px;color:#888;margin-bottom:8px}.splashBrand{font-size:65px;font-weight:700;color:#fff;letter-spacing:-2px}.uploadBox{height:60px;background-color:var(--surface);border:1px dashed #444;border-radius:10px;display:flex;justify-content:center;align-items:center;margin-top:5px;margin-bottom:5px;cursor:pointer}.menuCard{display:flex;flex-direction:row;justify-content:space-between;align-items:center;background-color:var(--surface);padding:20px;border-radius:10px;border:1px solid #222;margin-bottom:15px;cursor:pointer}.modalOverlay{position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,.8);display:flex;justify-content:center;align-items:center;z-index:100;padding:20px;overflow-y:auto}.modalContent{background-color:var(--surface);padding:25px;border-radius:15px;border:1px solid var(--border);width:100%;max-width:500px;position:relative}.modalLabel{color:var(--text-sub);font-size:12px;margin-bottom:8px;margin-top:15px;font-weight:700;display:block}.tagBtn{padding:10px 15px;background-color:#222;border-radius:20px;margin-bottom:10px;margin-right:8px;border:1px solid var(--border);color:var(--text-sub);cursor:pointer;display:inline-block}.cameraBtn{padding:15px;background-color:#222;border-radius:10px;display:flex;align-items:center;justify-content:center;border:1px solid #444;color:#fff;cursor:pointer;width:100%}.tagWrap{display:flex;flex-direction:row;flex-wrap:wrap;margin:0 -5px}.dynamicCard{background-color:#0a0a0a;padding:20px;border-radius:15px;margin-top:15px;border:1px solid #222;border-left:3px solid var(--primary)}.dynamicLabel{color:var(--primary);font-weight:700;margin-bottom:10px;font-size:13px;display:block}.addressBox{flex:1;background-color:#222;padding:12px;border-radius:8px;margin:0 3px;display:flex;justify-content:center;align-items:center;border:1px solid #444;color:#fff;cursor:pointer}.chatBubble{padding:15px;border-radius:15px;margin-bottom:10px;max-width:80%}.myChat{align-self:flex-end;background-color:var(--primary)}.yourChat{align-self:flex-start;background-color:#333}.chatInputBar{display:flex;flex-direction:row;padding:15px;background-color:var(--surface);border-top:1px solid #222;position:sticky;bottom:0}.chatChatInput{flex:1;color:#fff;background-color:#222;border-radius:20px;padding:0 15px;height:45px;border:none;outline:0}.sendBtn{margin-left:10px;background-color:var(--primary);border-radius:20px;padding:0 20px;display:flex;align-items:center;cursor:pointer;border:none;color:#fff;font-weight:700}.risk-high{color:#d9534f;font-size:24px;font-weight:700}.risk-medium{color:#f0ad4e;font-size:24px;font-weight:700}.risk-low{color:#5cb85c;font-size:24px;font-weight:700}.progress-bar-bg{width:100%;background-color:#333;border-radius:10px;height:12px;margin-top:15px;overflow:hidden}.progress-bar-fill{height:100%;width:0%;transition:width .5s ease}.badge{display:inline-block;padding:6px 12px;border-radius:20px;background:#222;color:#fff;font-size:12px;font-weight:700;margin-right:5px;margin-bottom:5px;border:1px solid #444}.badge-danger{background:#2b0000;color:#d9534f;border-color:#d9534f}.stat-card{background-color:#1a1a1a;padding:15px;border-radius:12px;flex:1;border:1px solid #333}.stat-label{color:#888;font-size:12px}.stat-value{color:#fff;font-size:18px;font-weight:700;margin-top:5px}::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}@media print{body{background:#fff!important;color:#000!important;overflow:visible!important;height:auto!important}#root{height:auto!important;display:block!important}.no-print{display:none!important}.bg{overflow:visible!important;height:auto!important;position:static!important}.chatInputBar,.header,.primaryBtn,.proBtn{display:none!important}}</style></head><body><div id=root></div><script>let state={isLoading:!0,page:"splash",currentUser:null,usersDB:[{id:"admin123",pw:"admin123",role:"admin",name:"총괄관리자"},{id:"pro1",pw:"12345678",role:"pro",name:"테스트업체",compName:"김도영특수청소",bizNum:"1234567890",status:"승인완료",isApproved:!0,cash:5e4,keywords:["고독사","쓰레기집","악취제거"],docs:{biz:"dummy_url",sanitation:"dummy_url",disinfection:"dummy_url",waste:"dummy_url"},intro:"고독사, 쓰레기집 완벽 복구 전문 업체입니다.",empCount:"5명",equip:"고압세척기, 오존살균기 3대",portfolios:[]},{id:"cus1",pw:"12345678",role:"customer",name:"테스트고객",phone:"010-1234-5678",cash:0,reviews:[]},{id:"gov1",pw:"12345678",role:"gov",name:"김주무관",phone:"010-9999-8888",govType:"지자체",govName:"광주광역시 본청",cash:0,reviews:[]}],requestsDB:[{id:"r1",userId:"cus1",tags:["고독사"],commonType:["아파트"],loc:"서울특별시 강남구 역삼동",area:"25",floor:"10",elevator:"있음",desc:"빠른 처리 부탁드립니다.",status:"견적 대기중",dateOption:"일주일 이내",images:[]}],quotesDB:[],chatDB:[],selectedReq:null,viewingPro:null,selectedContract:null,paymentTargetQuote:null,payMethod:"card",reviewRating:"5",reviewText:"",scheduleDate:"",scheduleTime:"",targetScheduleQuote:null,showReportPreview:!1,signupForm:{role:"customer",id:"",pw:"",pwConfirm:"",name:"",phone:"",bizNum:"",compName:"",keywords:[]},loginForm:{id:"",pw:""},requestForm:{commonType:[],tags:[],area:"",floor:"",elevator:"",addr:{sido:"",sigungu:"",dong:""},desc:"",images:[],dateOption:"",dateSpecific:{y:"",m:"",d:""},detailDeath:{period:"",floor:""},detailCrime:{type:"",locMain:"",locSub:""},detailTrash:{types:[],moveType:"",extraService:[]},detailFire:{degree:"",locMain:"",locSub:""},detailFlood:{type:""},detailInherit:{furnitureDesc:""}},modals:{addr:!1,addrStep:1,tempSido:"",tempSigungu:"",terms:!1},docs:{biz:null,sanitation:null,disinfection:null,waste:null,waterTank:null},bidsDB:[{id:"bid1",title:"서구청 관내 고독사 현장 긴급 복구",budget:15e6,status:"입찰중",type:"제한경쟁",deadline:"2026-05-10",applicants:0}],govBudget:5e7,clearedCases:12,riskScore:0,riskAnalysis:"",riskSolutions:[],riskUrgent:[]};const koreaAddressData={"서울특별시":{"강남구":["역삼동","청담동","대치동","삼성동"],"서초구":["서초동","반포동","방배동"],"송파구":["잠실동","가락동"],"마포구":["서교동","연남동"],"강서구":["마곡동","화곡동"]},"부산광역시":{"해운대구":["우동","중동","반여동"],"수영구":["광안동","남천동"],"부산진구":["서면","부전동"],"동래구":["부전동"]},"광주광역시":{"서구":["광천동","치평동","상무동","풍암동"],"북구":["운암동","용봉동","일곡동"],"동구":["충장동","동명동"],"남구":["양림동","봉선동"],"광산구":["송정동","수완동","첨단동"]}},govOrgs={central:["보건복지부","행정안전부","국토교통부","여성가족부","환경부","경찰청","소방청"],local:["서울특별시","부산광역시","대구광역시","인천광역시","광주광역시 본청","광주광역시 서구청","광주광역시 남구청","광주광역시 북구청","광주광역시 광산구청","대전광역시","울산광역시","세종특별자치시","경기도","강원특별자치도","충청북도","충청남도","전북특별자치도","전라남도","경상북도","경상남도","제주특별자치도"]};function setPage(e){state.page=e,render()}function render(){var e,t=document.getElementById("root");if(state.isLoading)t.innerHTML=renderSplash();else{switch(state.page){case"main":t.innerHTML=renderMain();break;case"login":t.innerHTML=renderLogin();break;case"signup":t.innerHTML=renderSignup();break;case"customer_dash":t.innerHTML=renderCustomerDash();break;case"pro_dash":t.innerHTML=renderProDash();break;case"gov_dash":t.innerHTML=renderGovDash();break;case"gov_report_center":t.innerHTML=renderGovReportCenter();break;case"gov_pro_list":t.innerHTML=renderGovProList();break;case"gov_bid_post":t.innerHTML=renderGovBidPost();break;case"gov_emergency_call":t.innerHTML=renderGovEmergencyCall();break;case"gov_dashboard":t.innerHTML=renderGovDashboard();break;case"admin_dash":t.innerHTML=renderAdminDash();break;case"pro_mypage":t.innerHTML=renderProMyPage();break;case"chat_room":t.innerHTML=renderChatRoom();break;case"customer_request":t.innerHTML=renderCustomerRequest();break;case"customer_req_history":t.innerHTML=renderCustomerReqHistory();break;case"customer_req_detail":t.innerHTML=renderCustomerReqDetail();break;case"customer_quotes":t.innerHTML=renderCustomerQuotes();break;case"customer_contracts":t.innerHTML=renderCustomerContracts();break;case"customer_mypage":t.innerHTML=renderCustomerMyPage();break;case"customer_view_pro_profile":t.innerHTML=renderCustomerViewProProfile();break;case"pro_request_detail":t.innerHTML=renderProRequestDetail();break;case"pro_schedule_manage":t.innerHTML=renderProScheduleManage();break;case"e_contract":t.innerHTML=renderEContract();break;default:t.innerHTML=renderMain()}state.modals.addr&&((e=document.createElement("div")).innerHTML=renderAddrModal(),t.appendChild(e.firstElementChild)),state.modals.terms&&((e=document.createElement("div")).innerHTML=renderTermsModal(),t.appendChild(e.firstElementChild)),window.scrollTo(0,0)}}function renderSplash(){return`
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>특청 - 특수청소 전문 중개 플랫폼</title>
+    <!-- Vanilla JS only, no React/Babel -->
+    <style>
+        :root {
+            --primary: #E50914;
+            --bg: #000;
+            --surface: #111;
+            --surface-hover: #222;
+            --text-main: #fff;
+            --text-sub: #aaa;
+            --text-dark: #666;
+            --border: #333;
+            --success: #28a745;
+            --warning: #FFD700;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #root {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Utility Classes derived from StyleSheet */
+        .bg {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            background-color: var(--bg);
+            overflow-y: auto;
+        }
+
+        .padding {
+            padding: 30px;
+        }
+
+        .mainContainer {
+            flex: 1;
+            background-color: var(--bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .mainSubTitle {
+            color: var(--primary);
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .mainLogo {
+            font-size: 70px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 60px;
+            letter-spacing: -4px;
+            line-height: 1;
+        }
+
+        .primaryBtn {
+            width: 100%;
+            padding: 18px;
+            background-color: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 17px;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+
+        .primaryBtn:active {
+            opacity: 0.7;
+        }
+
+        .btnText {
+            color: #fff;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .proBtn {
+            width: 100%;
+            padding: 17px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--surface);
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .proBtnText {
+            color: #fff;
+            font-weight: bold;
+            font-size: 17px;
+        }
+
+        .formTitle {
+            font-size: 32px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .label {
+            font-size: 14px;
+            color: var(--text-sub);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            display: block;
+        }
+
+        .input {
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            background-color: var(--surface);
+            color: #fff;
+            width: 100%;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .input::placeholder {
+            color: var(--text-dark);
+        }
+
+        .inputWrapper {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            background-color: var(--surface);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            margin-bottom: 12px;
+        }
+
+        .row {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .halfBtn {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-sub);
+        }
+
+        .smallBtn {
+            width: 85px;
+            height: 50px;
+            background-color: #444;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .activeBtn {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+
+        .activeText {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .header {
+            padding-top: 60px;
+            padding-bottom: 20px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 20px;
+            padding-right: 20px;
+            border-bottom: 1px solid #222;
+            background-color: var(--surface);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .headerTitle {
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .textArea {
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 15px;
+            height: 120px;
+            background-color: var(--surface);
+            color: #fff;
+            width: 100%;
+            font-size: 16px;
+            outline: none;
+            resize: none;
+        }
+
+        .splashContainer {
+            flex: 1;
+            background-color: var(--bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .splashTitle {
+            font-size: 16px;
+            color: var(--primary);
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .splashSub {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .splashBrand {
+            font-size: 65px;
+            font-weight: bold;
+            color: #fff;
+            letter-spacing: -2px;
+        }
+
+        .uploadBox {
+            height: 60px;
+            background-color: var(--surface);
+            border: 1px dashed #444;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+
+        .menuCard {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--surface);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #222;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        .modalOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modalContent {
+            background-color: var(--surface);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid var(--border);
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .modalLabel {
+            color: var(--text-sub);
+            font-size: 12px;
+            margin-bottom: 8px;
+            margin-top: 15px;
+            font-weight: bold;
+            display: block;
+        }
+
+        .tagBtn {
+            padding: 10px 15px;
+            background-color: #222;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            margin-right: 8px;
+            border: 1px solid var(--border);
+            color: var(--text-sub);
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .cameraBtn {
+            padding: 15px;
+            background-color: #222;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #444;
+            color: #fff;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .tagWrap {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            margin: 0 -5px;
+        }
+
+        .dynamicCard {
+            background-color: #0a0a0a;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 15px;
+            border: 1px solid #222;
+            border-left: 3px solid var(--primary);
+        }
+
+        .dynamicLabel {
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 13px;
+            display: block;
+        }
+
+        .addressBox {
+            flex: 1;
+            background-color: #222;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 0 3px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #444;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .chatBubble {
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            max-width: 80%;
+        }
+
+        .myChat {
+            align-self: flex-end;
+            background-color: var(--primary);
+        }
+
+        .yourChat {
+            align-self: flex-start;
+            background-color: #333;
+        }
+
+        .chatInputBar {
+            display: flex;
+            flex-direction: row;
+            padding: 15px;
+            background-color: var(--surface);
+            border-top: 1px solid #222;
+            position: sticky;
+            bottom: 0;
+        }
+
+        .chatChatInput {
+            flex: 1;
+            color: #fff;
+            background-color: #222;
+            border-radius: 20px;
+            padding: 0 15px;
+            height: 45px;
+            border: none;
+            outline: none;
+        }
+
+        .sendBtn {
+            margin-left: 10px;
+            background-color: var(--primary);
+            border-radius: 20px;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            border: none;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        /* Dashboard & Risk Score Styles */
+        .risk-high {
+            color: #d9534f;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .risk-medium {
+            color: #f0ad4e;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .risk-low {
+            color: #5cb85c;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            background-color: #333;
+            border-radius: 10px;
+            height: 12px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: #222;
+            color: #fff;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            border: 1px solid #444;
+        }
+
+        .badge-danger {
+            background: #2b0000;
+            color: #d9534f;
+            border-color: #d9534f;
+        }
+
+        .stat-card {
+            background-color: #1a1a1a;
+            padding: 15px;
+            border-radius: 12px;
+            flex: 1;
+            border: 1px solid #333;
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .stat-value {
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        /* Scrollbar styles */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+                overflow: visible !important;
+                height: auto !important;
+            }
+
+            #root {
+                height: auto !important;
+                display: block !important;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .bg {
+                overflow: visible !important;
+                height: auto !important;
+                position: static !important;
+            }
+
+            .header,
+            .chatInputBar,
+            .primaryBtn,
+            .proBtn {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script>
+        // --- State Management ---
+        let state = {
+            isLoading: true,
+            page: 'splash',
+            currentUser: null,
+            usersDB: [
+                { id: 'admin123', pw: 'admin123', role: 'admin', name: '총괄관리자' },
+                {
+                    id: 'pro1', pw: '12345678', role: 'pro', name: '테스트업체', compName: '김도영특수청소', bizNum: '1234567890', status: '승인완료', isApproved: true, cash: 50000,
+                    keywords: ['고독사', '쓰레기집', '악취제거'],
+                    docs: { biz: 'dummy_url', sanitation: 'dummy_url', disinfection: 'dummy_url', waste: 'dummy_url' },
+                    intro: '고독사, 쓰레기집 완벽 복구 전문 업체입니다.', empCount: '5명', equip: '고압세척기, 오존살균기 3대', portfolios: []
+                },
+                { id: 'cus1', pw: '12345678', role: 'customer', name: '테스트고객', phone: '010-1234-5678', cash: 0, reviews: [] },
+                { id: 'gov1', pw: '12345678', role: 'gov', name: '김주무관', phone: '010-9999-8888', govType: '지자체', govName: '광주광역시 본청', cash: 0, reviews: [] }
+            ],
+            requestsDB: [
+                { id: 'r1', userId: 'cus1', tags: ['고독사'], commonType: ['아파트'], loc: '서울특별시 강남구 역삼동', area: '25', floor: '10', elevator: '있음', desc: '빠른 처리 부탁드립니다.', status: '견적 대기중', dateOption: '일주일 이내', images: [] }
+            ],
+            quotesDB: [],
+            chatDB: [],
+            selectedReq: null,
+            viewingPro: null,
+            selectedContract: null,
+            paymentTargetQuote: null,
+            payMethod: 'card',
+            reviewRating: '5',
+            reviewText: '',
+            scheduleDate: '',
+            scheduleTime: '',
+            targetScheduleQuote: null,
+            showReportPreview: false,
+            // Forms
+            signupForm: { role: 'customer', id: '', pw: '', pwConfirm: '', name: '', phone: '', bizNum: '', compName: '', keywords: [] },
+            loginForm: { id: '', pw: '' },
+            requestForm: {
+                commonType: [], tags: [], area: '', floor: '', elevator: '',
+                addr: { sido: '', sigungu: '', dong: '' }, desc: '', images: [],
+                dateOption: '', dateSpecific: { y: '', m: '', d: '' },
+                detailDeath: { period: '', floor: '' },
+                detailCrime: { type: '', locMain: '', locSub: '' },
+                detailTrash: { types: [], moveType: '', extraService: [] },
+                detailFire: { degree: '', locMain: '', locSub: '' },
+                detailFlood: { type: '' },
+                detailInherit: { furnitureDesc: '' }
+            },
+            modals: { addr: false, addrStep: 1, tempSido: '', tempSigungu: '', terms: false },
+            docs: { biz: null, sanitation: null, disinfection: null, waste: null, waterTank: null },
+            // B2G Data
+            bidsDB: [
+                { id: 'bid1', title: '서구청 관내 고독사 현장 긴급 복구', budget: 15000000, status: '입찰중', type: '제한경쟁', deadline: '2026-05-10', applicants: 0 }
+            ],
+            govBudget: 50000000,
+            clearedCases: 12,
+            riskScore: 0,
+            riskAnalysis: '',
+            riskSolutions: [],
+            riskUrgent: []
+        };
+
+        const koreaAddressData = {
+            '서울특별시': { '강남구': ['역삼동', '청담동', '대치동', '삼성동'], '서초구': ['서초동', '반포동', '방배동'], '송파구': ['잠실동', '가락동'], '마포구': ['서교동', '연남동'], '강서구': ['마곡동', '화곡동'] },
+            '부산광역시': { '해운대구': ['우동', '중동', '반여동'], '수영구': ['광안동', '남천동'], '부산진구': ['서면', '부전동'], '동래구': ['부전동'] },
+            '광주광역시': { '서구': ['광천동', '치평동', '상무동', '풍암동'], '북구': ['운암동', '용봉동', '일곡동'], '동구': ['충장동', '동명동'], '남구': ['양림동', '봉선동'], '광산구': ['송정동', '수완동', '첨단동'] }
+        };
+
+        const govOrgs = {
+            central: ['보건복지부', '행정안전부', '국토교통부', '여성가족부', '환경부', '경찰청', '소방청'],
+            local: ['서울특별시', '부산광역시', '대구광역시', '인천광역시', '광주광역시 본청', '광주광역시 서구청', '광주광역시 남구청', '광주광역시 북구청', '광주광역시 광산구청', '대전광역시', '울산광역시', '세종특별자치시', '경기도', '강원특별자치도', '충청북도', '충청남도', '전북특별자치도', '전라남도', '경상북도', '경상남도', '제주특별자치도']
+        };
+
+        // --- Router & Rendering ---
+        function setPage(pageName) {
+            state.page = pageName;
+            render();
+        }
+
+        function render() {
+            const root = document.getElementById('root');
+            if (state.isLoading) {
+                root.innerHTML = renderSplash();
+                return;
+            }
+
+            switch (state.page) {
+                case 'main': root.innerHTML = renderMain(); break;
+                case 'login': root.innerHTML = renderLogin(); break;
+                case 'signup': root.innerHTML = renderSignup(); break;
+                case 'customer_dash': root.innerHTML = renderCustomerDash(); break;
+                case 'pro_dash': root.innerHTML = renderProDash(); break;
+                case 'gov_dash': root.innerHTML = renderGovDash(); break;
+                case 'gov_report_center': root.innerHTML = renderGovReportCenter(); break;
+                case 'gov_pro_list': root.innerHTML = renderGovProList(); break;
+                case 'gov_bid_post': root.innerHTML = renderGovBidPost(); break;
+                case 'gov_emergency_call': root.innerHTML = renderGovEmergencyCall(); break;
+                case 'gov_dashboard': root.innerHTML = renderGovDashboard(); break;
+                case 'admin_dash': root.innerHTML = renderAdminDash(); break;
+                case 'pro_mypage': root.innerHTML = renderProMyPage(); break;
+                case 'chat_room': root.innerHTML = renderChatRoom(); break;
+                case 'customer_request': root.innerHTML = renderCustomerRequest(); break;
+                case 'customer_req_history': root.innerHTML = renderCustomerReqHistory(); break;
+                case 'customer_req_detail': root.innerHTML = renderCustomerReqDetail(); break;
+                case 'customer_quotes': root.innerHTML = renderCustomerQuotes(); break;
+                case 'customer_contracts': root.innerHTML = renderCustomerContracts(); break;
+                case 'customer_mypage': root.innerHTML = renderCustomerMyPage(); break;
+                case 'customer_view_pro_profile': root.innerHTML = renderCustomerViewProProfile(); break;
+                case 'pro_request_detail': root.innerHTML = renderProRequestDetail(); break;
+                case 'pro_schedule_manage': root.innerHTML = renderProScheduleManage(); break;
+                case 'e_contract': root.innerHTML = renderEContract(); break;
+                default: root.innerHTML = renderMain();
+            }
+            if (state.modals.addr) {
+                const modal = document.createElement('div');
+                modal.innerHTML = renderAddrModal();
+                root.appendChild(modal.firstElementChild);
+            }
+            if (state.modals.terms) {
+                const modal = document.createElement('div');
+                modal.innerHTML = renderTermsModal();
+                root.appendChild(modal.firstElementChild);
+            }
+            window.scrollTo(0, 0);
+        }
+
+        // --- UI Components (Templates) ---
+        function renderSplash() {
+            return `
                 <div class="splashContainer">
                     <div class="splashSub">대한민국 1등 특수청소 전문가 매칭</div>
                     <div class="splashTitle">특수청소 전문 중개 플랫폼</div>
                     <div class="splashBrand">특청</div>
                 </div>
-            `}function renderMain(){return`
+            `;
+        }
+
+        function renderMain() {
+            return `
                 <div class="mainContainer">
                     <div class="mainSubTitle">특수현장, 전문가가 답입니다</div>
                     <div class="mainLogo">특청</div>
@@ -13,11 +721,16 @@
                         <button class="proBtn" style="margin-top:15px" onclick="setPage('signup')">회원가입</button>
                     </div>
                 </div>
-            `}function renderGovDash(){var e=state.currentUser;return`
+            `;
+        }
+
+        function renderGovDash() {
+            const user = state.currentUser;
+            return `
                 <div class="bg">
                     <div style="padding: 70px 30px 20px; background: var(--surface); border-bottom: 1px solid var(--primary)">
-                        <div style="color: var(--primary); font-size:14px; font-weight:bold">행정 파트너 시스템 (${e.govType})</div>
-                        <div style="font-size: 22px; font-weight: bold;">${e.govName} ${e.name} 님</div>
+                        <div style="color: var(--primary); font-size:14px; font-weight:bold">행정 파트너 시스템 (${user.govType})</div>
+                        <div style="font-size: 22px; font-weight: bold;">${user.govName} ${user.name} 님</div>
                     </div>
                     <div class="padding">
                         <div style="display: flex; gap: 10px; margin-bottom: 25px;">
@@ -41,7 +754,11 @@
                         <div class="menuCard" style="border-color:var(--primary); margin-top:30px" onclick="handleLogout()">로그아웃</div>
                     </div>
                 </div>
-            `}function renderGovDashboard(){return`
+            `;
+        }
+
+        function renderGovDashboard() {
+            return `
                 <div class="bg">
                     <div class="header"><div onclick="setPage('gov_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">위험도 분석 대시보드</div><div style="width:40px"></div></div>
                     <div class="padding">
@@ -77,30 +794,34 @@
                         <div style="background-color: #fff; color: #000; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
                             <div style="display:flex; justify-content:space-between; align-items:center">
                                 <span style="font-weight:bold; color:#666">위험도 지수</span>
-                                <span style="font-size:24px; font-weight:bold" id="riskScoreVal">${state.riskScore||0} / 100</span>
+                                <span style="font-size:24px; font-weight:bold" id="riskScoreVal">${state.riskScore || 0} / 100</span>
                             </div>
                             <div id="riskLevelText" class="risk-low" style="margin-top:10px">${getRiskLevelLabel(state.riskScore)}</div>
                             <div class="progress-bar-bg">
-                                <div class="progress-bar-fill" style="width: ${state.riskScore||0}%; background-color: ${getRiskColor(state.riskScore)}"></div>
+                                <div class="progress-bar-fill" style="width: ${state.riskScore || 0}%; background-color: ${getRiskColor(state.riskScore)}"></div>
                             </div>
                             
                             <div style="margin-top:25px; border-top:1px solid #eee; padding-top:20px">
                                 <div style="font-weight:bold; margin-bottom:10px">AI 분석 보고서</div>
-                                <div style="font-size:14px; line-height:1.5; color:#333">${state.riskAnalysis||"데이터를 입력해주세요."}</div>
+                                <div style="font-size:14px; line-height:1.5; color:#333">${state.riskAnalysis || '데이터를 입력해주세요.'}</div>
                             </div>
 
                             <div style="margin-top:20px">
                                 <div style="font-weight:bold; margin-bottom:10px">행정 솔루션</div>
                                 <div id="riskSolutions">
-                                    ${state.riskUrgent.map(e=>`<span class="badge badge-danger">🚨 ${e}</span>`).join("")}
-                                    ${state.riskSolutions.map(e=>`<span class="badge" style="background:#eee; color:#0056b3; border-color:#b8d4f2">${e}</span>`).join("")}
-                                    ${0===state.riskSolutions.length&&0===state.riskUrgent.length?'<span class="badge">정보 없음</span>':""}
+                                    ${state.riskUrgent.map(s => `<span class="badge badge-danger">🚨 ${s}</span>`).join('')}
+                                    ${state.riskSolutions.map(s => `<span class="badge" style="background:#eee; color:#0056b3; border-color:#b8d4f2">${s}</span>`).join('')}
+                                    ${state.riskSolutions.length === 0 && state.riskUrgent.length === 0 ? '<span class="badge">정보 없음</span>' : ''}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            `}function renderGovEmergencyCall(){return`
+            `;
+        }
+
+        function renderGovEmergencyCall() {
+            return `
                 <div class="bg">
                     <div class="header"><div onclick="setPage('gov_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">긴급 악취차단 요청</div><div style="width:40px"></div></div>
                     <div class="padding">
@@ -109,13 +830,17 @@
                             <div style="color:#fff; font-size:13px; line-height:1.6">민원 발생 지역에 즉시 전담팀을 파견하여 악취 차단 및 약품 소독을 먼저 진행합니다. (사후 정산 가능)</div>
                         </div>
                         <div class="label">발견 현장 주소</div>
-                        <div class="addressBox" onclick="openAddrModal()">${state.requestForm.addr.sido?`${state.requestForm.addr.sido} ${state.requestForm.addr.sigungu} `+state.requestForm.addr.dong:"📍 주소 선택"}</div>
+                        <div class="addressBox" onclick="openAddrModal()">${state.requestForm.addr.sido ? `${state.requestForm.addr.sido} ${state.requestForm.addr.sigungu} ${state.requestForm.addr.dong}` : '📍 주소 선택'}</div>
                         <div class="label">현장 상황 (음성으로도 입력 가능)</div>
                         <textarea class="textArea" placeholder="예: 고독사 의심 현장이며 복도까지 악취가 심함"></textarea>
                         <button class="primaryBtn" style="margin-top:40px; background-color:var(--primary)" onclick="alert('긴급 요청이 접수되었습니다. 인근 5분 거리 내 업체가 즉시 출동합니다.'); setPage('gov_dash')">⚡ 즉시 출동 요청하기</button>
                     </div>
                 </div>
-            `}function renderGovReportCenter(){return`
+            `;
+        }
+
+        function renderGovReportCenter() {
+            return `
                 <div class="bg">
                     <div class="header"><div onclick="setPage('gov_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">지출결의 센터</div><div style="width:40px"></div></div>
                     <div class="padding">
@@ -131,7 +856,7 @@
                             <div style="font-weight:bold; font-size:16px">[서구] 고독사 현장 특수청소 수의계약</div>
                             <div style="color:var(--text-sub); margin-top:5px">수행업체: 강남특수청소</div>
                             <div style="color:var(--text-sub)">청구금액: 1,500,000 원</div>
-                            ${state.showReportPreview?`
+                            ${state.showReportPreview ? `
                                 <div style="background-color:#fff; color:#000; padding:15px; border-radius:5px; margin-top:15px; font-size:12px">
                                     <h3 style="text-align:center; border-bottom:1px solid #000; padding-bottom:5px">지 출 결 의 서</h3>
                                     <p>건명: 광주 서구 관내 고독사 현장 복구 대금 지출</p>
@@ -139,47 +864,61 @@
                                     <p style="text-align:right">위와 같이 청구함.</p>
                                 </div>
                                 <button class="primaryBtn" style="margin-top:15px" onclick="downloadPDF()">✅ PDF 다운로드 및 기안 올리기</button>
-                            `:`
+                            ` : `
                                 <button class="primaryBtn" style="margin-top:15px; background-color:#444" onclick="toggleReportPreview()">👀 지출결의서 미리보기</button>
                             `}
                         </div>
                     </div>
                 </div>
-            `}function renderProMyPage(){var e=state.currentUser;return`
+            `;
+        }
+
+        function renderProMyPage() {
+            const u = state.currentUser;
+            return `
                 <div class="bg">
                     <div class="header"><div onclick="setPage('pro_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">마이페이지 (정보 관리)</div><div style="width:40px"></div></div>
                     <div class="padding">
                         <div class="label">업체 명칭</div>
-                        <input class="input" value="${e.compName}" oninput="state.currentUser.compName=this.value">
+                        <input class="input" value="${u.compName}" oninput="state.currentUser.compName=this.value">
                         <div class="label">사업자 등록번호</div>
-                        <input class="input" value="${e.bizNum}" readonly style="background-color:#111">
+                        <input class="input" value="${u.bizNum}" readonly style="background-color:#111">
                         <div class="label">전문 분야</div>
                         <div class="tagWrap">
-                            ${e.keywords.map(e=>`<div class="tagBtn activeBtn">${e}</div>`).join("")}
+                            ${u.keywords.map(k => `<div class="tagBtn activeBtn">${k}</div>`).join('')}
                         </div>
                         <button class="primaryBtn" style="margin-top:30px" onclick="alert('정보가 수정되었습니다.'); setPage('pro_dash')">정보 수정 완료</button>
                         <button class="proBtn" style="margin-top:15px; border-color:var(--primary)" onclick="handleLogout()">로그아웃</button>
                     </div>
                 </div>
-            `}function renderAdminDash(){var e=state.usersDB.filter(e=>"pro"===e.role&&!e.isApproved);return`
+            `;
+        }
+
+        function renderAdminDash() {
+            const pendingPros = state.usersDB.filter(u => u.role === 'pro' && !u.isApproved);
+            return `
                 <div class="bg">
                     <div class="header"><div class="headerTitle">관리자 결재 센터</div></div>
                     <div class="padding">
                         <div style="font-weight:bold; margin-bottom:15px">신규 가입 심사 대기 업체</div>
-                        ${0===e.length?'<div style="color:#888; text-align:center; padding:30px">대기 중인 업체가 없습니다.</div>':""}
-                        ${e.map(e=>`
+                        ${pendingPros.length === 0 ? '<div style="color:#888; text-align:center; padding:30px">대기 중인 업체가 없습니다.</div>' : ''}
+                        ${pendingPros.map(p => `
                             <div class="menuCard">
                                 <div style="flex:1">
-                                    <div style="font-weight:bold">${e.compName}</div>
-                                    <div style="font-size:12px; color:#888">대표: ${e.name} / ${e.bizNum}</div>
+                                    <div style="font-weight:bold">${p.compName}</div>
+                                    <div style="font-size:12px; color:#888">대표: ${p.name} / ${p.bizNum}</div>
                                 </div>
-                                <div class="smallBtn" style="background-color:var(--primary)" onclick="approvePro('${e.id}')">승인</div>
+                                <div class="smallBtn" style="background-color:var(--primary)" onclick="approvePro('${p.id}')">승인</div>
                             </div>
-                        `).join("")}
+                        `).join('')}
                         <button class="proBtn" style="margin-top:40px" onclick="handleLogout()">로그아웃</button>
                     </div>
                 </div>
-            `}function renderLogin(){return`
+            `;
+        }
+
+        function renderLogin() {
+            return `
                 <div class="bg">
                     <div class="header">
                         <button onclick="setPage('main')" style="color: var(--primary); background: none; border: none; cursor: pointer;">← 뒤로</button>
@@ -195,7 +934,12 @@
                         <button class="primaryBtn" style="margin-top: 30px;" onclick="handleLogin()">로그인</button>
                     </div>
                 </div>
-            `}function renderSignup(){const t=state.signupForm;return`
+            `;
+        }
+
+        function renderSignup() {
+            const f = state.signupForm;
+            return `
                 <div class="bg">
                     <div class="header">
                         <button onclick="setPage('main')" style="color: var(--primary); background: none; border: none; cursor: pointer;">← 뒤로</button>
@@ -205,105 +949,119 @@
                     <div class="padding">
                         <div class="label">회원 유형 선택</div>
                         <div class="row">
-                            <div class="halfBtn ${"customer"===t.role?"activeBtn":""}" style="width: 32%" onclick="updateSignupForm('role', 'customer')">일반고객</div>
-                            <div class="halfBtn ${"pro"===t.role?"activeBtn":""}" style="width: 32%" onclick="updateSignupForm('role', 'pro')">특수청소사</div>
-                            <div class="halfBtn ${"gov"===t.role?"activeBtn":""}" style="width: 32%" onclick="updateSignupForm('role', 'gov')">관공서</div>
+                            <div class="halfBtn ${f.role === 'customer' ? 'activeBtn' : ''}" style="width: 32%" onclick="updateSignupForm('role', 'customer')">일반고객</div>
+                            <div class="halfBtn ${f.role === 'pro' ? 'activeBtn' : ''}" style="width: 32%" onclick="updateSignupForm('role', 'pro')">특수청소사</div>
+                            <div class="halfBtn ${f.role === 'gov' ? 'activeBtn' : ''}" style="width: 32%" onclick="updateSignupForm('role', 'gov')">관공서</div>
                         </div>
 
                         <div style="background-color: #111; padding: 15px; border-radius: 10px; border: 1px solid #333; margin: 15px 0;">
                             <div style="display:flex; align-items:center; margin-bottom:10px; cursor:pointer" onclick="state.signupForm.agreeTerms = !state.signupForm.agreeTerms; render();">
-                                <span style="font-size:20px; margin-right:10px">${t.agreeTerms?"☑️":"⬜"}</span>
+                                <span style="font-size:20px; margin-right:10px">${f.agreeTerms ? '☑️' : '⬜'}</span>
                                 <span style="color:#aaa; font-size:14px">(필수) 서비스 이용약관 동의</span>
                                 <span onclick="event.stopPropagation(); openTermsModal()" style="color:#666; font-size:12px; text-decoration:underline; margin-left:auto">[보기]</span>
                             </div>
                             <div style="display:flex; align-items:center; cursor:pointer" onclick="state.signupForm.agreePrivacy = !state.signupForm.agreePrivacy; render();">
-                                <span style="font-size:20px; margin-right:10px">${t.agreePrivacy?"☑️":"⬜"}</span>
+                                <span style="font-size:20px; margin-right:10px">${f.agreePrivacy ? '☑️' : '⬜'}</span>
                                 <span style="color:#aaa; font-size:14px">(필수) 개인정보 처리방침 동의</span>
                             </div>
                         </div>
 
                         <div class="label">아이디 (8~14자)</div>
                         <div class="row">
-                            <input class="input" style="flex: 1; margin-right: 10px; margin-bottom: 0;" placeholder="아이디 입력" value="${t.id}" oninput="updateSignupForm('id', this.value); f.isIdChecked=false;">
-                            <button class="smallBtn" onclick="handleCheckId()">${t.isIdChecked?"확인됨":"중복확인"}</button>
+                            <input class="input" style="flex: 1; margin-right: 10px; margin-bottom: 0;" placeholder="아이디 입력" value="${f.id}" oninput="updateSignupForm('id', this.value); f.isIdChecked=false;">
+                            <button class="smallBtn" onclick="handleCheckId()">${f.isIdChecked ? '확인됨' : '중복확인'}</button>
                         </div>
                         <div class="label">비밀번호</div>
-                        <input class="input" type="password" placeholder="비밀번호 입력" value="${t.pw}" oninput="updateSignupForm('pw', this.value)">
-                        <input class="input" type="password" placeholder="비밀번호 확인" value="${t.pwConfirm}" oninput="updateSignupForm('pwConfirm', this.value)">
+                        <input class="input" type="password" placeholder="비밀번호 입력" value="${f.pw}" oninput="updateSignupForm('pw', this.value)">
+                        <input class="input" type="password" placeholder="비밀번호 확인" value="${f.pwConfirm}" oninput="updateSignupForm('pwConfirm', this.value)">
                         
-                        ${"customer"===t.role||"gov"===t.role?`
+                        ${(f.role === 'customer' || f.role === 'gov') ? `
                             <div class="label" style="color: var(--primary)">본인 인증</div>
-                            <button class="proBtn" onclick="handleAuth()">${t.isAuthDone?"✅ 인증 완료":"📱 본인인증 진행"}</button>
-                            ${t.isAuthDone?`
+                            <button class="proBtn" onclick="handleAuth()">${f.isAuthDone ? '✅ 인증 완료' : '📱 본인인증 진행'}</button>
+                            ${f.isAuthDone ? `
                                 <div style="background-color:#111; padding:15px; border-radius:10px; margin-top:10px">
-                                    <div style="color:#888; font-size:13px">이름: ${t.name}</div>
-                                    <div style="color:#888; font-size:13px">연락처: ${t.phone||"010-1234-5678"}</div>
+                                    <div style="color:#888; font-size:13px">이름: ${f.name}</div>
+                                    <div style="color:#888; font-size:13px">연락처: ${f.phone || '010-1234-5678'}</div>
                                 </div>
-                            `:""}
-                            ${"gov"===t.role?`
+                            ` : ''}
+                            ${f.role === 'gov' ? `
                                 <div class="label">기관 유형</div>
                                 <div class="row">
-                                    <div class="halfBtn ${"중앙부처"===t.govType?"activeBtn":""}" onclick="updateSignupForm('govType', '중앙부처')">중앙부처</div>
-                                    <div class="halfBtn ${"지자체"===t.govType?"activeBtn":""}" onclick="updateSignupForm('govType', '지자체')">지자체</div>
+                                    <div class="halfBtn ${f.govType === '중앙부처' ? 'activeBtn' : ''}" onclick="updateSignupForm('govType', '중앙부처')">중앙부처</div>
+                                    <div class="halfBtn ${f.govType === '지자체' ? 'activeBtn' : ''}" onclick="updateSignupForm('govType', '지자체')">지자체</div>
                                 </div>
                                 <div class="label">소속 기관</div>
                                 <select class="input" onchange="updateSignupForm('govName', this.value)">
                                     <option value="">소속 선택</option>
-                                    ${("중앙부처"===t.govType?govOrgs.central:govOrgs.local).map(e=>`<option value="${e}" ${t.govName===e?"selected":""}>${e}</option>`).join("")}
+                                    ${(f.govType === '중앙부처' ? govOrgs.central : govOrgs.local).map(org => `<option value="${org}" ${f.govName === org ? 'selected' : ''}>${org}</option>`).join('')}
                                 </select>
-                            `:""}
-                        `:`
+                            ` : ''}
+                        ` : `
                             <div class="label">사업자 정보</div>
-                            <input class="input" placeholder="사업자등록번호 (10자리)" value="${t.bizNum}" oninput="updateSignupForm('bizNum', this.value)">
-                            <input class="input" placeholder="상호명" value="${t.compName}" oninput="updateSignupForm('compName', this.value)">
+                            <input class="input" placeholder="사업자등록번호 (10자리)" value="${f.bizNum}" oninput="updateSignupForm('bizNum', this.value)">
+                            <input class="input" placeholder="상호명" value="${f.compName}" oninput="updateSignupForm('compName', this.value)">
                             <div class="label">전문 분야 (복수 선택)</div>
                             <div class="tagWrap">
-                                ${["고독사","자살","쓰레기집","화재","침수","악취제거"].map(e=>`
-                                    <div class="tagBtn ${t.keywords.includes(e)?"activeBtn":""}" onclick="toggleSignupKeyword('${e}')">${e}</div>
-                                `).join("")}
+                                ${['고독사', '자살', '쓰레기집', '화재', '침수', '악취제거'].map(tag => `
+                                    <div class="tagBtn ${f.keywords.includes(tag) ? 'activeBtn' : ''}" onclick="toggleSignupKeyword('${tag}')">${tag}</div>
+                                `).join('')}
                             </div>
                         `}
                         <button class="primaryBtn" style="margin-top:30px; margin-bottom:50px" onclick="handleSignup()">가입 완료</button>
                     </div>
                 </div>
-            `}function renderCustomerQuotes(){var e=state.quotesDB.filter(e=>e.reqUserId===state.currentUser.id&&"pending"===e.status);return`
+            `;
+        }
+
+        function renderCustomerQuotes() {
+            const myQuotes = state.quotesDB.filter(q => q.reqUserId === state.currentUser.id && q.status === 'pending');
+            return `
                 <div class="bg">
                     <div class="header"><div onclick="setPage('customer_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">받은 견적함</div><div style="width:40px"></div></div>
                     <div class="padding">
-                        ${0===e.length?'<div style="color:#888; text-align:center; margin-top:50px">도착한 견적이 없습니다.</div>':""}
-                        ${e.map(e=>`
+                        ${myQuotes.length === 0 ? '<div style="color:#888; text-align:center; margin-top:50px">도착한 견적이 없습니다.</div>' : ''}
+                        ${myQuotes.map(q => `
                             <div style="background-color:var(--surface); padding:25px; border-radius:15px; border:1px solid var(--border); margin-bottom:20px">
                                 <div style="display:flex; justify-content:space-between; align-items:center">
-                                    <div style="font-weight:bold; font-size:18px">${e.proName}</div>
+                                    <div style="font-weight:bold; font-size:18px">${q.proName}</div>
                                     <div style="background-color:rgba(40,167,69,0.2); padding:4px 8px; border-radius:12px; border:1px solid var(--success); color:var(--success); font-size:10px; font-weight:bold">🛡️ 인증업체</div>
                                 </div>
-                                <div style="color:var(--primary); font-size:24px; font-weight:bold; margin:15px 0">${Number(e.price).toLocaleString()}원</div>
-                                <div style="color:var(--text-sub); margin-bottom:20px; line-height:1.5">${e.msg}</div>
-                                <div class="proBtn" style="margin-bottom:15px" onclick="viewProProfile('${e.proId}')">📄 업체 프로필 및 리뷰 보기</div>
+                                <div style="color:var(--primary); font-size:24px; font-weight:bold; margin:15px 0">${Number(q.price).toLocaleString()}원</div>
+                                <div style="color:var(--text-sub); margin-bottom:20px; line-height:1.5">${q.msg}</div>
+                                <div class="proBtn" style="margin-bottom:15px" onclick="viewProProfile('${q.proId}')">📄 업체 프로필 및 리뷰 보기</div>
                                 <div class="row">
                                     <div class="halfBtn" style="background-color:#222" onclick="setPage('chat_room')">💬 문의하기</div>
-                                    <div class="halfBtn activeBtn" onclick="startPayment('${e.id}')">결제 진행</div>
+                                    <div class="halfBtn activeBtn" onclick="startPayment('${q.id}')">결제 진행</div>
                                 </div>
                             </div>
-                        `).join("")}
+                        `).join('')}
                     </div>
                 </div>
-            `}function renderCustomerContracts(){var e=state.quotesDB.filter(e=>e.reqUserId===state.currentUser.id&&["paid","contracted","signed","completed"].includes(e.status));return`
+            `;
+        }
+
+        function renderCustomerContracts() {
+            const myContracts = state.quotesDB.filter(q => q.reqUserId === state.currentUser.id && ['paid', 'contracted', 'signed', 'completed'].includes(q.status));
+            return `
                 <div class="bg">
                     <div class="header"><div onclick="setPage('customer_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">내 계약/작업 관리</div><div style="width:40px"></div></div>
                     <div class="padding">
-                        ${0===e.length?'<div style="color:#888; text-align:center; margin-top:50px">진행 중인 계약이 없습니다.</div>':""}
-                        ${e.map(e=>`
+                        ${myContracts.length === 0 ? '<div style="color:#888; text-align:center; margin-top:50px">진행 중인 계약이 없습니다.</div>' : ''}
+                        ${myContracts.map(c => `
                             <div style="background-color:var(--surface); padding:20px; border-radius:10px; border:1px solid var(--border); margin-bottom:15px">
-                                <div style="color:var(--primary); font-weight:bold; margin-bottom:5px">${"paid"===e.status?"결제완료 (매칭중)":"contracted"===e.status?"계약서 서명 대기":"signed"===e.status?"작업 대기/진행 중":"작업 완료"}</div>
-                                <div style="font-weight:bold; font-size:16px">${e.proName} (${Number(e.price).toLocaleString()}원)</div>
-                                ${"contracted"===e.status?`<div class="primaryBtn" style="margin-top:15px; padding:10px" onclick="openContract('${e.id}')">계약서 서명하기</div>`:""}
-                                ${"completed"!==e.status||e.isReviewed?"":`<div class="primaryBtn" style="margin-top:15px; padding:10px; background-color:var(--success)" onclick="writeReview('${e.id}')">리뷰 작성하기</div>`}
+                                <div style="color:var(--primary); font-weight:bold; margin-bottom:5px">${c.status === 'paid' ? '결제완료 (매칭중)' : c.status === 'contracted' ? '계약서 서명 대기' : c.status === 'signed' ? '작업 대기/진행 중' : '작업 완료'}</div>
+                                <div style="font-weight:bold; font-size:16px">${c.proName} (${Number(c.price).toLocaleString()}원)</div>
+                                ${c.status === 'contracted' ? `<div class="primaryBtn" style="margin-top:15px; padding:10px" onclick="openContract('${c.id}')">계약서 서명하기</div>` : ''}
+                                ${c.status === 'completed' && !c.isReviewed ? `<div class="primaryBtn" style="margin-top:15px; padding:10px; background-color:var(--success)" onclick="writeReview('${c.id}')">리뷰 작성하기</div>` : ''}
                             </div>
-                        `).join("")}
+                        `).join('')}
                     </div>
                 </div>
-            `}function renderCustomerDash(){return`
+            `;
+        }
+
+        function renderCustomerDash() {
+            return `
                 <div class="bg">
                     <div style="padding: 70px 30px 20px; border-bottom: 1px solid var(--border); display:flex; justify-content:space-between; align-items:center">
                         <div style="font-size: 22px; font-weight: bold;">${state.currentUser.name} 고객님</div>
@@ -324,52 +1082,71 @@
                         <div class="menuCard" style="margin-top:30px" onclick="handleLogout()">로그아웃</div>
                     </div>
                 </div>
-            `}function renderCustomerReqHistory(){var e=state.requestsDB.filter(e=>e.userId===state.currentUser.id);return`
+            `;
+        }
+
+        function renderCustomerReqHistory() {
+            const myReqs = state.requestsDB.filter(r => r.userId === state.currentUser.id);
+            return `
                 <div class="bg">
                     <div class="header"><div onclick="setPage('customer_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">나의 요청서</div><div style="width:40px"></div></div>
                     <div class="padding">
-                        ${0===e.length?'<div style="color:#888; text-align:center; margin-top:50px">작성된 요청서가 없습니다.</div>':""}
-                        ${e.map(e=>`
-                            <div class="menuCard" style="display:block" onclick="viewMyReqDetail('${e.id}')">
-                                <div style="color:var(--primary); font-weight:bold; font-size:12px; margin-bottom:5px">${e.status}</div>
-                                <div style="font-weight:bold; font-size:16px">${e.tags.join(", ")}</div>
-                                <div style="color:#888; font-size:13px; margin-top:5px">요청일: ${e.dateOption} / ${e.loc}</div>
+                        ${myReqs.length === 0 ? '<div style="color:#888; text-align:center; margin-top:50px">작성된 요청서가 없습니다.</div>' : ''}
+                        ${myReqs.map(r => `
+                            <div class="menuCard" style="display:block" onclick="viewMyReqDetail('${r.id}')">
+                                <div style="color:var(--primary); font-weight:bold; font-size:12px; margin-bottom:5px">${r.status}</div>
+                                <div style="font-weight:bold; font-size:16px">${r.tags.join(', ')}</div>
+                                <div style="color:#888; font-size:13px; margin-top:5px">요청일: ${r.dateOption} / ${r.loc}</div>
                                 <div style="text-align:right; color:#666; font-size:12px">상세보기 ❯</div>
                             </div>
-                        `).join("")}
+                        `).join('')}
                     </div>
                 </div>
-            `}function renderCustomerReqDetail(){var e=state.selectedMyReq;return`
+            `;
+        }
+
+        function renderCustomerReqDetail() {
+            const r = state.selectedMyReq;
+            return `
                 <div class="bg">
                     <div class="header"><div onclick="setPage('customer_req_history')" style="color:var(--primary); cursor:pointer">← 목록</div><div class="headerTitle">요청 상세</div><div style="width:40px"></div></div>
                     <div class="padding">
                         <div style="background-color:var(--surface); padding:20px; border-radius:15px; border:1px solid #333; margin-bottom:20px">
                             <div style="color:var(--primary); font-weight:bold; margin-bottom:10px">📍 현장 정보</div>
-                            <div style="color:#fff; font-size:16px; font-weight:bold">${e.tags.join(", ")} / ${e.commonType.join(", ")}</div>
-                            <div style="color:#aaa; margin-top:10px">주소: ${e.loc}</div>
-                            <div style="color:#aaa">면적: ${e.area}평 / ${e.floor}층 / ${e.elevator}</div>
-                            <div style="color:#aaa">희망일: ${e.dateOption}</div>
+                            <div style="color:#fff; font-size:16px; font-weight:bold">${r.tags.join(', ')} / ${r.commonType.join(', ')}</div>
+                            <div style="color:#aaa; margin-top:10px">주소: ${r.loc}</div>
+                            <div style="color:#aaa">면적: ${r.area}평 / ${r.floor}층 / ${r.elevator}</div>
+                            <div style="color:#aaa">희망일: ${r.dateOption}</div>
                         </div>
                         <div style="background-color:var(--surface); padding:20px; border-radius:15px; border:1px solid #333">
                             <div style="color:var(--primary); font-weight:bold; margin-bottom:10px">📝 세부 상황</div>
-                            <div style="color:#fff; line-height:1.6">${e.desc}</div>
+                            <div style="color:#fff; line-height:1.6">${r.desc}</div>
                         </div>
                     </div>
                 </div>
-            `}function renderCustomerMyPage(){var e=state.currentUser;return`
+            `;
+        }
+
+        function renderCustomerMyPage() {
+            const u = state.currentUser;
+            return `
                 <div class="bg">
                     <div class="header"><div onclick="setPage('customer_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">마이페이지</div><div style="width:40px"></div></div>
                     <div class="padding">
                         <div style="background-color:var(--surface); padding:25px; border-radius:15px; border:1px solid #333; margin-bottom:20px">
-                            <div style="font-size:20px; font-weight:bold">${e.name} 님</div>
-                            <div style="color:#888; margin-top:5px">${e.id} | ${e.phone||"010-0000-0000"}</div>
+                            <div style="font-size:20px; font-weight:bold">${u.name} 님</div>
+                            <div style="color:#888; margin-top:5px">${u.id} | ${u.phone || '010-0000-0000'}</div>
                         </div>
                         <div class="menuCard" onclick="alert('준비 중입니다.')">💳 결제 수단 관리</div>
                         <div class="menuCard" onclick="alert('준비 중입니다.')">💬 1:1 고객센터</div>
                         <div class="menuCard" style="border-color:var(--primary)" onclick="handleLogout()">로그아웃</div>
                     </div>
                 </div>
-            `}function renderTermsModal(){return`
+            `;
+        }
+
+        function renderTermsModal() {
+            return `
                 <div class="modalOverlay">
                     <div class="modalContent" style="max-height:80vh; overflow-y:auto">
                         <div style="display:flex; justify-content:space-between; margin-bottom:20px">
@@ -388,48 +1165,59 @@
                         <button class="primaryBtn" onclick="agreeTermsAndNext()">동의 후 가입 진행</button>
                     </div>
                 </div>
-            `}function renderProDash(){const t=state.currentUser;var e=state.quotesDB.filter(e=>e.proId===t.id&&"paid"===e.status);return`
+            `;
+        }
+
+        function renderProDash() {
+            const updatedUser = state.currentUser;
+            const paidOrders = state.quotesDB.filter(q => q.proId === updatedUser.id && q.status === 'paid');
+            return `
                 <div class="bg">
                     <div style="background-color:var(--surface); padding:30px; padding-top:70px; border-bottom:1px solid var(--primary); display:flex; justify-content:space-between">
-                        <div style="font-size:20px; font-weight:bold">${t.compName} 대표님</div>
+                        <div style="font-size:20px; font-weight:bold">${updatedUser.compName} 대표님</div>
                         <div onclick="setPage('pro_mypage')" style="cursor:pointer">⚙️</div>
                     </div>
                     <div class="padding">
-                        ${0<e.length?`
+                        ${paidOrders.length > 0 ? `
                             <div style="margin-bottom:40px">
                                 <div style="font-weight:bold; margin-bottom:15px; font-size:16px">💸 결제 완료된 오더</div>
-                                ${e.map(e=>`
+                                ${paidOrders.map(order => `
                                     <div style="background-color:#1a0505; padding:20px; border-radius:15px; border:1px solid var(--primary); margin-bottom:15px">
                                         <div style="font-weight:bold; color:var(--primary)">고객 결제 완료</div>
-                                        <div style="font-size:18px; font-weight:bold; margin-top:5px">총 ${Number(e.price).toLocaleString()}원</div>
-                                        <div class="primaryBtn" style="margin-top:15px; padding:10px" onclick="manageSchedule('${e.id}')">일정 확정 및 계약 진행</div>
+                                        <div style="font-size:18px; font-weight:bold; margin-top:5px">총 ${Number(order.price).toLocaleString()}원</div>
+                                        <div class="primaryBtn" style="margin-top:15px; padding:10px" onclick="manageSchedule('${order.id}')">일정 확정 및 계약 진행</div>
                                     </div>
-                                `).join("")}
+                                `).join('')}
                             </div>
-                        `:""}
+                        ` : ''}
 
                         <div style="font-weight:bold; margin-bottom:15px; font-size:16px">실시간 도착 오더</div>
-                        ${0===state.requestsDB.length?'<div style="color:#888; text-align:center; margin-top:30px">새로운 오더가 없습니다.</div>':""}
-                        ${state.requestsDB.map(e=>`
+                        ${state.requestsDB.length === 0 ? '<div style="color:#888; text-align:center; margin-top:30px">새로운 오더가 없습니다.</div>' : ''}
+                        ${state.requestsDB.map(req => `
                             <div style="background-color:var(--surface); padding:20px; border-radius:15px; border:1px solid #333; margin-bottom:15px">
                                 <div style="color:var(--primary); font-weight:bold">🚨 [매칭 대기]</div>
-                                <div style="font-size:18px; font-weight:bold; margin-top:5px">[${e.loc.split(" ")[1]}] ${e.tags.join(", ")}</div>
-                                <div style="color:var(--text-sub); margin-top:8px">유형: ${e.commonType.join(", ")}</div>
-                                <div class="primaryBtn" style="margin-top:20px; padding:10px" onclick="viewOrderDetails('${e.id}')">상세보기 및 견적작성</div>
+                                <div style="font-size:18px; font-weight:bold; margin-top:5px">[${req.loc.split(' ')[1]}] ${req.tags.join(', ')}</div>
+                                <div style="color:var(--text-sub); margin-top:8px">유형: ${req.commonType.join(', ')}</div>
+                                <div class="primaryBtn" style="margin-top:20px; padding:10px" onclick="viewOrderDetails('${req.id}')">상세보기 및 견적작성</div>
                             </div>
-                        `).join("")}
+                        `).join('')}
                     </div>
                 </div>
-            `}function renderProRequestDetail(){var e=state.selectedReq;return`
+            `;
+        }
+
+        function renderProRequestDetail() {
+            const req = state.selectedReq;
+            return `
                 <div class="bg">
                     <div class="header"><div onclick="setPage('pro_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">오더 상세 및 견적</div><div style="width:40px"></div></div>
                     <div class="padding">
                         <div style="background-color:var(--surface); padding:20px; border-radius:10px; border:1px solid #333; margin-bottom:20px">
                             <div style="color:var(--primary); font-weight:bold; margin-bottom:10px">📄 고객 요청 상세 내용</div>
-                            <div style="font-size:16px; margin-bottom:5px">현장: ${e.commonType.join(", ")} (${e.tags.join(", ")})</div>
-                            <div style="color:var(--text-sub); margin-bottom:5px">주소: ${e.loc}</div>
-                            <div style="color:var(--text-sub); margin-bottom:5px">공통: ${e.area}평 / ${e.floor}층 / ${e.elevator}</div>
-                            <div style="color:#fff; line-height:1.5; margin-top:10px">상황 설명: ${e.desc}</div>
+                            <div style="font-size:16px; margin-bottom:5px">현장: ${req.commonType.join(', ')} (${req.tags.join(', ')})</div>
+                            <div style="color:var(--text-sub); margin-bottom:5px">주소: ${req.loc}</div>
+                            <div style="color:var(--text-sub); margin-bottom:5px">공통: ${req.area}평 / ${req.floor}층 / ${req.elevator}</div>
+                            <div style="color:#fff; line-height:1.5; margin-top:10px">상황 설명: ${req.desc}</div>
                         </div>
                         <div class="proBtn" style="margin-bottom:30px; border-color:#fff" onclick="setPage('chat_room')">💬 고객과 먼저 채팅 상담하기</div>
                         <div class="label">견적 금액 제안 (숫자만 입력) *</div>
@@ -439,14 +1227,19 @@
                         <button class="primaryBtn" style="margin-top:30px" onclick="submitQuote()">고객에게 견적 보내기</button>
                     </div>
                 </div>
-            `}function renderProScheduleManage(){var e=state.targetScheduleQuote;return`
+            `;
+        }
+
+        function renderProScheduleManage() {
+            const q = state.targetScheduleQuote;
+            return `
                 <div class="bg">
                     <div class="header"><div onclick="setPage('pro_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">계약 및 일정 확정</div><div style="width:40px"></div></div>
                     <div class="padding">
                         <div style="background-color:var(--surface); padding:20px; border-radius:10px; border:1px solid #333; margin-bottom:20px">
                             <div style="color:#888; margin-bottom:5px">고객 결제 금액</div>
-                            <div style="color:var(--primary); font-size:24px; font-weight:bold; margin-bottom:15px">${Number(e.price).toLocaleString()}원</div>
-                            <div style="color:#fff">고객 ID: ${e.reqUserId}</div>
+                            <div style="color:var(--primary); font-size:24px; font-weight:bold; margin-bottom:15px">${Number(q.price).toLocaleString()}원</div>
+                            <div style="color:#fff">고객 ID: ${q.reqUserId}</div>
                         </div>
                         <div class="label">작업 예정 일자</div>
                         <input class="input" type="date" id="schedDate">
@@ -455,49 +1248,68 @@
                         <button class="primaryBtn" style="margin-top:30px" onclick="confirmSchedule()">일정 확정 및 계약서 생성</button>
                     </div>
                 </div>
-            `}function renderEContract(){var e=state.selectedContract,t="customer"===state.currentUser.role||"gov"===state.currentUser.role;return`
+            `;
+        }
+
+        function renderEContract() {
+            const c = state.selectedContract;
+            const isCustomer = state.currentUser.role === 'customer' || state.currentUser.role === 'gov';
+            return `
                 <div class="bg">
                     <div class="header"><div onclick="setPage(state.currentUser.role === 'pro' ? 'pro_dash' : 'customer_contracts')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">전자계약서</div><div style="width:40px"></div></div>
                     <div class="padding">
                         <div style="background-color:#fff; padding:20px; border-radius:5px; margin-bottom:30px; color:#000">
                             <h2 style="text-align:center">표준 특수청소 도급 계약서</h2>
-                            <p>도급인(갑): ${e.reqUserId}</p>
-                            <p>수급인(을): ${e.proName}</p>
-                            <p>계약금액: ${Number(e.price).toLocaleString()}원</p>
-                            <p>작업일시: ${e.scheduleDate} ${e.scheduleTime}</p>
+                            <p>도급인(갑): ${c.reqUserId}</p>
+                            <p>수급인(을): ${c.proName}</p>
+                            <p>계약금액: ${Number(c.price).toLocaleString()}원</p>
+                            <p>작업일시: ${c.scheduleDate} ${c.scheduleTime}</p>
                             <div style="font-size:12px; margin-top:20px; border-top:1px solid #ddd; padding-top:10px">
                                 제1조 (목적) 본 계약은... (생략)
                             </div>
                         </div>
                         <div class="row">
-                            <div class="halfBtn ${e.customerSigned?"activeBtn":""}" style="${e.customerSigned?"border-color:var(--success); color:var(--success)":""}">고객 서명 ${e.customerSigned?"(완료)":"(대기)"}</div>
-                            <div class="halfBtn ${e.proSigned?"activeBtn":""}" style="${e.proSigned?"border-color:var(--success); color:var(--success)":""}">업체 서명 ${e.proSigned?"(완료)":"(대기)"}</div>
+                            <div class="halfBtn ${c.customerSigned ? 'activeBtn' : ''}" style="${c.customerSigned ? 'border-color:var(--success); color:var(--success)' : ''}">고객 서명 ${c.customerSigned ? '(완료)' : '(대기)'}</div>
+                            <div class="halfBtn ${c.proSigned ? 'activeBtn' : ''}" style="${c.proSigned ? 'border-color:var(--success); color:var(--success)' : ''}">업체 서명 ${c.proSigned ? '(완료)' : '(대기)'}</div>
                         </div>
-                        ${t&&!e.customerSigned||!t&&!e.proSigned?`
+                        ${((isCustomer && !c.customerSigned) || (!isCustomer && !c.proSigned)) ? `
                             <button class="primaryBtn" style="margin-top:30px" onclick="signContract()">위 내용에 동의하며 서명합니다</button>
-                        `:""}
-                        ${t||"signed"!==e.status?"":`
+                        ` : ''}
+                        ${(!isCustomer && c.status === 'signed') ? `
                             <button class="primaryBtn" style="margin-top:15px; background-color:var(--success)" onclick="completeWork()">☑️ 현장 작업 완료 처리하기</button>
-                        `}
+                        ` : ''}
                     </div>
                 </div>
-            `}function renderOptions(e,t,i){return`
+            `;
+        }
+
+        function renderOptions(options, selected, setter) {
+            return `
                 <div class="row">
-                    ${e.map(e=>`
-                        <div class="halfBtn ${t===e?"activeBtn":""}" onclick="${i}('${e}')">
-                            <span style="font-size:12px; font-weight:bold">${e}</span>
+                    ${options.map(opt => `
+                        <div class="halfBtn ${selected === opt ? 'activeBtn' : ''}" onclick="${setter}('${opt}')">
+                            <span style="font-size:12px; font-weight:bold">${opt}</span>
                         </div>
-                    `).join("")}
+                    `).join('')}
                 </div>
-            `}function renderMultiOptions(e,t,i){return`
+            `;
+        }
+
+        function renderMultiOptions(options, selectedArray, setter) {
+            return `
                 <div class="row">
-                    ${e.map(e=>`
-                        <div class="halfBtn ${t.includes(e)?"activeBtn":""}" onclick="${i}('${e}')">
-                            <span style="font-size:12px; font-weight:bold">${e}</span>
+                    ${options.map(opt => `
+                        <div class="halfBtn ${selectedArray.includes(opt) ? 'activeBtn' : ''}" onclick="${setter}('${opt}')">
+                            <span style="font-size:12px; font-weight:bold">${opt}</span>
                         </div>
-                    `).join("")}
+                    `).join('')}
                 </div>
-            `}function renderCustomerRequest(){var e=state.requestForm;return`
+            `;
+        }
+
+        function renderCustomerRequest() {
+            const f = state.requestForm;
+            return `
                 <div class="bg">
                     <div class="header">
                         <div onclick="setPage('customer_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div>
@@ -511,97 +1323,397 @@
                         </div>
 
                         <div class="label">현장 종류 *</div>
-                        ${renderMultiOptions(["아파트","빌라","단독주택","오피스텔","상가/사무실","기타"],e.commonType,"toggleReqCommonType")}
+                        ${renderMultiOptions(['아파트', '빌라', '단독주택', '오피스텔', '상가/사무실', '기타'], f.commonType, 'toggleReqCommonType')}
 
                         <div class="label">특수청소 유형 (중복 선택 가능) *</div>
-                        ${renderMultiOptions(["고독사","자살","강력범죄현장","쓰레기집","화재","침수","유품정리","악취제거"],e.tags,"toggleRequestTag")}
+                        ${renderMultiOptions(['고독사', '자살', '강력범죄현장', '쓰레기집', '화재', '침수', '유품정리', '악취제거'], f.tags, 'toggleRequestTag')}
 
-                        ${0<e.tags.length?`
+                        ${(f.tags.length > 0) ? `
                             <div class="dynamicCard">
                                 <div class="dynamicLabel">📍 면적 및 층수 공통 정보</div>
                                 <div class="row">
-                                    <input class="input" style="flex:1; margin-right:5px" type="number" placeholder="면적(평)" value="${e.area}" oninput="state.requestForm.area=this.value">
-                                    <input class="input" style="flex:1; margin-left:5px" type="number" placeholder="층수" value="${e.floor}" oninput="state.requestForm.floor=this.value">
+                                    <input class="input" style="flex:1; margin-right:5px" type="number" placeholder="면적(평)" value="${f.area}" oninput="state.requestForm.area=this.value">
+                                    <input class="input" style="flex:1; margin-left:5px" type="number" placeholder="층수" value="${f.floor}" oninput="state.requestForm.floor=this.value">
                                 </div>
-                                ${renderOptions(["엘리베이터 있음","엘리베이터 없음"],e.elevator,"setReqElevator")}
+                                ${renderOptions(['엘리베이터 있음', '엘리베이터 없음'], f.elevator, 'setReqElevator')}
                                 <div style="height:1px; background-color:#333; margin:15px 0"></div>
 
-                                ${e.tags.includes("고독사")||e.tags.includes("자살")?`
+                                ${(f.tags.includes('고독사') || f.tags.includes('자살')) ? `
                                     <div class="dynamicLabel">📍 [고독사/자살] 발견되기까지의 기간</div>
-                                    ${renderOptions(["1~3일","4~7일","1개월 이상","모름","기타"],e.detailDeath.period,"setDeathPeriod")}
+                                    ${renderOptions(['1~3일', '4~7일', '1개월 이상', '모름', '기타'], f.detailDeath.period, 'setDeathPeriod')}
                                     <div class="dynamicLabel" style="margin-top:15px">📍 [고독사/자살] 바닥 재질</div>
-                                    ${renderOptions(["장판","강화마루","강마루","데코타일","모름","기타"],e.detailDeath.floor,"setDeathFloor")}
+                                    ${renderOptions(['장판', '강화마루', '강마루', '데코타일', '모름', '기타'], f.detailDeath.floor, 'setDeathFloor')}
                                     <div style="height:1px; background-color:#333; margin:15px 0"></div>
-                                `:""}
+                                ` : ''}
 
-                                ${e.tags.includes("쓰레기집")?`
+                                ${f.tags.includes('쓰레기집') ? `
                                     <div class="dynamicLabel">📍 [쓰레기집] 주요 쓰레기 유형 (복수선택)</div>
-                                    ${renderMultiOptions(["배달쓰레기 및 생활쓰레기","가구 및 대형폐기물"],e.detailTrash.types,"toggleTrashType")}
+                                    ${renderMultiOptions(['배달쓰레기 및 생활쓰레기', '가구 및 대형폐기물'], f.detailTrash.types, 'toggleTrashType')}
                                     <div class="dynamicLabel" style="margin-top:15px">📍 작업 범위 (이사 여부)</div>
-                                    ${renderOptions(["일부폐기 및 청소","전체폐기 및 청소"],e.detailTrash.moveType,"setTrashMoveType")}
+                                    ${renderOptions(['일부폐기 및 청소', '전체폐기 및 청소'], f.detailTrash.moveType, 'setTrashMoveType')}
                                     <div style="height:1px; background-color:#333; margin:15px 0"></div>
-                                `:""}
+                                ` : ''}
 
-                                ${e.tags.includes("유품정리")?`
+                                ${f.tags.includes('유품정리') ? `
                                     <div class="dynamicLabel">📍 [유품정리] 가구 및 가전 내역 (필수) *</div>
-                                    <textarea class="textArea" style="height:80px" placeholder="폐기하거나 정리해야 할 가구/가전의 종류와 갯수를 적어주세요." oninput="state.requestForm.detailInherit.furnitureDesc=this.value">${e.detailInherit.furnitureDesc}</textarea>
+                                    <textarea class="textArea" style="height:80px" placeholder="폐기하거나 정리해야 할 가구/가전의 종류와 갯수를 적어주세요." oninput="state.requestForm.detailInherit.furnitureDesc=this.value">${f.detailInherit.furnitureDesc}</textarea>
                                     <div style="height:1px; background-color:#333; margin:15px 0"></div>
-                                `:""}
+                                ` : ''}
                             </div>
-                        `:""}
+                        ` : ''}
 
                         <div class="label">작업 희망 날짜 *</div>
                         <div class="row">
-                            <div class="halfBtn ${"일주일 이내"===e.dateOption?"activeBtn":""}" style="width:32%" onclick="setReqDateOption('일주일 이내')">일주일 이내</div>
-                            <div class="halfBtn ${"협의 가능"===e.dateOption?"activeBtn":""}" style="width:32%" onclick="setReqDateOption('협의 가능')">협의 가능</div>
-                            <div class="halfBtn ${"날짜 지정"===e.dateOption?"activeBtn":""}" style="width:32%" onclick="setReqDateOption('날짜 지정')">날짜 지정</div>
+                            <div class="halfBtn ${f.dateOption === '일주일 이내' ? 'activeBtn' : ''}" style="width:32%" onclick="setReqDateOption('일주일 이내')">일주일 이내</div>
+                            <div class="halfBtn ${f.dateOption === '협의 가능' ? 'activeBtn' : ''}" style="width:32%" onclick="setReqDateOption('협의 가능')">협의 가능</div>
+                            <div class="halfBtn ${f.dateOption === '날짜 지정' ? 'activeBtn' : ''}" style="width:32%" onclick="setReqDateOption('날짜 지정')">날짜 지정</div>
                         </div>
-                        ${"날짜 지정"===e.dateOption?`
+                        ${f.dateOption === '날짜 지정' ? `
                             <div class="row" style="margin-top:5px">
                                 <input class="input" style="flex:1" placeholder="YYYY" oninput="state.requestForm.dateSpecific.y=this.value">
                                 <input class="input" style="flex:1; margin:0 5px" placeholder="MM" oninput="state.requestForm.dateSpecific.m=this.value">
                                 <input class="input" style="flex:1" placeholder="DD" oninput="state.requestForm.dateSpecific.d=this.value">
                             </div>
-                        `:""}
+                        ` : ''}
 
                         <div class="label">현장 주소 *</div>
-                        <div class="addressBox" onclick="openAddrModal()">${e.addr.sido?`${e.addr.sido} ${e.addr.sigungu} `+e.addr.dong:"📍 주소 검색/선택"}</div>
+                        <div class="addressBox" onclick="openAddrModal()">${f.addr.sido ? `${f.addr.sido} ${f.addr.sigungu} ${f.addr.dong}` : '📍 주소 검색/선택'}</div>
                         
                         <div class="label">대략적인 현장 상황 설명 *</div>
-                        <textarea class="textArea" placeholder="기타 특이사항을 적어주세요." oninput="state.requestForm.desc=this.value">${e.desc}</textarea>
+                        <textarea class="textArea" placeholder="기타 특이사항을 적어주세요." oninput="state.requestForm.desc=this.value">${f.desc}</textarea>
                         <button class="primaryBtn" style="margin-top:40px; margin-bottom:50px" onclick="handleSubmitRequest()">요청서 보내기</button>
                     </div>
                 </div>
-            `}function renderAddrModal(){var e=state.modals;return`
+            `;
+        }
+
+        function renderAddrModal() {
+            const m = state.modals;
+            return `
                 <div class="modalOverlay">
                     <div class="modalContent">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                            <div style="font-weight: bold;">주소 선택 (${e.addrStep}/3)</div>
+                            <div style="font-weight: bold;">주소 선택 (${m.addrStep}/3)</div>
                             <div onclick="closeAddrModal()" style="cursor: pointer;">✖️</div>
                         </div>
                         <div class="tagWrap">
-                            ${1===e.addrStep?Object.keys(koreaAddressData).map(e=>`<div class="tagBtn" onclick="selectAddrStep1('${e}')">${e}</div>`).join(""):""}
-                            ${2===e.addrStep?Object.keys(koreaAddressData[e.tempSido]).map(e=>`<div class="tagBtn" onclick="selectAddrStep2('${e}')">${e}</div>`).join(""):""}
-                            ${3===e.addrStep?koreaAddressData[e.tempSido][e.tempSigungu].map(e=>`<div class="tagBtn" onclick="selectAddrStep3('${e}')">${e}</div>`).join(""):""}
+                            ${m.addrStep === 1 ? Object.keys(koreaAddressData).map(s => `<div class="tagBtn" onclick="selectAddrStep1('${s}')">${s}</div>`).join('') : ''}
+                            ${m.addrStep === 2 ? Object.keys(koreaAddressData[m.tempSido]).map(sg => `<div class="tagBtn" onclick="selectAddrStep2('${sg}')">${sg}</div>`).join('') : ''}
+                            ${m.addrStep === 3 ? koreaAddressData[m.tempSido][m.tempSigungu].map(d => `<div class="tagBtn" onclick="selectAddrStep3('${d}')">${d}</div>`).join('') : ''}
                         </div>
                     </div>
                 </div>
-            `}function openAddrModal(){state.modals.addr=!0,state.modals.addrStep=1,render()}function closeAddrModal(){state.modals.addr=!1,render()}function selectAddrStep1(e){state.modals.tempSido=e,state.modals.addrStep=2,render()}function selectAddrStep2(e){state.modals.tempSigungu=e,state.modals.addrStep=3,render()}function selectAddrStep3(e){state.requestForm.addr={sido:state.modals.tempSido,sigungu:state.modals.tempSigungu,dong:e},state.modals.addr=!1,render()}function updateSignupForm(e,t){state.signupForm[e]=t,render()}function handleCheckId(){if(!state.signupForm.id)return alert("아이디를 입력해주세요.");state.usersDB.some(e=>e.id===state.signupForm.id)?alert("이미 사용 중인 아이디입니다."):(state.signupForm.isIdChecked=!0,alert("사용 가능한 아이디입니다."),render())}function handleAuth(){alert("본인인증 완료 (테스트)"),state.signupForm.isAuthDone=!0,state.signupForm.name="홍길동",render()}function handleSignup(){var e=state.signupForm;if(!e.agreeTerms||!e.agreePrivacy)return alert("필수 약관에 동의해주세요.");if(!e.isIdChecked)return alert("아이디 중복확인을 해주세요.");if(e.pw!==e.pwConfirm)return alert("비밀번호가 일치하지 않습니다.");if("customer"===e.role||"gov"===e.role){if(!e.isAuthDone)return alert("본인 인증을 완료해주세요.");if(!("gov"!==e.role||e.govType&&e.govName))return alert("소속 기관 정보를 입력해주세요.")}else if("pro"===e.role){if(!e.bizNum||!e.compName)return alert("사업자 정보를 입력해주세요.");if(0===e.keywords.length)return alert("전문 분야를 선택해주세요.")}e={...e,cash:0,isApproved:"pro"!==e.role,reviews:[]};state.usersDB.push(e),alert("가입 성공! 로그인해주세요."),setPage("login")}function handleBidPost(){var e=document.getElementById("bidTitle").value,t=document.getElementById("bidBudget").value;if(!e||!t)return alert("정보를 모두 입력해주세요.");e={id:"bid"+Date.now(),title:e,budget:Number(t),status:"입찰중",type:"제한경쟁",deadline:"2026-05-30",applicants:0};state.bidsDB.push(e),alert("입찰 공고가 등록되었습니다."),setPage("gov_dash")}function handleLogout(){state.currentUser=null,state.loginForm={id:"",pw:""},setPage("main")}function handleLogin(){const t=document.getElementById("loginId").value,i=document.getElementById("loginPw").value;var e=state.usersDB.find(e=>e.id===t&&e.pw===i);e?"admin"===(state.currentUser=e).role?setPage("admin_dash"):"customer"===e.role?setPage("customer_dash"):"gov"===e.role?setPage("gov_dash"):setPage("pro_dash"):alert("로그인 정보가 올바르지 않습니다.")}function sendChatMessage(){var e=document.getElementById("chatMsg").value;e&&(state.chatDB.push({sender:state.currentUser.id,text:e}),render())}function approvePro(t){var e=state.usersDB.find(e=>e.id===t);e.isApproved=!0,alert(e.compName+" 업체가 승인되었습니다."),render()}function toggleReqCommonType(e){var t=state.requestForm.commonType.indexOf(e);-1<t?state.requestForm.commonType.splice(t,1):state.requestForm.commonType.push(e),render()}function setReqElevator(e){state.requestForm.elevator=e,render()}function setDeathPeriod(e){state.requestForm.detailDeath.period=e,render()}function setDeathFloor(e){state.requestForm.detailDeath.floor=e,render()}function toggleTrashType(e){var t=state.requestForm.detailTrash.types.indexOf(e);-1<t?state.requestForm.detailTrash.types.splice(t,1):state.requestForm.detailTrash.types.push(e),render()}function setTrashMoveType(e){state.requestForm.detailTrash.moveType=e,render()}function setReqDateOption(e){state.requestForm.dateOption=e,render()}function toggleRequestTag(e){var t=state.requestForm.tags.indexOf(e);-1<t?state.requestForm.tags.splice(t,1):state.requestForm.tags.push(e),render()}function handleSubmitRequest(){if(0===state.requestForm.tags.length||!state.requestForm.desc)return alert("정보를 모두 입력해주세요.");var e={id:"r"+Date.now(),userId:state.currentUser.id,tags:[...state.requestForm.tags],commonType:[...state.requestForm.commonType],loc:`${state.requestForm.addr.sido} ${state.requestForm.addr.sigungu} `+state.requestForm.addr.dong,area:state.requestForm.area,floor:state.requestForm.floor,elevator:state.requestForm.elevator,desc:state.requestForm.desc,status:"견적 대기중",dateOption:state.requestForm.dateOption,images:[]};state.requestsDB.push(e),alert("견적 요청이 접수되었습니다."),setPage("customer_dash")}function calculateRisk(){document.getElementById("riskAge").value;var e=document.getElementById("riskRequester").value,t=document.getElementById("riskWaste").value,i=document.getElementById("riskOdor").value;let r=0,s="<strong>[발견 정황]</strong><br>";var a=[],o=[];"landlord"===e?(r+=40,s+="타인(임대인/이웃)에 의한 발견으로 완전한 고립 및 단절이 의심됩니다. ",o.push("복지보건과 긴급 방문")):"family"===e?(r+=20,s+="가족/지인의 의뢰로 소통 단절 초기 단계입니다. "):(r+=5,s+="본인이 직접 의뢰하여 상황 개선 의지가 확인됩니다. "),s+="<br><br><strong>[현장 진단]</strong><br>","high"===i&&(r+=30,s+="심각한 생물학적 오염 및 부패 침출수가 확인됩니다. ",o.push("긴급 악취제거 소독")),"delivery"===t&&(r+=10,s+="무력감으로 인한 생활 쓰레기 방치가 보입니다. ",a.push("청년 마음건강 바우처")),"alcohol"===t&&(r+=15,s+="알코올 의존 및 우울 증세가 뚜렷합니다. ",a.push("정신건강센터 연계")),"bills"===t&&(r+=20,s+="경제적 파탄으로 인한 공과금 체납 정황이 있습니다. ",o.push("긴급 생계비 지원")),state.riskScore=r,state.riskAnalysis=s,state.riskSolutions=a,state.riskUrgent=o,render()}function getRiskLevelLabel(e){return 70<=e?"위험 (High) - 고독사 임박 및 집중 관리 필요":30<=e?"경고 (Medium) - 모니터링 및 복지 지원 권장":"관심 (Low) - 초기 개입 및 단기 지원"}function getRiskColor(e){return 70<=e?"#d9534f":30<=e?"#f0ad4e":"#5cb85c"}function viewMyReqDetail(t){state.selectedMyReq=state.requestsDB.find(e=>e.id===t),setPage("customer_req_detail")}function openTermsModal(){state.modals.terms=!0,render()}function closeTermsModal(){state.modals.terms=!1,render()}function agreeTermsAndNext(){state.signupForm.agreeTerms=!0,state.signupForm.agreePrivacy=!0,state.modals.terms=!1,render()}function toggleSignupKeyword(e){var t=state.signupForm.keywords.indexOf(e);-1<t?state.signupForm.keywords.splice(t,1):state.signupForm.keywords.push(e),render()}function viewOrderDetails(t){state.selectedReq=state.requestsDB.find(e=>e.id===t),setPage("pro_request_detail")}function submitQuote(){var e=document.getElementById("quotePrice").value,t=document.getElementById("quoteMsg").value;if(!e||!t)return alert("금액과 메시지를 입력해주세요.");e={id:"q"+Date.now(),reqUserId:state.selectedReq.userId,reqId:state.selectedReq.id,proId:state.currentUser.id,proName:state.currentUser.compName,price:e,msg:t,status:"pending"};state.quotesDB.push(e),alert("견적 발송 완료!"),setPage("pro_dash")}function startPayment(t){var e=state.quotesDB.find(e=>e.id===t);state.paymentTargetQuote=e,confirm(Number(e.price).toLocaleString()+"원을 결제하시겠습니까?")&&(e.status="paid",alert("결제 완료!"),setPage("customer_dash"))}function manageSchedule(t){state.targetScheduleQuote=state.quotesDB.find(e=>e.id===t),setPage("pro_schedule_manage")}function confirmSchedule(){var e=document.getElementById("schedDate").value,t=document.getElementById("schedTime").value;if(!e||!t)return alert("일정을 입력해주세요.");state.targetScheduleQuote.scheduleDate=e,state.targetScheduleQuote.scheduleTime=t,state.targetScheduleQuote.status="contracted",alert("일정 확정 및 계약서가 생성되었습니다."),setPage("pro_dash")}function openContract(t){state.selectedContract=state.quotesDB.find(e=>e.id===t),setPage("e_contract")}function signContract(){var e=state.selectedContract;"pro"===state.currentUser.role?e.proSigned=!0:e.customerSigned=!0,e.proSigned&&e.customerSigned&&(e.status="signed"),alert("서명 완료!"),render()}function completeWork(){state.selectedContract.status="completed",alert("작업 완료 처리되었습니다."),setPage("pro_dash")}function renderGovProList(){return`
+            `;
+        }
+
+        function openAddrModal() { state.modals.addr = true; state.modals.addrStep = 1; render(); }
+        function closeAddrModal() { state.modals.addr = false; render(); }
+        function selectAddrStep1(s) { state.modals.tempSido = s; state.modals.addrStep = 2; render(); }
+        function selectAddrStep2(sg) { state.modals.tempSigungu = sg; state.modals.addrStep = 3; render(); }
+        function selectAddrStep3(d) {
+            state.requestForm.addr = { sido: state.modals.tempSido, sigungu: state.modals.tempSigungu, dong: d };
+            state.modals.addr = false;
+            render();
+        }
+
+        // --- Logic Functions ---
+        function updateSignupForm(key, val) {
+            state.signupForm[key] = val;
+            render();
+        }
+
+        function handleCheckId() {
+            if (!state.signupForm.id) return alert("아이디를 입력해주세요.");
+            if (state.usersDB.some(u => u.id === state.signupForm.id)) {
+                alert("이미 사용 중인 아이디입니다.");
+            } else {
+                state.signupForm.isIdChecked = true;
+                alert("사용 가능한 아이디입니다.");
+                render();
+            }
+        }
+
+        function handleAuth() {
+            alert("본인인증 완료 (테스트)");
+            state.signupForm.isAuthDone = true;
+            state.signupForm.name = "홍길동";
+            render();
+        }
+
+        function handleSignup() {
+            const f = state.signupForm;
+            if (!f.agreeTerms || !f.agreePrivacy) return alert("필수 약관에 동의해주세요.");
+            if (!f.isIdChecked) return alert("아이디 중복확인을 해주세요.");
+            if (f.pw !== f.pwConfirm) return alert("비밀번호가 일치하지 않습니다.");
+            if (f.role === 'customer' || f.role === 'gov') {
+                if (!f.isAuthDone) return alert("본인 인증을 완료해주세요.");
+                if (f.role === 'gov' && (!f.govType || !f.govName)) return alert("소속 기관 정보를 입력해주세요.");
+            } else if (f.role === 'pro') {
+                if (!f.bizNum || !f.compName) return alert("사업자 정보를 입력해주세요.");
+                if (f.keywords.length === 0) return alert("전문 분야를 선택해주세요.");
+            }
+
+            const newUser = { ...f, cash: 0, isApproved: f.role !== 'pro', reviews: [] };
+            state.usersDB.push(newUser);
+            alert("가입 성공! 로그인해주세요.");
+            setPage('login');
+        }
+
+        function handleBidPost() {
+            const title = document.getElementById('bidTitle').value;
+            const budget = document.getElementById('bidBudget').value;
+            if (!title || !budget) return alert("정보를 모두 입력해주세요.");
+
+            const newBid = {
+                id: 'bid' + Date.now(),
+                title: title,
+                budget: Number(budget),
+                status: '입찰중',
+                type: '제한경쟁',
+                deadline: '2026-05-30',
+                applicants: 0
+            };
+            state.bidsDB.push(newBid);
+            alert("입찰 공고가 등록되었습니다.");
+            setPage('gov_dash');
+        }
+
+        function handleLogout() {
+            state.currentUser = null;
+            state.loginForm = { id: '', pw: '' };
+            setPage('main');
+        }
+
+        function handleLogin() {
+            const id = document.getElementById('loginId').value;
+            const pw = document.getElementById('loginPw').value;
+            const user = state.usersDB.find(u => u.id === id && u.pw === pw);
+            if (user) {
+                state.currentUser = user;
+                if (user.role === 'admin') setPage('admin_dash');
+                else if (user.role === 'customer') setPage('customer_dash');
+                else if (user.role === 'gov') setPage('gov_dash');
+                else setPage('pro_dash');
+            } else {
+                alert("로그인 정보가 올바르지 않습니다.");
+            }
+        }
+        function sendChatMessage() {
+            const txt = document.getElementById('chatMsg').value;
+            if (!txt) return;
+            state.chatDB.push({ sender: state.currentUser.id, text: txt });
+            render();
+        }
+
+        function approvePro(id) {
+            const p = state.usersDB.find(u => u.id === id);
+            p.isApproved = true;
+            alert(`${p.compName} 업체가 승인되었습니다.`);
+            render();
+        }
+
+        function toggleReqCommonType(val) {
+            const idx = state.requestForm.commonType.indexOf(val);
+            if (idx > -1) state.requestForm.commonType.splice(idx, 1);
+            else state.requestForm.commonType.push(val);
+            render();
+        }
+        function setReqElevator(val) { state.requestForm.elevator = val; render(); }
+        function setDeathPeriod(val) { state.requestForm.detailDeath.period = val; render(); }
+        function setDeathFloor(val) { state.requestForm.detailDeath.floor = val; render(); }
+        function toggleTrashType(val) {
+            const idx = state.requestForm.detailTrash.types.indexOf(val);
+            if (idx > -1) state.requestForm.detailTrash.types.splice(idx, 1);
+            else state.requestForm.detailTrash.types.push(val);
+            render();
+        }
+        function setTrashMoveType(val) { state.requestForm.detailTrash.moveType = val; render(); }
+        function setReqDateOption(val) { state.requestForm.dateOption = val; render(); }
+
+        function toggleRequestTag(tag) {
+            const idx = state.requestForm.tags.indexOf(tag);
+            if (idx > -1) state.requestForm.tags.splice(idx, 1);
+            else state.requestForm.tags.push(tag);
+            render();
+        }
+
+        function handleSubmitRequest() {
+            if (state.requestForm.tags.length === 0 || !state.requestForm.desc) return alert("정보를 모두 입력해주세요.");
+            const newReq = {
+                id: 'r' + Date.now(),
+                userId: state.currentUser.id,
+                tags: [...state.requestForm.tags],
+                commonType: [...state.requestForm.commonType],
+                loc: `${state.requestForm.addr.sido} ${state.requestForm.addr.sigungu} ${state.requestForm.addr.dong}`,
+                area: state.requestForm.area,
+                floor: state.requestForm.floor,
+                elevator: state.requestForm.elevator,
+                desc: state.requestForm.desc,
+                status: '견적 대기중',
+                dateOption: state.requestForm.dateOption,
+                images: []
+            };
+            state.requestsDB.push(newReq);
+            alert("견적 요청이 접수되었습니다.");
+            setPage('customer_dash');
+        }
+
+        // --- Logic Handlers (New) ---
+        function calculateRisk() {
+            const age = document.getElementById('riskAge').value;
+            const requester = document.getElementById('riskRequester').value;
+            const waste = document.getElementById('riskWaste').value;
+            const odor = document.getElementById('riskOdor').value;
+
+            let score = 0;
+            let analysis = "<strong>[발견 정황]</strong><br>";
+            let solutions = [];
+            let urgent = [];
+
+            if (requester === 'landlord') { score += 40; analysis += "타인(임대인/이웃)에 의한 발견으로 완전한 고립 및 단절이 의심됩니다. "; urgent.push("복지보건과 긴급 방문"); }
+            else if (requester === 'family') { score += 20; analysis += "가족/지인의 의뢰로 소통 단절 초기 단계입니다. "; }
+            else { score += 5; analysis += "본인이 직접 의뢰하여 상황 개선 의지가 확인됩니다. "; }
+
+            analysis += "<br><br><strong>[현장 진단]</strong><br>";
+            if (odor === 'high') { score += 30; analysis += "심각한 생물학적 오염 및 부패 침출수가 확인됩니다. "; urgent.push("긴급 악취제거 소독"); }
+            if (waste === 'delivery') { score += 10; analysis += "무력감으로 인한 생활 쓰레기 방치가 보입니다. "; solutions.push("청년 마음건강 바우처"); }
+            if (waste === 'alcohol') { score += 15; analysis += "알코올 의존 및 우울 증세가 뚜렷합니다. "; solutions.push("정신건강센터 연계"); }
+            if (waste === 'bills') { score += 20; analysis += "경제적 파탄으로 인한 공과금 체납 정황이 있습니다. "; urgent.push("긴급 생계비 지원"); }
+
+            state.riskScore = score;
+            state.riskAnalysis = analysis;
+            state.riskSolutions = solutions;
+            state.riskUrgent = urgent;
+            render();
+        }
+
+        function getRiskLevelLabel(s) {
+            if (s >= 70) return "위험 (High) - 고독사 임박 및 집중 관리 필요";
+            if (s >= 30) return "경고 (Medium) - 모니터링 및 복지 지원 권장";
+            return "관심 (Low) - 초기 개입 및 단기 지원";
+        }
+
+        function getRiskColor(s) {
+            if (s >= 70) return "#d9534f";
+            if (s >= 30) return "#f0ad4e";
+            return "#5cb85c";
+        }
+
+        function viewMyReqDetail(id) {
+            state.selectedMyReq = state.requestsDB.find(r => r.id === id);
+            setPage('customer_req_detail');
+        }
+
+        function openTermsModal() { state.modals.terms = true; render(); }
+        function closeTermsModal() { state.modals.terms = false; render(); }
+        function agreeTermsAndNext() {
+            state.signupForm.agreeTerms = true;
+            state.signupForm.agreePrivacy = true;
+            state.modals.terms = false;
+            render();
+        }
+
+        function toggleSignupKeyword(k) {
+            const idx = state.signupForm.keywords.indexOf(k);
+            if (idx > -1) state.signupForm.keywords.splice(idx, 1);
+            else state.signupForm.keywords.push(k);
+            render();
+        }
+
+        // --- Logic Handlers ---
+        function viewOrderDetails(id) {
+            state.selectedReq = state.requestsDB.find(r => r.id === id);
+            setPage('pro_request_detail');
+        }
+
+        function submitQuote() {
+            const price = document.getElementById('quotePrice').value;
+            const msg = document.getElementById('quoteMsg').value;
+            if (!price || !msg) return alert("금액과 메시지를 입력해주세요.");
+            const newQuote = {
+                id: 'q' + Date.now(),
+                reqUserId: state.selectedReq.userId,
+                reqId: state.selectedReq.id,
+                proId: state.currentUser.id,
+                proName: state.currentUser.compName,
+                price: price,
+                msg: msg,
+                status: 'pending'
+            };
+            state.quotesDB.push(newQuote);
+            alert("견적 발송 완료!");
+            setPage('pro_dash');
+        }
+
+        function startPayment(quoteId) {
+            const q = state.quotesDB.find(x => x.id === quoteId);
+            state.paymentTargetQuote = q;
+            // Simplified: direct complete for demo
+            if (confirm(`${Number(q.price).toLocaleString()}원을 결제하시겠습니까?`)) {
+                q.status = 'paid';
+                alert("결제 완료!");
+                setPage('customer_dash');
+            }
+        }
+
+        function manageSchedule(quoteId) {
+            state.targetScheduleQuote = state.quotesDB.find(x => x.id === quoteId);
+            setPage('pro_schedule_manage');
+        }
+
+        function confirmSchedule() {
+            const d = document.getElementById('schedDate').value;
+            const t = document.getElementById('schedTime').value;
+            if (!d || !t) return alert("일정을 입력해주세요.");
+            state.targetScheduleQuote.scheduleDate = d;
+            state.targetScheduleQuote.scheduleTime = t;
+            state.targetScheduleQuote.status = 'contracted';
+            alert("일정 확정 및 계약서가 생성되었습니다.");
+            setPage('pro_dash');
+        }
+
+        function openContract(id) {
+            state.selectedContract = state.quotesDB.find(x => x.id === id);
+            setPage('e_contract');
+        }
+
+        function signContract() {
+            const c = state.selectedContract;
+            if (state.currentUser.role === 'pro') c.proSigned = true;
+            else c.customerSigned = true;
+            if (c.proSigned && c.customerSigned) c.status = 'signed';
+            alert("서명 완료!");
+            render();
+        }
+
+        function completeWork() {
+            state.selectedContract.status = 'completed';
+            alert("작업 완료 처리되었습니다.");
+            setPage('pro_dash');
+        }
+
+        function renderGovProList() {
+            const pros = state.usersDB.filter(u => u.role === 'pro' && u.isApproved);
+            return `
                 <div class="bg">
                     <div class="header"><div onclick="setPage('gov_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">검증업체 상세 조회</div><div style="width:40px"></div></div>
                     <div class="padding">
-                        ${state.usersDB.filter(e=>"pro"===e.role&&e.isApproved).map(e=>`
+                        ${pros.map(p => `
                             <div class="menuCard">
                                 <div style="flex:1">
-                                    <div style="font-weight:bold; font-size:18px">${e.compName}</div>
-                                    <div style="color:var(--primary); font-size:12px; margin-top:5px">보유: ${e.keywords.slice(0,3).join(", ")}</div>
+                                    <div style="font-weight:bold; font-size:18px">${p.compName}</div>
+                                    <div style="color:var(--primary); font-size:12px; margin-top:5px">보유: ${p.keywords.slice(0, 3).join(', ')}</div>
                                 </div>
                                 <div class="smallBtn" style="background-color:var(--primary)" onclick="alert('상세 서류 검토 후 계약을 진행합니다.')">선택</div>
                             </div>
-                        `).join("")}
+                        `).join('')}
                     </div>
                 </div>
-            `}function renderGovBidPost(){return`
+            `;
+        }
+
+        function renderGovBidPost() {
+            return `
                 <div class="bg">
                     <div class="header"><div onclick="setPage('gov_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">입찰 공고 등록</div><div style="width:40px"></div></div>
                     <div class="padding">
@@ -618,35 +1730,83 @@
                         <button class="primaryBtn" style="margin-top:30px" onclick="handleBidPost()">공고 게시하기</button>
                     </div>
                 </div>
-            `}function renderChatRoom(){return`
+            `;
+        }
+
+        function renderChatRoom() {
+            return `
                 <div class="bg">
                     <div class="header"><div onclick="setPage(state.currentUser.role==='pro'?'pro_dash' : 'customer_dash')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">상담 채팅</div><div style="width:40px"></div></div>
                     <div style="flex:1; padding:20px; overflow-y:auto" id="chatList">
-                        ${state.chatDB.map(e=>`
-                            <div class="chatBubble ${e.sender===state.currentUser.id?"myChat":"yourChat"}">${e.text}</div>
-                        `).join("")}
+                        ${state.chatDB.map(c => `
+                            <div class="chatBubble ${c.sender === state.currentUser.id ? 'myChat' : 'yourChat'}">${c.text}</div>
+                        `).join('')}
                     </div>
                     <div class="chatInputBar" style="position:sticky; bottom:0">
                         <input class="chatChatInput" placeholder="메시지 입력..." id="chatMsg">
                         <button class="sendBtn" onclick="sendChatMessage()">전송</button>
                     </div>
                 </div>
-            `}function downloadPDF(){window.print()}function toggleReportPreview(){state.showReportPreview=!state.showReportPreview,render()}function writeReview(t){const i=state.quotesDB.find(e=>e.id===t);var e,r=prompt("평점을 입력해주세요 (1-5)","5"),s=prompt("후기를 입력해주세요");r&&s&&((e=state.usersDB.find(e=>e.id===i.proId)).reviews||(e.reviews=[]),e.reviews.push({rating:Number(r),text:s}),i.isReviewed=!0,alert("리뷰가 등록되었습니다!"),render())}function viewProProfile(t){state.viewingPro=state.usersDB.find(e=>e.id===t),setPage("customer_view_pro_profile")}function renderCustomerViewProProfile(){var e=state.viewingPro;return`
+            `;
+        }
+        function downloadPDF() {
+            window.print();
+        }
+
+        function toggleReportPreview() {
+            state.showReportPreview = !state.showReportPreview;
+            render();
+        }
+
+        function writeReview(id) {
+            const q = state.quotesDB.find(x => x.id === id);
+            const rating = prompt("평점을 입력해주세요 (1-5)", "5");
+            const text = prompt("후기를 입력해주세요");
+            if (rating && text) {
+                const pro = state.usersDB.find(u => u.id === q.proId);
+                if (!pro.reviews) pro.reviews = [];
+                pro.reviews.push({ rating: Number(rating), text: text });
+                q.isReviewed = true;
+                alert("리뷰가 등록되었습니다!");
+                render();
+            }
+        }
+
+        function viewProProfile(id) {
+            state.viewingPro = state.usersDB.find(u => u.id === id);
+            setPage('customer_view_pro_profile');
+        }
+
+        function renderCustomerViewProProfile() {
+            const p = state.viewingPro;
+            return `
                 <div class="bg">
                     <div class="header"><div onclick="setPage('customer_quotes')" style="color:var(--primary); cursor:pointer">← 뒤로</div><div class="headerTitle">기획자 프로필</div><div style="width:40px"></div></div>
                     <div class="padding">
-                        <h2 style="margin-bottom:5px">${e.compName}</h2>
+                        <h2 style="margin-bottom:5px">${p.compName}</h2>
                         <div style="display:flex; flex-wrap:wrap; margin-bottom:15px">
-                            ${e.keywords.map(e=>`<div style="background-color:rgba(229,9,20,0.1); color:var(--primary); padding:3px 8px; border-radius:10px; margin-right:5px; font-size:11px; border:1px solid var(--primary)">${e}</div>`).join("")}
+                            ${p.keywords.map(k => `<div style="background-color:rgba(229,9,20,0.1); color:var(--primary); padding:3px 8px; border-radius:10px; margin-right:5px; font-size:11px; border:1px solid var(--primary)">${k}</div>`).join('')}
                         </div>
-                        <div style="background-color:var(--surface); padding:15px; border-radius:10px">${e.intro}</div>
+                        <div style="background-color:var(--surface); padding:15px; border-radius:10px">${p.intro}</div>
                         <h3 style="margin-top:30px">고객 리뷰</h3>
-                        ${e.reviews.map(e=>`
+                        ${p.reviews.map(r => `
                             <div style="border-bottom:1px solid #222; padding:15px 0">
-                                <div style="color:var(--warning)">${"⭐".repeat(e.rating)}</div>
-                                <div style="color:var(--text-sub); font-size:13px; margin-top:5px">${e.text}</div>
+                                <div style="color:var(--warning)">${'⭐'.repeat(r.rating)}</div>
+                                <div style="color:var(--text-sub); font-size:13px; margin-top:5px">${r.text}</div>
                             </div>
-                        `).join("")}
+                        `).join('')}
                     </div>
                 </div>
-            `}window.onload=()=>{setTimeout(()=>{state.isLoading=!1,render()},1200)}</script></body></html>
+            `;
+        }
+
+        window.onload = () => {
+            setTimeout(() => {
+                state.isLoading = false;
+                render();
+            }, 1200);
+        };
+    </script>
+</body>
+
+</html>
