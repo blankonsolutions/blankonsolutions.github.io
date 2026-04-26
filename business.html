@@ -5,7 +5,8 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>특청 파트너 - 비즈니스 관리</title>
-	<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+	<link rel="stylesheet" as="style" crossorigin
+		href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
 	<script>
 		(function () {
 			const savedTheme = localStorage.getItem('special-cleaning-theme') || 'dark';
@@ -223,7 +224,9 @@
 
 	<script>
 		let state = {
-			page: 'dash', // dash, analytics, portfolio, assets, settlement, community, scorecard, partnership
+			page: 'login', // Default to login page
+			isLoggedIn: false,
+			isApproved: false,
 			currentUser: { id: 'pro1', compName: '명품특수청소', name: '김대표', revenue: 15400000, rating: 4.9 },
 			revenueData: [
 				{ l: '월', v: 45 }, { l: '화', v: 30 }, { l: '수', v: 60 }, { l: '목', v: 85 }, { l: '금', v: 70 }, { l: '토', v: 95 }, { l: '일', v: 40 }
@@ -242,17 +245,30 @@
 			posts: [
 				{ id: 'c1', title: '고독사 현장 특수 약품 추천 부탁드립니다.', author: '정클린' },
 				{ id: 'c2', title: '이번 달 광주 서구청 입찰 공고 보셨나요?', author: '특청매니저' }
-			]
+			],
+			messages: [
+				{ id: 1, sender: 'customer', text: '방문 견적 가능할까요?', time: '오후 2:30', isMe: false },
+				{ id: 2, sender: 'me', text: '네, 내일 오전 10시쯤 어떠신가요?', time: '오후 2:35', isMe: true }
+			],
+			categories: ['고독사', '자살', '쓰레기집', '강력범죄현장', '화재현장', '침수현장'],
+			selectedCategories: [],
+			uploadedDocs: []
 		};
 
-		function setPage(p) { state.page = p; render(); }
+		function setPage(p, data = null) {
+			state.page = p;
+			if (data) state.selectedItem = data;
+			render();
+			if (document.querySelector('.bg')) document.querySelector('.bg').scrollTo(0, 0);
+		}
 
 		function render() {
 			const root = document.getElementById('root');
-			let hideNav = ['portfolio', 'assets', 'settlement', 'community', 'scorecard', 'partnership', 'analytics'].includes(state.page);
+			let noHeader = ['login', 'signup_choice', 'signup_business', 'find_idpw'].includes(state.page);
+			let hideNav = ['login', 'signup_choice', 'signup_business', 'find_idpw', 'portfolio', 'assets', 'settlement', 'community', 'scorecard', 'partnership', 'analytics', 'upload_docs', 'chat'].includes(state.page);
 
 			root.innerHTML = `
-				${renderHeader(hideNav)}
+				${noHeader ? '' : renderHeader(hideNav)}
 				<div class="bg">${renderContent()}</div>
 				${hideNav ? '' : renderNav()}
 			`;
@@ -283,6 +299,8 @@
 				case 'assets': return '재고 및 자산 관리';
 				case 'settlement': return '정산 내역 관리';
 				case 'portfolio': return '포트폴리오 관리';
+				case 'upload_docs': return '영업 서류 제출';
+				case 'chat': return '고객 상담 (익명)';
 				default: return '비즈니스';
 			}
 		}
@@ -300,11 +318,25 @@
 
 		function renderContent() {
 			switch (state.page) {
+				case 'login': return renderLogin();
+				case 'signup_choice': return renderSignupChoice();
+				case 'signup_business': return renderSignupBusiness();
+				case 'find_idpw': return renderFindIDPW();
+				case 'upload_docs': return renderUploadDocs();
+				case 'chat': return renderChat();
 				case 'dash': return `
 					<div class="padding">
+						${!state.isApproved ? `
+							<div class="card" style="background:rgba(229,9,20,0.1); border:1px solid var(--danger); cursor:pointer;" onclick="setPage('upload_docs')">
+								<div style="font-weight:bold; color:var(--danger); margin-bottom:5px;">⚠️ 승인 대기 중</div>
+								<div style="font-size:12px; color:var(--text-sub);">사업자 및 영업허가증을 제출해 주세요. 승인 후 견적 발송이 가능합니다.</div>
+								<div style="margin-top:10px; font-weight:bold; font-size:13px; text-decoration:underline;">서류 제출하러 가기 ❯</div>
+							</div>
+						` : ''}
+
 						<div style="margin-bottom:30px;">
 							<div style="font-size:13px; color:var(--text-sub);">반가워요, ${state.currentUser.name} 님</div>
-							<div style="font-size:22px; font-weight:800; margin-top:8px; letter-spacing:-0.03em;">${state.currentUser.compName} <span style="font-size:12px; color:var(--primary);">인증업체</span></div>
+							<div style="font-size:22px; font-weight:800; margin-top:8px; letter-spacing:-0.03em;">${state.currentUser.compName} <span style="font-size:12px; color:var(--primary);">${state.isApproved ? '인증업체' : '미인증'}</span></div>
 						</div>
 
 						<div class="card" style="background:var(--primary); color:#000; border:none; box-shadow:0 12px 24px rgba(201,160,80,0.3);" onclick="setPage('analytics')">
@@ -341,8 +373,10 @@
 						</div>
 
 						<div style="font-weight:bold; margin-top:35px; margin-bottom:15px; font-size:16px;">파트너 서비스</div>
+						<div class="menuCard" onclick="setPage('chat')"><span>💬 실시간 고객 상담</span><span>❯</span></div>
 						<div class="menuCard" onclick="setPage('community')"><span>🤝 프로 커뮤니티</span><span>❯</span></div>
 						<div class="menuCard" onclick="setPage('partnership')"><span>💼 신규 제안 / 기능 요청</span><span>❯</span></div>
+						<div style="margin-top:40px; text-align:center; font-size:13px; color:var(--text-dark); text-decoration:underline; cursor:pointer;" onclick="setPage('login')">로그아웃</div>
 					</div>
 				`;
 				case 'analytics': return `
@@ -470,6 +504,174 @@
 				`;
 				default: return ``;
 			}
+		}
+
+		// --- Auth & Business Flow ---
+
+		function renderLogin() {
+			return `
+				<div class="padding" style="display:flex; flex-direction:column; justify-content:center; min-height:100vh;">
+					<div style="text-align:center; margin-bottom:40px;">
+						<div style="font-size:40px; font-weight:900; color:var(--primary); margin-bottom:10px;">특청 파트너</div>
+						<div style="font-size:14px; color:var(--text-sub);">사업자 전용 관리 시스템</div>
+					</div>
+					<input class="input" type="text" placeholder="사업자 아이디" style="border:1px solid var(--border); padding:16px; border-radius:10px; margin-bottom:16px; background-color:var(--bg); color:var(--text-main); width:100%;">
+					<input class="input" type="password" placeholder="비밀번호" style="border:1px solid var(--border); padding:16px; border-radius:10px; margin-bottom:16px; background-color:var(--bg); color:var(--text-main); width:100%;">
+					<button class="primaryBtn" style="margin-top:10px; color:#000;" onclick="setPage('dash')">파트너 로그인</button>
+					
+					<div style="display:flex; justify-content:center; gap:20px; margin-top:20px; font-size:13px; color:var(--text-dark);">
+						<span onclick="setPage('find_idpw')" style="cursor:pointer;">아이디/비밀번호 찾기</span>
+						<span onclick="setPage('signup_choice')" style="cursor:pointer; color:var(--text-sub); font-weight:bold;">파트너 가입</span>
+					</div>
+					<div onclick="location.href='index.html'" style="text-align:center; margin-top:30px; font-size:13px; color:var(--text-dark); cursor:pointer;">홈으로 돌아가기</div>
+				</div>
+			`;
+		}
+
+		function renderSignupChoice() {
+			return `
+				<div class="padding" style="display:flex; flex-direction:column; justify-content:center; min-height:100vh;">
+					<div onclick="setPage('login')" style="cursor:pointer; font-size:20px; margin-bottom:30px;">←</div>
+					<h2 style="margin-bottom:10px;">환영합니다, 파트너님!<br>가입 유형을 선택해 주세요.</h2>
+					<p style="color:var(--text-sub); font-size:14px; margin-bottom:40px;">비즈니스 성격에 맞는 계정을 생성합니다.</p>
+
+					<div class="card" onclick="setPage('signup_business', 'individual')" style="padding:30px; display:flex; align-items:center; gap:20px;">
+						<div style="font-size:30px;">👤</div>
+						<div>
+							<div style="font-weight:bold; font-size:18px;">개인 사업자</div>
+							<div style="font-size:12px; color:var(--text-sub); margin-top:4px;">1인 기업 및 소규모 업체</div>
+						</div>
+					</div>
+					<div class="card" onclick="setPage('signup_business', 'corporate')" style="padding:30px; display:flex; align-items:center; gap:20px;">
+						<div style="font-size:30px;">🏢</div>
+						<div>
+							<div style="font-weight:bold; font-size:18px;">법인 사업자</div>
+							<div style="font-size:12px; color:var(--text-sub); margin-top:4px;">중대형 청소 전문 법인</div>
+						</div>
+					</div>
+				</div>
+			`;
+		}
+
+		function renderSignupBusiness() {
+			const type = state.selectedItem;
+			return `
+				<div class="padding" style="padding-top:60px;">
+					<div onclick="setPage('signup_choice')" style="cursor:pointer; font-size:20px; margin-bottom:20px;">←</div>
+					<h2 style="margin-bottom:30px;">${type === 'individual' ? '개인' : '법인'} 사업자 가입</h2>
+
+					<div style="font-size:14px; color:var(--text-sub); margin-bottom:10px;">사업자 등록 번호</div>
+					<div style="display:flex; gap:10px; margin-bottom:20px;">
+						<input class="input" type="text" placeholder="000-00-00000" style="margin-bottom:0; flex:1; border:1px solid var(--border); padding:16px; border-radius:10px; background-color:var(--bg); color:var(--text-main);">
+						<button class="primaryBtn" style="width:100px; padding:0; font-size:13px; color:#000;" onclick="alert('확인되었습니다.')">중복확인</button>
+					</div>
+
+					${type === 'corporate' ? `
+						<div style="font-size:14px; color:var(--text-sub); margin-bottom:10px;">법인 등록 번호</div>
+						<input class="input" type="text" placeholder="000000-0000000" style="border:1px solid var(--border); padding:16px; border-radius:10px; margin-bottom:20px; background-color:var(--bg); color:var(--text-main); width:100%;">
+					` : ''}
+
+					<div style="font-size:14px; color:var(--text-sub); margin-bottom:10px;">아이디</div>
+					<input class="input" type="text" placeholder="8자 이상" style="border:1px solid var(--border); padding:16px; border-radius:10px; margin-bottom:20px; background-color:var(--bg); color:var(--text-main); width:100%;">
+
+					<div style="font-size:14px; color:var(--text-sub); margin-bottom:10px;">비밀번호 (8~16자)</div>
+					<input class="input" type="password" placeholder="비밀번호 입력" style="border:1px solid var(--border); padding:16px; border-radius:10px; margin-bottom:10px; background-color:var(--bg); color:var(--text-main); width:100%;">
+					<input class="input" type="password" placeholder="비밀번호 확인" style="border:1px solid var(--border); padding:16px; border-radius:10px; margin-bottom:20px; background-color:var(--bg); color:var(--text-main); width:100%;">
+
+					<div style="font-size:14px; color:var(--text-sub); margin-bottom:15px;">수행 가능 카테고리 (중복 선택)</div>
+					<div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:30px;">
+						${state.categories.map(c => `
+							<div id="cat_${c}" style="padding:12px; border:1px solid var(--border); border-radius:10px; font-size:12px; text-align:center; cursor:pointer;" onclick="toggleCategory('${c}')">${c}</div>
+						`).join('')}
+					</div>
+
+					<button class="primaryBtn" style="color:#000;" onclick="alert('가입 신청이 완료되었습니다. 서류 제출 단계로 이동합니다.'); setPage('login');">다음 단계로</button>
+					<div style="height:40px"></div>
+				</div>
+			`;
+		}
+
+		function toggleCategory(c) {
+			const el = document.getElementById('cat_' + c);
+			const idx = state.selectedCategories.indexOf(c);
+			if (idx > -1) {
+				state.selectedCategories.splice(idx, 1);
+				el.style.borderColor = 'var(--border)';
+				el.style.color = 'var(--text-main)';
+				el.style.background = 'transparent';
+			} else {
+				state.selectedCategories.push(c);
+				el.style.borderColor = 'var(--primary)';
+				el.style.color = '#000';
+				el.style.background = 'var(--primary)';
+			}
+		}
+
+		function renderUploadDocs() {
+			return `
+				<div class="padding" style="padding-top:40px;">
+					<h2 style="margin-bottom:10px;">서류 제출</h2>
+					<p style="font-size:13px; color:var(--text-sub); margin-bottom:30px;">선택하신 카테고리에 맞는 인허가증을 첨부해야 견적 발송이 가능합니다.</p>
+					
+					<div class="card" style="border-style:dashed; text-align:center; padding:40px;" onclick="alert('파일 선택 창이 열립니다.')">
+						<div style="font-size:30px; margin-bottom:10px;">📄</div>
+						<div style="font-size:14px; font-weight:bold;">사업자 등록증 첨부</div>
+						<div style="font-size:11px; color:var(--text-dark); margin-top:5px;">JPG, PNG, PDF (최대 10MB)</div>
+					</div>
+
+					<div style="font-size:14px; font-weight:bold; margin-top:30px; margin-bottom:15px;">카테고리별 인허가 서류</div>
+					<div style="display:flex; flex-direction:column; gap:12px; margin-bottom:40px;">
+						<div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface); padding:15px; border-radius:10px; border:1px solid var(--border);">
+							<span style="font-size:13px;">건물위생관리업 신고증</span>
+							<button style="font-size:11px; padding:5px 10px; background:#333; color:#fff; border:none; border-radius:5px;" onclick="alert('첨부 완료')">첨부하기</button>
+						</div>
+						<div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface); padding:15px; border-radius:10px; border:1px solid var(--border);">
+							<span style="font-size:13px;">소독업 신고증</span>
+							<button style="font-size:11px; padding:5px 10px; background:#333; color:#fff; border:none; border-radius:5px;" onclick="alert('첨부 완료')">첨부하기</button>
+						</div>
+						<div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface); padding:15px; border-radius:10px; border:1px solid var(--border);">
+							<span style="font-size:13px;">폐기물 수집운반업 허가증</span>
+							<button style="font-size:11px; padding:5px 10px; background:#333; color:#fff; border:none; border-radius:5px;" onclick="alert('첨부 완료')">첨부하기</button>
+						</div>
+					</div>
+
+					<button class="primaryBtn" style="color:#000;" onclick="alert('서류가 정상적으로 제출되었습니다. 관리자 승인까지 영업일 기준 1~2일이 소요됩니다.'); setPage('dash');">제출 완료</button>
+				</div>
+			`;
+		}
+
+		function renderFindIDPW() {
+			return `
+				<div class="padding" style="padding-top:60px;">
+					<div onclick="setPage('login')" style="cursor:pointer; font-size:20px; margin-bottom:20px;">←</div>
+					<h2 style="margin-bottom:30px;">파트너 정보 찾기</h2>
+					<div style="font-size:14px; color:var(--text-sub); margin-bottom:10px;">사업자 번호</div>
+					<input class="input" type="text" placeholder="000-00-00000" style="border:1px solid var(--border); padding:16px; border-radius:10px; margin-bottom:20px; background-color:var(--bg); color:var(--text-main); width:100%;">
+					<div style="font-size:14px; color:var(--text-sub); margin-bottom:10px;">대표자 휴대폰 번호</div>
+					<input class="input" type="tel" placeholder="010-0000-0000" style="border:1px solid var(--border); padding:16px; border-radius:10px; margin-bottom:20px; background-color:var(--bg); color:var(--text-main); width:100%;">
+					<button class="primaryBtn" style="color:#000;" onclick="alert('정보가 일치하지 않습니다.')">아이디 찾기</button>
+				</div>
+			`;
+		}
+
+		function renderChat() {
+			return `
+				<div style="flex:1; padding:20px; overflow-y:auto; display:flex; flex-direction:column; gap:15px;">
+					<div style="text-align:center; font-size:11px; color:var(--text-dark); margin-bottom:10px;">고객과의 익명 채팅입니다. 친절하게 응대해 주세요.</div>
+					${state.messages.map(m => `
+						<div style="display:flex; flex-direction:column; align-items: ${m.isMe ? 'flex-end' : 'flex-start'}">
+							<div style="background: ${m.isMe ? 'var(--primary)' : 'var(--surface-light)'}; color: ${m.isMe ? '#000' : '#fff'}; padding:12px 16px; border-radius: ${m.isMe ? '15px 15px 0 15px' : '15px 15px 15px 0'}; max-width: 80%; font-size:14px;">
+								${m.text}
+							</div>
+							<div style="font-size:10px; color:var(--text-dark); margin-top:5px;">${m.time}</div>
+						</div>
+					`).join('')}
+				</div>
+				<div style="padding:15px; background:var(--surface); border-top:1px solid var(--border); display:flex; gap:10px;">
+					<input type="text" placeholder="메시지를 입력하세요..." style="flex:1; background:var(--bg); border:1px solid var(--border); border-radius:30px; padding:12px 20px; color:#fff; outline:none;">
+					<button style="width:44px; height:44px; border-radius:22px; background:var(--primary); border:none; color:#000; font-size:18px; cursor:pointer;" onclick="alert('메시지 전송')">↑</button>
+				</div>
+			`;
 		}
 
 		window.onload = render;

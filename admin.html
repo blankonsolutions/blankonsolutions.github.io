@@ -5,7 +5,8 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>특청 마스터 관리자 - 플랫폼 통합 관리</title>
-	<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+	<link rel="stylesheet" as="style" crossorigin
+		href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
 	<script>
 		(function () {
 			const savedTheme = localStorage.getItem('special-cleaning-theme') || 'dark';
@@ -199,11 +200,11 @@
 
 	<script>
 		let state = {
-			page: 'dash', // dash, vendors, settings, logs
-			currentUser: { name: '권운영자', org: '특청 마스터 관리 본부' },
+			page: 'login', // Default to login
+			currentUser: { name: '권운영자', org: '특청 마스터 관리 본부', adminId: 'ADM-001' },
 			pendingVendors: [
-				{ id: 'V1', name: '청결한내일', type: '법인', date: '2026-04-25', files: 3 },
-				{ id: 'V2', name: '바른정리팀', type: '개인', date: '2026-04-24', files: 2 }
+				{ id: 'V1', name: '청결한내일', type: '법인', date: '2026-04-25', files: 3, bizNum: '123-45-67890', owner: '홍길동' },
+				{ id: 'V2', name: '바른정리팀', type: '개인', date: '2026-04-24', files: 2, bizNum: '098-76-54321', owner: '이철수' }
 			],
 			auditLogs: [
 				{ id: 'L1', time: '14:20', action: '시스템 정책 변경', target: '개인정보 처리방침', actor: '권운영자' },
@@ -212,14 +213,20 @@
 			]
 		};
 
-		function setPage(p) { state.page = p; render(); document.querySelector('.bg').scrollTo(0, 0); }
+		function setPage(p, data = null) {
+			state.page = p;
+			if (data) state.selectedItem = data;
+			render();
+			if (document.querySelector('.bg')) document.querySelector('.bg').scrollTo(0, 0);
+		}
 
 		function render() {
 			const root = document.getElementById('root');
-			let hideNav = ['vendors', 'settings', 'logs'].includes(state.page);
+			let noHeader = ['login'].includes(state.page);
+			let hideNav = ['login', 'vendors', 'settings', 'logs', 'vendor_detail', 'approve_confirm', 'reject_confirm'].includes(state.page);
 
 			root.innerHTML = `
-				${renderHeader(hideNav)}
+				${noHeader ? '' : renderHeader(hideNav)}
 				<div class="bg">${renderContent()}</div>
 				${hideNav ? '' : renderNav()}
 			`;
@@ -244,6 +251,9 @@
 			switch (state.page) {
 				case 'dash': return '마스터 관리 센터';
 				case 'vendors': return '파트너 업체 심사';
+				case 'vendor_detail': return '업체 서류 검토';
+				case 'approve_confirm': return '최종 승인 확인';
+				case 'reject_confirm': return '가입 반려 확인';
 				case 'settings': return '플랫폼 운영 설정';
 				case 'logs': return '전체 시스템 로그';
 				default: return '마스터 어드민';
@@ -263,6 +273,7 @@
 
 		function renderContent() {
 			switch (state.page) {
+				case 'login': return renderLogin();
 				case 'dash': return `
 					<div class="padding">
 						<div style="margin-bottom:30px;">
@@ -311,6 +322,7 @@
 								</div>
 							`).join('')}
 						</div>
+						<div style="margin-top:40px; text-align:center; font-size:13px; color:var(--text-dark); text-decoration:underline; cursor:pointer;" onclick="setPage('login')">로그아웃</div>
 					</div>
 				`;
 				case 'vendors': return `
@@ -325,14 +337,94 @@
 									</div>
 									<div style="font-size:11px; background:var(--surface-light); padding:4px 8px; border-radius:5px; border:1px solid var(--border);">서류 ${v.files}건</div>
 								</div>
-								<div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-									<button class="primaryBtn" style="padding:12px; background:var(--surface-light); color:var(--text-main); font-size:13px; border:1px solid var(--border);" onclick="alert('서류 검토 모드')">검토</button>
-									<button class="primaryBtn" style="padding:12px; font-size:13px;" onclick="alert('승인 완료')">최종 승인</button>
+								<div style="display:grid; grid-template-columns: 1fr; gap:10px;">
+									<button class="primaryBtn" style="padding:12px; background:var(--surface-light); color:var(--text-main); font-size:13px; border:1px solid var(--border);" onclick="setPage('vendor_detail', ${JSON.stringify(v)})">서류 검토 및 심사</button>
 								</div>
 							</div>
 						`).join('')}
 					</div>
 				`;
+				case 'vendor_detail':
+					const v = state.selectedItem;
+					return `
+						<div class="padding">
+							<h2 style="margin-bottom:10px;">${v.name} 심사</h2>
+							<p style="font-size:13px; color:var(--text-sub); margin-bottom:30px;">업체 제출 서류를 면밀히 검토해 주세요.</p>
+							
+							<div class="card" style="cursor:default;">
+								<div style="font-weight:bold; margin-bottom:15px;">기본 정보</div>
+								<div style="display:flex; flex-direction:column; gap:10px; font-size:14px;">
+									<div style="display:flex; justify-content:space-between;"><span style="color:var(--text-dark);">대표자</span><span>${v.owner}</span></div>
+									<div style="display:flex; justify-content:space-between;"><span style="color:var(--text-dark);">사업자번호</span><span>${v.bizNum}</span></div>
+									<div style="display:flex; justify-content:space-between;"><span style="color:var(--text-dark);">신청일</span><span>${v.date}</span></div>
+								</div>
+							</div>
+
+							<div style="font-weight:bold; margin-bottom:15px;">제출 서류 (${v.files})</div>
+							<div style="display:flex; flex-direction:column; gap:10px; margin-bottom:40px;">
+								<div class="menuCard" style="margin-bottom:0;" onclick="alert('사업자등록증 이미지 보기')"><span>📄 사업자등록증.jpg</span><span>👁️</span></div>
+								<div class="menuCard" style="margin-bottom:0;" onclick="alert('영업신고증 이미지 보기')"><span>📄 건물위생관리업_신고증.pdf</span><span>👁️</span></div>
+								<div class="menuCard" style="margin-bottom:0;" onclick="alert('인허가증 이미지 보기')"><span>📄 소독업_인허가증.jpg</span><span>👁️</span></div>
+							</div>
+
+							<div style="display:grid; grid-template-columns: 1fr 1.5fr; gap:15px;">
+								<button class="primaryBtn" style="background:#333;" onclick="setPage('reject_confirm', ${JSON.stringify(v)})">가입 반려</button>
+								<button class="primaryBtn" onclick="setPage('approve_confirm', ${JSON.stringify(v)})">최종 승인</button>
+							</div>
+						</div>
+					`;
+				case 'approve_confirm':
+					const av = state.selectedItem;
+					const now = new Date();
+					const today = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+					return `
+						<div class="padding">
+							<h2 style="margin-bottom:10px;">승인 최종 확인</h2>
+							<p style="font-size:13px; color:var(--text-sub); margin-bottom:30px;">승인 즉시 업체에 알림이 발송되며 활동이 가능해집니다.</p>
+
+							<div class="card" style="cursor:default;">
+								<div style="font-size:14px; color:var(--text-dark); margin-bottom:5px;">승인 대상</div>
+								<div style="font-size:18px; font-weight:bold; margin-bottom:20px;">${av.name}</div>
+								
+								<div style="font-size:12px; color:var(--text-dark); margin-bottom:5px;">승인 일시 (자동)</div>
+								<div style="font-size:15px; font-weight:bold; margin-bottom:20px;">${today}</div>
+
+								<div style="font-size:12px; color:var(--text-dark); margin-bottom:10px;">승인자 확인</div>
+								<input class="input" type="text" placeholder="성함 입력" value="${state.currentUser.name}" style="border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--bg); color:#fff; width:100%; margin-bottom:10px;">
+								<input class="input" type="text" placeholder="사원번호 입력" value="${state.currentUser.adminId}" style="border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--bg); color:#fff; width:100%;">
+							</div>
+
+							<button class="primaryBtn" style="margin-top:20px;" onclick="alert('최종 승인 처리가 완료되었습니다.'); setPage('vendors');">승인 완료 및 인장 날인</button>
+							<button class="primaryBtn" style="margin-top:10px; background:transparent; color:var(--text-dark); border:1px solid var(--border);" onclick="setPage('vendor_detail', ${JSON.stringify(av)})">취소</button>
+						</div>
+					`;
+				case 'reject_confirm':
+					const rv = state.selectedItem;
+					return `
+						<div class="padding">
+							<h2 style="margin-bottom:10px; color:var(--danger);">반려 사유 입력</h2>
+							<p style="font-size:13px; color:var(--text-sub); margin-bottom:30px;">업체에 전달될 구체적인 반려 사유를 선택/입력해 주세요.</p>
+
+							<div class="card" style="cursor:default;">
+								<div style="font-size:14px; font-weight:bold; margin-bottom:15px;">반려 대상: ${rv.name}</div>
+								<select class="input" style="border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--bg); color:#fff; width:100%; margin-bottom:15px;">
+									<option>서류 식별 불가 (사진 흐림)</option>
+									<option>인허가증 유효기간 만료</option>
+									<option>사업자 정보 불일치</option>
+									<option>부적합 업종 (특수청소 미포함)</option>
+									<option>기타 (직접 입력)</option>
+								</select>
+								<textarea class="input" placeholder="상세 반려 사유를 입력하세요." style="border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--bg); color:#fff; width:100%; height:100px; resize:none;"></textarea>
+							</div>
+
+							<div style="margin-top:20px; padding:15px; background:rgba(220,53,69,0.1); border-radius:10px; border:1px solid var(--danger); font-size:12px; color:var(--danger); line-height:1.5;">
+								주의: 반려 처리 후 업체는 서류를 다시 보완하여 제출해야 합니다. 정말 반려하시겠습니까?
+							</div>
+
+							<button class="primaryBtn" style="margin-top:20px; background:var(--danger);" onclick="alert('반려 처리가 완료되었습니다.'); setPage('vendors');">네, 반려합니다</button>
+							<button class="primaryBtn" style="margin-top:10px; background:transparent; color:var(--text-dark); border:1px solid var(--border);" onclick="setPage('vendor_detail', ${JSON.stringify(rv)})">취소</button>
+						</div>
+					`;
 				case 'settings': return `
 					<div class="padding">
 						<h2 style="margin-bottom:30px;">플랫폼 운영 설정</h2>
@@ -358,7 +450,23 @@
 						`).join('')}
 					</div>
 				`;
+				default: return renderLogin();
 			}
+		}
+
+		function renderLogin() {
+			return `
+				<div class="padding" style="display:flex; flex-direction:column; justify-content:center; min-height:100vh;">
+					<div style="text-align:center; margin-bottom:40px;">
+						<div style="font-size:40px; font-weight:900; color:var(--primary); margin-bottom:10px;">특청 MASTER</div>
+						<div style="font-size:14px; color:var(--text-sub);">관리자 전용 보안 로그인</div>
+					</div>
+					<input class="input" type="text" placeholder="관리자 사원번호" style="border:1px solid var(--border); padding:16px; border-radius:10px; margin-bottom:16px; background-color:var(--bg); color:var(--text-main); width:100%;">
+					<input class="input" type="password" placeholder="마스터 암호" style="border:1px solid var(--border); padding:16px; border-radius:10px; margin-bottom:16px; background-color:var(--bg); color:var(--text-main); width:100%;">
+					<button class="primaryBtn" style="margin-top:10px;" onclick="setPage('dash')">보안 시스템 접속</button>
+					<div onclick="location.href='index.html'" style="text-align:center; margin-top:30px; font-size:13px; color:var(--text-dark); cursor:pointer;">게이트웨이로 돌아가기</div>
+				</div>
+			`;
 		}
 
 		window.onload = render;

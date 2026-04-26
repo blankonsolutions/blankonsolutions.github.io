@@ -5,7 +5,8 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>특청 관공서 포털 - 행정 관리 시스템</title>
-	<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+	<link rel="stylesheet" as="style" crossorigin
+		href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
 	<script>
 		(function () {
 			const savedTheme = localStorage.getItem('special-cleaning-theme') || 'dark';
@@ -199,7 +200,7 @@
 
 	<script>
 		let state = {
-			page: 'dash', // dash, stats, broadcast, archive
+			page: 'login', // Default to login
 			currentUser: { name: '이주무관', org: '광주광역시 서구청 (관공서)' },
 			districts: [
 				{ name: '역삼1동', risk: '상', activity: 85 },
@@ -209,17 +210,30 @@
 			auditLogs: [
 				{ id: 'L1', time: '14:20', action: '예산 승인', target: 'B-04 프로젝트', actor: '이주무관' },
 				{ id: 'L2', time: '13:05', action: '가구 점검', target: '역삼동 123-4', actor: '관리시스템' }
+			],
+			departments: [
+				'기획재정부', '교육부', '과학기술정보통신부', '외교부', '통일부', '법무부', '국방부', '행정안전부', '문화체육관광부', '농림축산식품부', '산업통상자원부', '보건복지부', '환경부', '고용노동부', '여성가족부', '국토교통부', '해양수산부', '중소벤처기업부',
+				'서울특별시', '부산광역시', '대구광역시', '인천광역시', '광주광역시', '대전광역시', '울산광역시', '세종특별자치시', '경기도', '강원도', '충청북도', '충청남도', '전라북도', '전라남도', '경상북도', '경상남도', '제주특별자치도'
+			],
+			aiRisk: {
+				age: '', housing: '', items: [], requester: '', count: ''
+			},
+			receivedDocs: [
+				{ id: 'D1', comp: '명품특수청소', type: '사업자등록증', status: '확인완료', date: '2026-04-26' },
+				{ id: 'D2', comp: '명품특수청소', type: '작업완료보고서', status: '미확인', date: '2026-04-26' },
+				{ id: 'D3', comp: '깨끗한세상', type: '전자세금계산서', status: '발행완료', date: '2026-04-25' }
 			]
 		};
 
-		function setPage(p) { state.page = p; render(); document.querySelector('.bg').scrollTo(0, 0); }
+		function setPage(p) { state.page = p; render(); if (document.querySelector('.bg')) document.querySelector('.bg').scrollTo(0, 0); }
 
 		function render() {
 			const root = document.getElementById('root');
-			let hideNav = ['broadcast', 'archive', 'stats'].includes(state.page);
+			let noHeader = ['login', 'signup_choice', 'signup_gov', 'find_idpw'].includes(state.page);
+			let hideNav = ['login', 'signup_choice', 'signup_gov', 'find_idpw', 'broadcast', 'archive', 'stats', 'ai_analysis', 'docs_manage'].includes(state.page);
 
 			root.innerHTML = `
-				${renderHeader(hideNav)}
+				${noHeader ? '' : renderHeader(hideNav)}
 				<div class="bg">${renderContent()}</div>
 				${hideNav ? '' : renderNav()}
 			`;
@@ -246,6 +260,8 @@
 				case 'stats': return '관내 고위험군 지수';
 				case 'broadcast': return '긴급 행정 전파';
 				case 'archive': return '행정 데이터 아카이브';
+				case 'ai_analysis': return 'AI 위험가구 분석';
+				case 'docs_manage': return '업체 서류 및 정산 관리';
 				default: return '관공서 포털';
 			}
 		}
@@ -263,6 +279,12 @@
 
 		function renderContent() {
 			switch (state.page) {
+				case 'login': return renderLogin();
+				case 'signup_choice': return renderSignupChoice();
+				case 'signup_gov': return renderSignupGov();
+				case 'find_idpw': return renderFindIDPW();
+				case 'ai_analysis': return renderAIAnalysis();
+				case 'docs_manage': return renderDocsManage();
 				case 'dash': return `
 					<div class="padding">
 						<div style="margin-bottom:30px;">
@@ -277,13 +299,13 @@
 						</div>
 
 						<div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:25px;">
-							<div class="card" onclick="setPage('stats')" style="margin-bottom:0; text-align:center;">
-								<div style="font-size:24px; margin-bottom:8px;">📈</div>
-								<div style="font-size:13px; font-weight:bold;">지역 복지 지수</div>
+							<div class="card" onclick="setPage('ai_analysis')" style="margin-bottom:0; text-align:center; border-color:var(--info);">
+								<div style="font-size:24px; margin-bottom:8px;">🤖</div>
+								<div style="font-size:13px; font-weight:bold;">AI 위험 분석</div>
 							</div>
-							<div class="card" onclick="setPage('archive')" style="margin-bottom:0; text-align:center;">
-								<div style="font-size:24px; margin-bottom:8px;">📂</div>
-								<div style="font-size:13px; font-weight:bold;">데이터 보관함</div>
+							<div class="card" onclick="setPage('docs_manage')" style="margin-bottom:0; text-align:center;">
+								<div style="font-size:24px; margin-bottom:8px;">📄</div>
+								<div style="font-size:13px; font-weight:bold;">서류/정산 관리</div>
 							</div>
 						</div>
 
@@ -301,6 +323,7 @@
 								</div>
 							`).join('')}
 						</div>
+						<div style="margin-top:40px; text-align:center; font-size:13px; color:var(--text-dark); text-decoration:underline; cursor:pointer;" onclick="setPage('login')">로그아웃</div>
 					</div>
 				`;
 				case 'stats': return `
@@ -353,6 +376,174 @@
 					</div>
 				`;
 			}
+		}
+
+		// --- Auth & Gov Flow ---
+
+		function renderLogin() {
+			return `
+				<div class="padding" style="display:flex; flex-direction:column; justify-content:center; min-height:100vh;">
+					<div style="text-align:center; margin-bottom:40px;">
+						<div style="font-size:40px; font-weight:900; color:var(--primary); margin-bottom:10px;">특청 행정포털</div>
+						<div style="font-size:14px; color:var(--text-sub);">공무원 전용 위기 가구 통합관리</div>
+					</div>
+					<input class="input" type="text" placeholder="공무원 아이디" style="border:1px solid var(--border); padding:16px; border-radius:10px; margin-bottom:16px; background-color:var(--bg); color:var(--text-main); width:100%;">
+					<input class="input" type="password" placeholder="비밀번호" style="border:1px solid var(--border); padding:16px; border-radius:10px; margin-bottom:16px; background-color:var(--bg); color:var(--text-main); width:100%;">
+					<button class="primaryBtn" style="margin-top:10px;" onclick="setPage('dash')">행정 시스템 로그인</button>
+					
+					<div style="display:flex; justify-content:center; gap:20px; margin-top:20px; font-size:13px; color:var(--text-dark);">
+						<span onclick="setPage('find_idpw')" style="cursor:pointer;">계정 찾기</span>
+						<span onclick="setPage('signup_choice')" style="cursor:pointer; color:var(--text-sub); font-weight:bold;">행정 계정 신청</span>
+					</div>
+					<div onclick="location.href='index.html'" style="text-align:center; margin-top:30px; font-size:13px; color:var(--text-dark); cursor:pointer;">홈으로 돌아가기</div>
+				</div>
+			`;
+		}
+
+		function renderSignupChoice() {
+			return `
+				<div class="padding" style="display:flex; flex-direction:column; justify-content:center; min-height:100vh;">
+					<div onclick="setPage('login')" style="cursor:pointer; font-size:20px; margin-bottom:30px;">←</div>
+					<h2 style="margin-bottom:10px;">관공서 회원가입</h2>
+					<p style="color:var(--text-sub); font-size:14px; margin-bottom:40px;">소속 기관의 인증이 필요합니다.</p>
+					<div class="card" onclick="setPage('signup_gov')" style="padding:30px; display:flex; align-items:center; gap:20px;">
+						<div style="font-size:30px;">🏛️</div>
+						<div>
+							<div style="font-weight:bold; font-size:18px;">중앙부처/지자체 공무원</div>
+							<div style="font-size:12px; color:var(--text-sub); margin-top:4px;">행정 권한 신청</div>
+						</div>
+					</div>
+				</div>
+			`;
+		}
+
+		function renderSignupGov() {
+			return `
+				<div class="padding" style="padding-top:60px;">
+					<div onclick="setPage('signup_choice')" style="cursor:pointer; font-size:20px; margin-bottom:20px;">←</div>
+					<h2 style="margin-bottom:30px;">행정 계정 정보 입력</h2>
+
+					<div style="font-size:14px; color:var(--text-sub); margin-bottom:10px;">소속 기관 선택</div>
+					<select class="input" style="border:1px solid var(--border); padding:16px; border-radius:10px; margin-bottom:20px; background-color:var(--bg); color:var(--text-main); width:100%; appearance:none;">
+						${state.departments.map(d => `<option value="${d}">${d}</option>`).join('')}
+					</select>
+
+					<div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:20px;">
+						<div>
+							<div style="font-size:14px; color:var(--text-sub); margin-bottom:10px;">직급</div>
+							<input class="input" type="text" placeholder="예: 주무관" style="border:1px solid var(--border); padding:16px; border-radius:10px; background-color:var(--bg); color:var(--text-main); width:100%;">
+						</div>
+						<div>
+							<div style="font-size:14px; color:var(--text-sub); margin-bottom:10px;">직함</div>
+							<input class="input" type="text" placeholder="예: 팀장" style="border:1px solid var(--border); padding:16px; border-radius:10px; background-color:var(--bg); color:var(--text-main); width:100%;">
+						</div>
+					</div>
+
+					<div style="font-size:14px; color:var(--text-sub); margin-bottom:10px;">성함</div>
+					<input class="input" type="text" placeholder="실명을 입력하세요" style="border:1px solid var(--border); padding:16px; border-radius:10px; margin-bottom:20px; background-color:var(--bg); color:var(--text-main); width:100%;">
+
+					<div style="font-size:14px; color:var(--text-sub); margin-bottom:10px;">사원번호/공무원증 번호</div>
+					<input class="input" type="text" placeholder="신원 확인용 번호" style="border:1px solid var(--border); padding:16px; border-radius:10px; margin-bottom:30px; background-color:var(--bg); color:var(--text-main); width:100%;">
+
+					<button class="primaryBtn" onclick="alert('가입 승인 요청이 접수되었습니다. 기관 확인 후 승인됩니다.'); setPage('login');">가입 승인 요청</button>
+					<div style="height:40px"></div>
+				</div>
+			`;
+		}
+
+		function renderAIAnalysis() {
+			return `
+				<div class="padding">
+					<h2 style="margin-bottom:10px;">AI 위험가구 분석</h2>
+					<p style="font-size:13px; color:var(--text-sub); margin-bottom:30px;">현장 데이터 기반으로 위험 지수를 산출합니다.</p>
+
+					<div class="label" style="font-size:14px; color:var(--text-sub); margin-bottom:10px;">대상자 연령대</div>
+					<div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-bottom:20px;">
+						<button class="status-pill" style="padding:10px; background:var(--surface); border:1px solid var(--border); color:#fff;" onclick="state.aiRisk.age='청년'">청년</button>
+						<button class="status-pill" style="padding:10px; background:var(--surface); border:1px solid var(--border); color:#fff;" onclick="state.aiRisk.age='중장년'">중장년</button>
+						<button class="status-pill" style="padding:10px; background:var(--surface); border:1px solid var(--border); color:#fff;" onclick="state.aiRisk.age='노년'">노년</button>
+					</div>
+
+					<div class="label" style="font-size:14px; color:var(--text-sub); margin-bottom:10px;">주거 환경</div>
+					<select class="input" style="border:1px solid var(--border); padding:16px; border-radius:10px; margin-bottom:20px; background-color:var(--bg); color:var(--text-main); width:100%;">
+						<option>고시원/단칸방</option>
+						<option>반지하</option>
+						<option>노후 빌라</option>
+						<option>아파트</option>
+					</select>
+
+					<div class="label" style="font-size:14px; color:var(--text-sub); margin-bottom:10px;">현장 관찰 물건 (중복)</div>
+					<div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:20px;">
+						<div style="padding:10px; border:1px solid var(--border); border-radius:8px; font-size:12px; text-align:center;" onclick="this.style.background='var(--primary)'">공병/폐기물</div>
+						<div style="padding:10px; border:1px solid var(--border); border-radius:8px; font-size:12px; text-align:center;" onclick="this.style.background='var(--primary)'">안읽은 우편물</div>
+						<div style="padding:10px; border:1px solid var(--border); border-radius:8px; font-size:12px; text-align:center;" onclick="this.style.background='var(--primary)'">배달용기 적체</div>
+						<div style="padding:10px; border:1px solid var(--border); border-radius:8px; font-size:12px; text-align:center;" onclick="this.style.background='var(--primary)'">악취/해충</div>
+					</div>
+
+					<div class="label" style="font-size:14px; color:var(--text-sub); margin-bottom:10px;">의뢰자</div>
+					<select class="input" style="border:1px solid var(--border); padding:16px; border-radius:10px; margin-bottom:30px; background-color:var(--bg); color:var(--text-main); width:100%;">
+						<option>본인</option>
+						<option>이웃</option>
+						<option>건물주</option>
+						<option>가족</option>
+					</select>
+
+					<button class="primaryBtn" style="background:var(--info);" onclick="showRiskResult()">위험 지수 분석하기</button>
+					<div id="risk_result" style="display:none; margin-top:30px; padding:20px; background:var(--surface); border-radius:15px; border:1px solid var(--info);">
+						<div style="text-align:center; margin-bottom:20px;">
+							<div style="font-size:14px; color:var(--text-sub);">AI 분석 위험 지수</div>
+							<div style="font-size:36px; font-weight:900; color:var(--danger);">88% (고위험)</div>
+						</div>
+						<div style="font-weight:bold; margin-bottom:10px; font-size:14px;">권고 복지 솔루션:</div>
+						<div style="font-size:13px; color:var(--text-sub); line-height:1.6;">
+							- 긴급 생계 지원비 매칭 필요<br>
+							- 주 2회 이상 방문 케어 서비스 등록<br>
+							- 지역 사회보장 협의체 연계 필요
+						</div>
+					</div>
+					<div style="height:40px"></div>
+				</div>
+			`;
+		}
+
+		function showRiskResult() {
+			document.getElementById('risk_result').style.display = 'block';
+			document.getElementById('risk_result').scrollIntoView({ behavior: 'smooth' });
+		}
+
+		function renderDocsManage() {
+			return `
+				<div class="padding">
+					<h2 style="margin-bottom:10px;">서류 및 정산 관리</h2>
+					<p style="font-size:13px; color:var(--text-sub); margin-bottom:30px;">업체로부터 자동 전송된 서류를 검토합니다.</p>
+
+					<div style="font-weight:bold; margin-bottom:15px; font-size:14px;">수신된 서류함</div>
+					${state.receivedDocs.map(d => `
+						<div class="card" style="padding:15px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+							<div>
+								<div style="font-size:11px; color:var(--text-dark);">${d.date}</div>
+								<div style="font-weight:bold; font-size:14px;">${d.comp}</div>
+								<div style="font-size:12px; color:var(--info);">${d.type}</div>
+							</div>
+							<div style="display:flex; gap:8px;">
+								<button style="padding:5px 10px; background:#333; color:#fff; border:none; border-radius:5px; font-size:11px;" onclick="alert('서류 보기')">보기</button>
+								<button style="padding:5px 10px; background:var(--primary); color:#fff; border:none; border-radius:5px; font-size:11px;" onclick="alert('홈택스 연동 전자세금계산서 발행 처리')">발행</button>
+							</div>
+						</div>
+					`).join('')}
+
+					<div style="margin-top:40px; padding:25px; background:var(--surface-light); border-radius:15px; text-align:center;">
+						<div style="font-size:24px; margin-bottom:10px;">📑</div>
+						<div style="font-weight:bold; margin-bottom:10px;">보고 문서 자동 생성</div>
+						<div style="font-size:12px; color:var(--text-sub); line-height:1.6; margin-bottom:20px;">선택한 모든 서류를 취합하여 상급자 보고용 PDF 기안문을 생성합니다.</div>
+						<button class="primaryBtn" style="background:#fff; color:#000;" onclick="alert('PDF 보고서가 생성되었습니다. 그룹웨어로 전송합니다.')">PDF 기안 생성</button>
+					</div>
+				</div>
+			`;
+		}
+
+		function renderFindIDPW() {
+			return `<div class="padding">계정 찾기 모듈 로딩 중...</div>`;
 		}
 
 		window.onload = render;
