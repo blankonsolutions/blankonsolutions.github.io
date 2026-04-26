@@ -270,7 +270,7 @@
 
 	<script>
 		let state = {
-			page: 'dash', // dash, request, history, quotes, pro_profile, notifications, help, reviews_write, mypage, tips, guarantee, invite
+			page: 'dash', // dash, request, history, quotes, pro_profile, notifications, help, reviews_write, mypage, tips, tip_detail, guarantee, invite
 			currentUser: { id: 'cus1', name: '테스트고객', points: 2500 },
 			usersDB: [
 				{ id: 'pro1', compName: '명품특수청소', intro: '15년 경격의 고독사/화재 전문 팀', keywords: ['고독사', '화재'], reviews: [{ rating: 5, text: '완벽한 처리 감사합니다.' }], verified: true, insurance: '영업배상보험 가입', guarantee: true },
@@ -289,9 +289,10 @@
 				{ id: 'n2', title: '포인트 적립 안내', desc: '리뷰 작성 이벤트로 500P가 적립되었습니다.', date: '1일 전', unread: false }
 			],
 			tips: [
-				{ id: 't1', title: '유품 정리 전 꼭 확인해야 할 서류', category: '준비사항' },
-				{ id: 't2', title: '악취 제거를 위한 오존 시공의 원리', category: '기술안내' },
-				{ id: 't3', title: '고독사 현장 지원금 신청 방법', category: '행정지원' }
+				{ id: 't1', title: '유품 정리 전 꼭 확인해야 할 서류', category: '준비사항', content: '유품 정리를 시작하기 전에 상속 관계를 명확히 하는 것이 가장 중요합니다.\n\n**필요 서류:**\n1. 사망진단서 (원본 또는 사본)\n2. 가족관계증명서 (상속인 확인용)\n3. 상속인 위임장 (본인이 직접 참관하지 못할 경우)\n\n이러한 서류가 준비되지 않은 상태에서 유품을 반출하거나 폐기할 경우, 추후 다른 유가족과의 법적 분쟁이 발생할 수 있으니 반드시 사전에 전문가와 상담하세요.' },
+				{ id: 't2', title: '악취 제거를 위한 오존 시공의 원리', category: '기술안내', content: '특수청소에서 악취 제거의 핵심은 오존 시공입니다.\n\n**작동 원리:**\n오존(O3) 발생기를 통해 생성된 오존 분자는 공기 중의 냄새 분자(유기물)와 결합하여 이를 산화시켜 무해한 물질로 분해합니다.\n\n**주의사항:**\n- 시공 중에는 사람이나 동물이 절대 실내에 머물러서는 안 됩니다.\n- 시공 완료 후 최소 1시간 이상의 환기가 필요합니다.\n- 벽지에 배어있는 냄새까지 제거하기 위해 2~3회 반복 시공이 필요할 수 있습니다.' },
+				{ id: 't3', title: '고독사 현장 지원금 신청 방법', category: '행정지원', content: '현실적으로 비용 부담이 큰 고독사 현장의 경우, 정부나 지자체의 지원을 받을 수 있는 방법이 있습니다.\n\n**지원 대상:**\n- 기초생활수급자 또는 차상위계층\n- 무연고 사망자 (공영장례 지원)\n\n**신청 절차:**\n1. 관할 동주민센터(행정복지센터) 사회복지과 문의\n2. 청소 전/후 사진 및 세금계산서(영수증) 확보\n3. 지원금 신청서 제출\n\n지자체별로 조례가 다르므로, 작업 착수 전에 반드시 해당 지역 센터에 먼저 확인하는 것이 좋습니다.' },
+				{ id: 't4', title: '쓰레기집 청소 시 개인정보 보호', category: '안전안내', content: '쓰레기집 청소는 단순히 버리는 것이 아니라, 소중한 개인정보를 보호하는 과정입니다.\n\n**처리 방식:**\n- 모든 쓰레기를 하나하나 확인하여 통장, 계약서, 사진 등 중요 물품을 선별합니다.\n- 이름, 주소, 전화번호가 적힌 우편물이나 영수증은 전용 파쇄기로 파쇄 처리합니다.\n- 외부인이 알 수 없도록 검은색 불투명 봉투를 사용하여 신속하게 반출합니다.' }
 			]
 		};
 
@@ -305,7 +306,7 @@
 		function render() {
 			const root = document.getElementById('root');
 			let content = '';
-			let hideTabBar = ['request', 'chat', 'contract', 'pro_profile', 'notifications', 'reviews_write', 'tips', 'guarantee', 'invite', 'help'].includes(state.page);
+			let hideTabBar = ['request', 'chat', 'contract', 'pro_profile', 'notifications', 'reviews_write', 'tips', 'tip_detail', 'guarantee', 'invite', 'help'].includes(state.page);
 
 			switch (state.page) {
 				case 'dash': content = renderDash(); break;
@@ -318,6 +319,7 @@
 				case 'reviews_write': content = renderReviewsWrite(); break;
 				case 'mypage': content = renderMyPage(); break;
 				case 'tips': content = renderTips(); break;
+				case 'tip_detail': content = renderTipDetail(); break;
 				case 'guarantee': content = renderGuarantee(); break;
 				case 'invite': content = renderInvite(); break;
 			}
@@ -359,6 +361,7 @@
 				case 'reviews_write': return '리뷰 작성';
 				case 'history': return '내 요청 내역';
 				case 'quotes': return '받은 견적함';
+				case 'tip_detail': return '지식 상세';
 				case 'mypage': return '마이페이지';
 				default: return '특청';
 			}
@@ -524,7 +527,7 @@
 					<div style="font-size:13px; color:var(--primary); font-weight:bold; margin-bottom:10px;">전문가가 알려주는 노하우</div>
 					<h2 style="margin-bottom:25px;">특수청소 지식창고</h2>
 					${state.tips.map(t => `
-						<div class="menuCard" onclick="alert('상세 내용으로 이동')">
+						<div class="menuCard" onclick="setPage('tip_detail', ${JSON.stringify(t).replace(/"/g, '&quot;')})">
 							<div>
 								<div style="font-size:11px; color:var(--text-dark); margin-bottom:4px;">${t.category}</div>
 								<div style="font-weight:600;">${t.title}</div>
@@ -532,6 +535,19 @@
 							<span>❯</span>
 						</div>
 					`).join('')}
+				</div>
+			`;
+		}
+
+		function renderTipDetail() {
+			const tip = state.selectedItem;
+			if (!tip) return `<div class="padding">데이터를 불러올 수 없습니다.</div>`;
+			return `
+				<div class="padding">
+					<div style="font-size:13px; color:var(--primary); font-weight:bold; margin-bottom:10px;">${tip.category}</div>
+					<h2 style="margin-bottom:20px; line-height:1.4;">${tip.title}</h2>
+					<div style="background:var(--surface); padding:24px; border-radius:15px; border:1px solid var(--border); line-height:1.8; color:var(--text-sub); white-space:pre-wrap;">${tip.content.replace(/\*\*(.*?)\*\*/g, '<b style="color:var(--text-main)">$1</b>')}</div>
+					<button class="primaryBtn" style="margin-top:30px; background:#333;" onclick="setPage('tips')">목록으로 돌아가기</button>
 				</div>
 			`;
 		}
