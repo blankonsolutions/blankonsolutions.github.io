@@ -1,0 +1,318 @@
+const fs = require('fs');
+
+const correctScript = `
+		let state = {
+			page: 'login', // Default to login
+			currentUser: { name: '권운영자', org: '특청 마스터 관리 본부', adminId: 'ADM-001' },
+			pendingVendors: [
+				{ id: 'V1', name: '청결한내일', type: '법인', date: '2026-04-25', files: 3, bizNum: '123-45-67890', owner: '홍길동' },
+				{ id: 'V2', name: '바른정리팀', type: '개인', date: '2026-04-24', files: 2, bizNum: '098-76-54321', owner: '이철수' }
+			],
+			auditLogs: [
+				{ id: 'L1', time: '14:20', action: '시스템 정책 변경', target: '개인정보 처리방침', actor: '권운영자' },
+				{ id: 'L2', time: '11:50', action: '업체 가입 거절', target: '미인증업체A', actor: '권운영자' },
+				{ id: 'L3', time: '09:12', action: '서버 보안 점검', target: 'DB Cluster 01', actor: 'System' }
+			]
+		};
+
+		function setPage(p, data = null) {
+			state.page = p;
+			if (data) state.selectedItem = data;
+			render();
+			if (document.querySelector('.bg')) document.querySelector('.bg').scrollTo(0, 0);
+		}
+
+		function render() {
+			const root = document.getElementById('root');
+			let noHeader = ['login'].includes(state.page);
+			let hideNav = ['login', 'vendors', 'settings', 'logs', 'vendor_detail', 'approve_confirm', 'reject_confirm'].includes(state.page);
+
+			root.innerHTML = \`
+				\${noHeader ? '' : renderHeader(hideNav)}
+				<div class="bg">\${renderContent()}</div>
+				\${hideNav ? '' : renderNav()}
+			\`;
+		}
+
+		function renderHeader(isSub) {
+			return \`
+				<div class="header">
+					\${isSub ? \`<div class="backBtn" onclick="setPage('dash')">←</div>\` : \`<div onclick="location.href='index.html'" style="font-size:13px; border:1px solid #333; padding:6px 12px; border-radius:8px; cursor:pointer;">🏠 홈</div>\`}
+					<div class="headerTitle">\${getHeaderTitle()}</div>
+					<div style="cursor:pointer; font-size:18px;" onclick="toggleTheme()">🌓</div>
+				</div>
+			\`;
+		}
+
+		function toggleTheme() {
+			const isLight = document.documentElement.classList.toggle('light-theme');
+			localStorage.setItem('special-cleaning-theme', isLight ? 'light' : 'dark');
+		}
+
+		function getHeaderTitle() {
+			switch (state.page) {
+				case 'dash': return '마스터 관리 센터';
+				case 'vendors': return '파트너 업체 심사';
+				case 'vendor_detail': return '업체 서류 검토';
+				case 'approve_confirm': return '최종 승인 확인';
+				case 'reject_confirm': return '가입 반려 확인';
+				case 'settings': return '플랫폼 운영 설정';
+				case 'logs': return '전체 시스템 로그';
+				default: return '마스터 어드민';
+			}
+		}
+
+		function renderNav() {
+			return \`
+				<div class="nav">
+					<div class="nav-item \${state.page === 'dash' ? 'active' : ''}" onclick="setPage('dash')"><div style="font-size:20px; margin-bottom:4px;">🏠</div>홈</div>
+					<div class="nav-item \${state.page === 'vendors' ? 'active' : ''}" onclick="setPage('vendors')"><div style="font-size:20px; margin-bottom:4px;">📝</div>심사</div>
+					<div class="nav-item \${state.page === 'settings' ? 'active' : ''}" onclick="setPage('settings')"><div style="font-size:20px; margin-bottom:4px;">⚙️</div>설정</div>
+				</div>
+			\`;
+		}
+
+		function renderContent() {
+			switch (state.page) {
+				case 'login': return renderLogin();
+				case 'dash': return \`
+					<div class="padding">
+						<div style="margin-bottom:30px;">
+							<div style="font-size:13px; color:var(--text-sub);">\${state.currentUser.org}</div>
+							<div style="font-size:22px; font-weight:800; margin-top:8px; letter-spacing:-0.03em;">특청 마스터 통합 제어</div>
+						</div>
+
+						<div class="card" style="background:var(--surface-light); border-left: 4px solid var(--primary);">
+							<div style="font-size:12px; color:var(--primary); font-weight:bold; margin-bottom:8px;">오늘의 주요 지표</div>
+							<div style="display:flex; justify-content:space-between; align-items:center;">
+								<div>
+									<div style="font-size:11px; color:var(--text-sub);">신규 가입 신청</div>
+									<div style="font-size:20px; font-weight:bold;">\${state.pendingVendors.length}건</div>
+								</div>
+								<div>
+									<div style="font-size:11px; color:var(--text-sub);">현재 활성 오더</div>
+									<div style="font-size:20px; font-weight:bold;">42건</div>
+								</div>
+							</div>
+							<button class="primaryBtn" style="margin-top:15px; padding:10px; font-size:12px;" onclick="setPage('vendors')">업체 심사 바로가기</button>
+						</div>
+
+						<div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:25px;">
+							<div class="card" onclick="setPage('settings')" style="margin-bottom:0; text-align:center;">
+								<div style="font-size:24px; margin-bottom:8px;">🛠️</div>
+								<div style="font-size:13px; font-weight:bold;">시스템 설정</div>
+							</div>
+							<div class="card" onclick="setPage('logs')" style="margin-bottom:0; text-align:center;">
+								<div style="font-size:24px; margin-bottom:8px;">📊</div>
+								<div style="font-size:13px; font-weight:bold;">통합 로그</div>
+							</div>
+						</div>
+
+						<div style="font-weight:bold; margin-top:35px; margin-bottom:15px; font-size:16px;">본사 전용 관리 도구</div>
+						<div class="menuCard" onclick="setPage('settings')"><span>📜 정책 및 약관 편집 마스터</span><span>❯</span></div>
+						<div class="menuCard" onclick="alert('결제 정산 페이지로 이동')"><span>💰 파트너 정산 및 매출 관리</span><span>❯</span></div>
+						<div class="menuCard" onclick="alert('사용자 관리 페이지로 이동')"><span>👤 전체 회원 관리 (CS)</span><span>❯</span></div>
+
+						<div style="margin-top:25px;">
+							<div style="font-weight:bold; margin-bottom:15px; font-size:14px; color:var(--text-dark);">최근 시스템 로그</div>
+							\${state.auditLogs.slice(0, 3).map(l => \`
+								<div style="display:flex; justify-content:space-between; font-size:11px; padding:10px 0; border-bottom:1px solid var(--border);">
+									<span style="color:var(--text-sub);">\${l.time}</span>
+									<span style="font-weight:bold;">\${l.action}</span>
+									<span style="color:var(--text-dark);">\${l.actor}</span>
+								</div>
+							\`).join('')}
+						</div>
+						<div style="margin-top:40px; text-align:center; font-size:13px; color:var(--text-dark); text-decoration:underline; cursor:pointer;" onclick="setPage('login')">로그아웃</div>
+					</div>
+				\`;
+				case 'vendors': return \`
+					<div class="padding">
+						<h2 style="margin-bottom:25px;">파트너 입점 심사</h2>
+						\${state.pendingVendors.map(v => \`
+							<div class="card">
+								<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+									<div>
+										<div style="font-weight:bold; font-size:17px;">\${v.name}</div>
+										<div style="font-size:12px; color:var(--text-sub);">\${v.type} 사업자 • \${v.date} 신청</div>
+									</div>
+									<div class="status-pill status-warn">서류 검토중</div>
+								</div>
+								<div style="font-size:12px; color:var(--text-dark); margin-bottom:15px;">첨부 파일: \${v.files}건</div>
+								<button class="primaryBtn" style="padding:12px; font-size:13px; background:var(--surface-light); border:1px solid var(--border);" onclick="setPage('vendor_detail', \${JSON.stringify(v)})">서류 검토 및 심사하기</button>
+							</div>
+						\`).join('')}
+					</div>
+				\`;
+				case 'vendor_detail':
+					const v = state.selectedItem;
+					return \`
+						<div class="padding">
+							<h2 style="margin-bottom:10px;">\${v.name} 심사</h2>
+							<p style="font-size:13px; color:var(--text-sub); margin-bottom:30px;">업체 제출 서류를 면밀히 검토해 주세요.</p>
+							
+							<div class="card" style="cursor:default;">
+								<div style="font-weight:bold; margin-bottom:15px;">기본 정보</div>
+								<div style="display:flex; flex-direction:column; gap:10px; font-size:14px;">
+									<div style="display:flex; justify-content:space-between;"><span style="color:var(--text-dark);">대표자</span><span>\${v.owner}</span></div>
+									<div style="display:flex; justify-content:space-between;"><span style="color:var(--text-dark);">사업자번호</span><span>\${v.bizNum}</span></div>
+									<div style="display:flex; justify-content:space-between;"><span style="color:var(--text-dark);">신청일</span><span>\${v.date}</span></div>
+								</div>
+							</div>
+
+							<div style="font-weight:bold; margin-bottom:15px;">제출 서류 (\${v.files})</div>
+							<div style="display:flex; flex-direction:column; gap:10px; margin-bottom:40px;">
+								<div class="menuCard" style="margin-bottom:0;" onclick="alert('사업자등록증 이미지 보기')"><span>📄 사업자등록증.jpg</span><span>👁️</span></div>
+								<div class="menuCard" style="margin-bottom:0;" onclick="alert('영업신고증 이미지 보기')"><span>📄 건물위생관리업_신고증.pdf</span><span>👁️</span></div>
+								<div class="menuCard" style="margin-bottom:0;" onclick="alert('인허가증 이미지 보기')"><span>📄 소독업_인허가증.jpg</span><span>👁️</span></div>
+							</div>
+
+							<div style="display:grid; grid-template-columns: 1fr 1.5fr; gap:15px;">
+								<button class="primaryBtn" style="background:transparent; color:var(--danger); border:1px solid var(--danger);" onclick="setPage('reject_confirm', \${JSON.stringify(v)})">가입 반려</button>
+								<button class="primaryBtn" onclick="setPage('approve_confirm', \${JSON.stringify(v)})">최종 승인</button>
+							</div>
+						</div>
+					\`;
+				case 'approve_confirm':
+					const av = state.selectedItem;
+					const anow = new Date();
+					const atoday = anow.getFullYear() + '-' + String(anow.getMonth() + 1).padStart(2, '0') + '-' + String(anow.getDate()).padStart(2, '0');
+					return \`
+						<div class="padding">
+							<h2 style="margin-bottom:10px;">승인 최종 확인</h2>
+							<p style="font-size:13px; color:var(--text-sub); margin-bottom:30px;">승인 즉시 업체에 알림이 발송되며 활동이 가능해집니다.</p>
+
+							<div class="card" style="cursor:default;">
+								<div style="font-size:14px; color:var(--text-dark); margin-bottom:5px;">승인 대상</div>
+								<div style="font-size:18px; font-weight:bold; margin-bottom:20px;">\${av.name}</div>
+								
+								<div style="font-size:12px; color:var(--text-dark); margin-bottom:5px;">승인 일시 (자동)</div>
+								<div style="font-size:15px; font-weight:bold; margin-bottom:20px;">\${atoday}</div>
+
+								<div style="font-size:12px; color:var(--text-dark); margin-bottom:10px;">승인자 확인</div>
+								<input class="input" type="text" id="approve_name" placeholder="성함 입력" value="\${state.currentUser.name}" style="border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--bg); color:#fff; width:100%; margin-bottom:10px;">
+								<input class="input" type="text" id="approve_id" placeholder="사원번호 입력" value="\${state.currentUser.adminId}" style="border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--bg); color:#fff; width:100%; margin-bottom:20px;">
+								
+								<div style="font-size:12px; color:var(--text-dark); margin-bottom:10px;">추가 코멘트 (선택)</div>
+								<textarea class="input" id="approve_comment" placeholder="업체에 전달할 추가 메시지가 있다면 입력하세요." style="border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--bg); color:#fff; width:100%; height:80px; resize:none;"></textarea>
+							</div>
+
+							<button class="primaryBtn" style="margin-top:20px;" onclick="handleFinalAudit('\${av.id}', 'approve')">승인 완료 및 인장 날인</button>
+							<button class="primaryBtn" style="margin-top:10px; background:transparent; color:var(--text-dark); border:1px solid var(--border);" onclick="setPage('vendor_detail', \${JSON.stringify(av)})">취소</button>
+						</div>
+					\`;
+				case 'reject_confirm':
+					const rv = state.selectedItem;
+					const rnow = new Date();
+					const rtoday = rnow.getFullYear() + '-' + String(rnow.getMonth() + 1).padStart(2, '0') + '-' + String(rnow.getDate()).padStart(2, '0');
+					return \`
+						<div class="padding">
+							<h2 style="margin-bottom:10px; color:var(--danger);">반려 사유 입력</h2>
+							<p style="font-size:13px; color:var(--text-sub); margin-bottom:30px;">업체에 전달될 구체적인 반려 사유를 선택/입력해 주세요.</p>
+
+							<div class="card" style="cursor:default;">
+								<div style="font-size:14px; font-weight:bold; margin-bottom:15px;">반려 대상: \${rv.name}</div>
+								
+								<div style="font-size:12px; color:var(--text-dark); margin-bottom:5px;">반려 일시 (자동)</div>
+								<div style="font-size:15px; font-weight:bold; margin-bottom:20px;">\${rtoday}</div>
+								
+								<div style="font-size:12px; color:var(--text-dark); margin-bottom:10px;">반려 사유 선택</div>
+								<select class="input" id="reject_reason" style="border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--bg); color:#fff; width:100%; margin-bottom:15px;">
+									<option>서류 식별 불가 (사진 흐림)</option>
+									<option>인허가증 유효기간 만료</option>
+									<option>사업자 정보 불일치</option>
+									<option>부적합 업종 (특수청소 미포함)</option>
+									<option>기타 (직접 입력)</option>
+								</select>
+								
+								<div style="font-size:12px; color:var(--text-dark); margin-bottom:10px;">상세 코멘트</div>
+								<textarea class="input" id="reject_comment" placeholder="추가 코멘트 및 상세 반려 사유를 입력하세요." style="border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--bg); color:#fff; width:100%; height:80px; resize:none; margin-bottom:20px;"></textarea>
+
+								<div style="font-size:12px; color:var(--text-dark); margin-bottom:10px;">반려자 확인</div>
+								<input class="input" type="text" id="reject_name" placeholder="성함 입력" value="\${state.currentUser.name}" style="border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--bg); color:#fff; width:100%; margin-bottom:10px;">
+								<input class="input" type="text" id="reject_id" placeholder="사원번호 입력" value="\${state.currentUser.adminId}" style="border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--bg); color:#fff; width:100%;">
+							</div>
+
+							<div style="margin-top:20px; padding:15px; background:rgba(220,53,69,0.1); border-radius:10px; border:1px solid var(--danger); font-size:12px; color:var(--danger); line-height:1.5;">
+								주의: 반려 처리 후 업체는 서류를 다시 보완하여 제출해야 합니다. 정말 반려하시겠습니까?
+							</div>
+
+							<button class="primaryBtn" style="margin-top:20px; background:var(--danger);" onclick="handleFinalAudit('\${rv.id}', 'reject')">네, 반려합니다</button>
+							<button class="primaryBtn" style="margin-top:10px; background:transparent; color:var(--text-dark); border:1px solid var(--border);" onclick="setPage('vendor_detail', \${JSON.stringify(rv)})">취소</button>
+						</div>
+					\`;
+				case 'settings': return \`
+					<div class="padding">
+						<h2 style="margin-bottom:30px;">플랫폼 운영 설정</h2>
+						<div style="font-weight:bold; margin-bottom:15px; color:var(--text-dark);">핵심 정책</div>
+						<div class="menuCard"><span>📜 이용약관 마스터 관리</span><span>❯</span></div>
+						<div class="menuCard"><span>🛡️ 개인정보 처리방침 설정</span><span>❯</span></div>
+						<div class="menuCard"><span>⚖️ 분쟁 조정 표준 매뉴얼</span><span>❯</span></div>
+
+						<div style="font-weight:bold; margin-top:35px; margin-bottom:15px; color:var(--text-dark);">운영 관리</div>
+						<div class="menuCard"><span>🔑 관리자 보안 (2FA) 설정</span><span>❯</span></div>
+						<div class="menuCard"><span>👤 운영 팀원 계정 권한</span><span>❯</span></div>
+					</div>
+				\`;
+				case 'logs': return \`
+					<div class="padding">
+						<h2 style="margin-bottom:25px;">통합 시스템 로그</h2>
+						\${state.auditLogs.map(l => \`
+							 <div class="card" style="padding:15px; margin-bottom:10px;">
+								<div style="font-size:10px; color:var(--text-sub); margin-bottom:5px;">\${l.time} | Actor: \${l.actor}</div>
+								<div style="font-weight:bold; font-size:14px;">\${l.action}</div>
+								<div style="font-size:12px; color:var(--text-dark);">대상: \${l.target}</div>
+							 </div>
+						\`).join('')}
+					</div>
+				\`;
+				default: return renderLogin();
+			}
+		}
+
+		function handleFinalAudit(id, action) {
+			if(action === 'approve') {
+				const name = document.getElementById('approve_name').value;
+				const adminId = document.getElementById('approve_id').value;
+				if(!name || !adminId) return alert('승인자 정보를 입력해주세요.');
+				if(confirm('정말로 승인하시겠습니까?')) {
+					alert(name + ' (' + adminId + ') 님에 의해 승인되었습니다.');
+					setPage('vendors');
+				}
+			} else if(action === 'reject') {
+				const name = document.getElementById('reject_name').value;
+				const adminId = document.getElementById('reject_id').value;
+				const reason = document.getElementById('reject_reason').value;
+				if(!name || !adminId) return alert('반려자 정보를 입력해주세요.');
+				if(confirm('선택한 사유(' + reason + ')로 반려하시겠습니까?')) {
+					alert(name + ' (' + adminId + ') 님에 의해 반려되었습니다.');
+					setPage('vendors');
+				}
+			}
+		}
+
+		function renderLogin() {
+			return \`
+				<div class="padding" style="display:flex; flex-direction:column; justify-content:center; min-height:100vh;">
+					<div style="text-align:center; margin-bottom:40px;">
+						<div style="font-size:40px; font-weight:900; color:var(--primary); margin-bottom:10px;">특청 MASTER</div>
+						<div style="font-size:14px; color:var(--text-sub);">관리자 전용 보안 로그인</div>
+					</div>
+					<input class="input" type="text" placeholder="관리자 사원번호" style="border:1px solid var(--border); padding:16px; border-radius:10px; margin-bottom:16px; background-color:var(--bg); color:var(--text-main); width:100%;">
+					<input class="input" type="password" placeholder="마스터 암호" style="border:1px solid var(--border); padding:16px; border-radius:10px; margin-bottom:16px; background-color:var(--bg); color:var(--text-main); width:100%;">
+					<button class="primaryBtn" style="margin-top:10px;" onclick="setPage('dash')">보안 시스템 접속</button>
+					<div onclick="location.href='index.html'" style="text-align:center; margin-top:30px; font-size:13px; color:var(--text-dark); cursor:pointer;">게이트웨이로 돌아가기</div>
+				</div>
+			\`;
+		}
+
+		window.onload = render;
+`;
+
+let html = fs.readFileSync('admin.html', 'utf8');
+const startIdx = html.indexOf('<script>');
+const endIdx = html.lastIndexOf('</script>');
+
+html = html.substring(0, startIdx + 8) + '\n' + correctScript + '\n\t' + html.substring(endIdx);
+fs.writeFileSync('admin.html', html, 'utf8');
+console.log('admin.html rewritten perfectly.');
