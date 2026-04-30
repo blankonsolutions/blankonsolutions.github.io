@@ -273,7 +273,16 @@
 		let state = {
 			page: 'login', // Default to login page for this demonstration
 			isLoggedIn: false,
-			currentUser: { id: 'cus1', name: '테스트고객', points: 2500 },
+			isRealNameVerified: true,
+			currentUser: { id: 'cus1', name: '테스트고객', nickname: '행복한날들', points: 2500 },
+			counselingCenters: [
+				{ id: 'cc1', name: '마음건강 정신과', type: '정신건강의학과', loc: '서울 강남구', rating: 4.8, reviews: 24 },
+				{ id: 'cc2', name: '희망 심리상담센터', type: '심리상담', loc: '광주 서구', rating: 4.9, reviews: 15 }
+			],
+			counselingReviews: [
+				{ id: 'cr1', centerId: 'cc1', nickname: '하늘바람', content: '힘든 시기에 큰 도움이 되었습니다.', rating: 5, verified: true },
+				{ id: 'cr2', centerId: 'cc2', nickname: '초록잎', content: '선생님이 너무 친절하셔서 마음이 편해졌어요.', rating: 5, verified: true }
+			],
 			usersDB: [
 				{ id: 'pro1', compName: '명품특수청소', intro: '15년 경격의 고독사/화재 전문 팀', keywords: ['고독사', '화재'], reviews: [{ rating: 5, text: '완벽한 처리 감사합니다.' }], verified: true, insurance: '영업배상보험 가입', guarantee: true },
 				{ id: 'pro2', compName: '깨끗한세상', intro: '성실과 정직으로 다가가는 특수청소', keywords: ['쓰레기집'], reviews: [], verified: true, insurance: '책임보험 가입', guarantee: true }
@@ -317,7 +326,8 @@
 				hasFurniture: '',    // 쓰레기집
 				fireDamage: '',      // 화재
 				sootLevel: '',       // 화재
-				untact: false        // 비대면 출입
+				untact: false,        // 비대면 출입
+				counselingSearch: ''
 			}
 		};
 
@@ -353,6 +363,8 @@
 				case 'guarantee': content = renderGuarantee(); break;
 				case 'invite': content = renderInvite(); break;
 				case 'chat': content = renderChat(); break;
+				case 'counseling_centers': content = renderCounselingCenters(); break;
+				case 'counseling_detail': content = renderCounselingDetail(); break;
 			}
 
 			root.innerHTML = `
@@ -557,6 +569,8 @@
 				case 'quotes': return '받은 견적함';
 				case 'tip_detail': return '지식 상세';
 				case 'mypage': return '마이페이지';
+				case 'counseling_centers': return '심리 케어 서비스';
+				case 'counseling_detail': return '센터 상세 정보';
 				default: return '특청';
 			}
 		}
@@ -585,6 +599,16 @@
 					<div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:30px;">
 						<div class="card" onclick="setPage('tips')" style="margin-bottom:0; text-align:center; padding:20px;"><div style="font-size:24px; margin-bottom:10px;">💡</div><div style="font-size:13px; font-weight:bold;">청소 가이드</div></div>
 						<div class="card" onclick="setPage('guarantee')" style="margin-bottom:0; text-align:center; padding:20px;"><div style="font-size:24px; margin-bottom:10px;">🛡️</div><div style="font-size:13px; font-weight:bold;">보상 제도</div></div>
+					</div>
+
+					<div class="card" onclick="setPage('counseling_centers')" style="background:linear-gradient(135deg, #111, #222); border:1px solid #444; display:flex; align-items:center; gap:20px; padding:25px; margin-bottom:35px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">
+						<div style="width:55px; height:55px; background:rgba(0,123,255,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px;">🌿</div>
+						<div style="flex:1;">
+							<div style="font-size:13px; color:var(--info); font-weight:bold; margin-bottom:4px;">특청 X 연계 서비스</div>
+							<div style="font-size:18px; font-weight:800;">심리 케어 연계 서비스</div>
+							<div style="font-size:11px; color:var(--text-sub); margin-top:4px;">정신과 및 상담센터 매칭 지원</div>
+						</div>
+						<div style="font-size:18px; color:var(--text-dark);">❯</div>
 					</div>
 
 					<div style="font-weight:bold; margin-bottom:15px; font-size:16px;">최근 요청 상태</div>
@@ -999,6 +1023,99 @@
 			} else {
 				f.services.push(id);
 			}
+			render();
+		}
+
+		function renderCounselingCenters() {
+			return `
+				<div class="padding">
+					<h2 style="margin-bottom:10px;">심리 케어 연계 서비스</h2>
+					<p style="font-size:13px; color:var(--text-sub); margin-bottom:25px;">특청 고객님들을 위한 전문 심리 지원 네트워크입니다.</p>
+					
+					<input class="input" type="text" placeholder="지역 또는 센터명 검색..." style="margin-bottom:20px;" oninput="state.counselingSearch=this.value; render();">
+
+					${state.counselingCenters.map(c => `
+						<div class="card" onclick="setPage('counseling_detail', '${c.id}')">
+							<div style="display:flex; justify-content:space-between; align-items:flex-start;">
+								<div>
+									<div style="font-size:11px; color:var(--info); font-weight:bold; margin-bottom:4px;">${c.type}</div>
+									<div style="font-weight:bold; font-size:17px; margin-bottom:4px;">${c.name}</div>
+									<div style="font-size:12px; color:var(--text-sub);">${c.loc}</div>
+								</div>
+								<div style="text-align:right;">
+									<div style="font-size:13px; color:var(--warning);">⭐ ${c.rating}</div>
+									<div style="font-size:11px; color:var(--text-dark);">리뷰 ${c.reviews}</div>
+								</div>
+							</div>
+						</div>
+					`).join('')}
+				</div>
+			`;
+		}
+
+		function renderCounselingDetail() {
+			const center = state.counselingCenters.find(c => c.id === state.selectedItem) || state.counselingCenters[0];
+			const reviews = state.counselingReviews.filter(r => r.centerId === center.id);
+			return `
+				<div class="padding">
+					<div onclick="setPage('counseling_centers')" style="cursor:pointer; color:var(--primary); font-size:14px; margin-bottom:20px;">← 뒤로</div>
+					<div style="text-align:center; margin-bottom:30px;">
+						<div style="width:70px; height:70px; background:var(--info); border-radius:35px; margin:0 auto 15px; display:flex; align-items:center; justify-content:center; font-size:30px;">🏥</div>
+						<h2 style="margin-bottom:8px;">${center.name}</h2>
+						<div style="font-size:14px; color:var(--text-sub);">${center.type} | ${center.loc}</div>
+					</div>
+
+					<div class="card" style="padding:20px;">
+						<div style="font-weight:bold; margin-bottom:15px; color:var(--info);">연계 혜택 안내</div>
+						<div style="font-size:13px; color:var(--text-sub); line-height:1.6;">
+							- 특청 고객 대상 초진 상담료 20% 할인<br>
+							- 우선 예약 지원 서비스 제공<br>
+							- 상담 기록 익명성 및 보안 철저 보장
+						</div>
+					</div>
+
+					<div style="font-weight:bold; margin:30px 0 15px; font-size:16px;">방문 리뷰 (${reviews.length})</div>
+					${reviews.map(r => `
+						<div class="card" style="padding:15px; margin-bottom:12px;">
+							<div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+								<span style="font-weight:bold; font-size:13px;">${r.nickname}</span>
+								${r.verified ? '<span style="font-size:10px; background:rgba(40,167,69,0.1); color:var(--success); border:1px solid var(--success); padding:1px 5px; border-radius:4px;">✓ 실명인증</span>' : ''}
+								<span style="font-size:12px; color:var(--warning); margin-left:auto;">${'★'.repeat(r.rating)}</span>
+							</div>
+							<div style="font-size:13px; color:var(--text-sub); line-height:1.5;">${r.content}</div>
+						</div>
+					`).join('')}
+
+					<div style="margin-top:30px; border-top:1px solid var(--border); padding-top:20px;">
+						<div style="font-weight:bold; margin-bottom:15px; font-size:14px;">리뷰 남기기</div>
+						${state.isRealNameVerified ? `
+							<textarea id="review_content" class="textArea" style="height:100px;" placeholder="상담 후기를 공유해 주세요."></textarea>
+							<button class="primaryBtn" style="background:var(--info);" onclick="submitCounselingReview('${center.id}')">리뷰 등록 (익명)</button>
+							<p style="font-size:11px; color:var(--text-dark); margin-top:8px; text-align:center;">* 실명인증 회원으로 리뷰가 작성됩니다. 닉네임만 공개됩니다.</p>
+						` : `
+							<div style="background:var(--surface); padding:20px; border-radius:10px; text-align:center;">
+								<div style="font-size:12px; color:var(--text-sub); margin-bottom:10px;">리뷰 작성은 실명인증이 필요합니다.</div>
+								<button class="primaryBtn" style="height:35px; font-size:12px; background:#333;" onclick="alert('본인인증 화면으로 이동합니다.')">실명인증 하러가기</button>
+							</div>
+						`}
+					</div>
+					<div style="height:50px;"></div>
+				</div>
+			`;
+		}
+
+		function submitCounselingReview(centerId) {
+			const content = document.getElementById('review_content').value;
+			if (!content) return alert('내용을 입력해 주세요.');
+			state.counselingReviews.push({
+				id: 'cr' + (state.counselingReviews.length + 1),
+				centerId: centerId,
+				nickname: state.currentUser.nickname,
+				content: content,
+				rating: 5,
+				verified: true
+			});
+			alert('리뷰가 등록되었습니다. 실명인증 마크와 함께 닉네임으로 표시됩니다.');
 			render();
 		}
 

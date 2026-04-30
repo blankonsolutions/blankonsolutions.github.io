@@ -267,6 +267,18 @@
 				{ id: 'A001', compName: '속시원특수청소', type: '개인', docs: ['사업자', '위생관리', '소독업'], date: '2026-04-26' },
 				{ id: 'A002', compName: '클린메이트', type: '법인', docs: ['사업자', '위생관리', '폐기물'], date: '2026-04-25' }
 			],
+			receivedRequests: [
+				{ id: 'req1', customer: '홍길동', type: '고독사 특수청소', loc: '서울시 강남구 역삼동', date: '2026-04-27', status: '대기' },
+				{ id: 'req2', customer: '이몽룡', type: '쓰레기집 청소', loc: '광주광역시 서구 치평동', date: '2026-04-26', status: '진행중' }
+			],
+			sentQuotes: [
+				{ id: 'q1', customer: '홍길동', amount: 1500000, date: '2026-04-27', status: '견적발송' },
+				{ id: 'q2', customer: '성춘향', amount: 2800000, date: '2026-04-25', status: '계약완료' }
+			],
+			contractStatus: [
+				{ id: 'c1', customer: '성춘향', type: '화재 복구', stage: '서류제출', progress: 80 },
+				{ id: 'c2', customer: '이몽룡', type: '쓰레기집', stage: '현장작업', progress: 40 }
+			],
 			isGeneratingPDF: false
 		};
 
@@ -319,7 +331,12 @@
 				case 'chat': return '고객 상담 (익명)';
 				case 'stt_report': return '원터치 현장 보고서';
 				case 'waste_vendors': return '제휴 폐기물 업체';
-				case 'waste_vendor_detail': return '폐기물 업체 상세';
+				case 'waste_vendor_detail': return '업체 상세 정보';
+				case 'equipment_vendors': return '장비 임대 업체';
+				case 'remodeling_vendors': return '리모델링 업체';
+				case 'received_requests': return '받은 요청함';
+				case 'sent_quotes': return '발송 견적함';
+				case 'contract_status': return '계약단계 현황';
 				default: return '비즈니스';
 			}
 		}
@@ -346,6 +363,11 @@
 				case 'stt_report': return renderSTTReport();
 				case 'waste_vendors': return renderWasteVendors();
 				case 'waste_vendor_detail': return renderWasteVendorDetail();
+				case 'equipment_vendors': return renderEquipmentVendors();
+				case 'remodeling_vendors': return renderRemodelingVendors();
+				case 'received_requests': return renderReceivedRequests();
+				case 'sent_quotes': return renderSentQuotes();
+				case 'contract_status': return renderContractStatus();
 				case 'dash': return renderDash();
 				case 'analytics': return renderAnalytics();
 				case 'assets': return renderAssets();
@@ -382,20 +404,55 @@
 					</div>
 
 					<div style="font-weight:bold; margin-top:35px; margin-bottom:15px; font-size:16px;">현장 스마트 도구</div>
-					<div class="card" onclick="setPage('stt_report')" style="background:var(--surface-light); border:1px solid var(--primary); display:flex; align-items:center; gap:15px; padding:20px; margin-bottom:15px;">
-						<div style="width:50px; height:50px; background:var(--primary); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px;">🎙️</div>
-						<div>
-							<div style="font-weight:bold; font-size:16px; color:var(--primary);">원터치 현장 보고서</div>
-							<div style="font-size:12px; color:var(--text-sub); margin-top:4px;">음성 보고 + GPS 사진 자동 증빙</div>
+					<div style="display:grid; grid-template-columns: 1fr; gap:12px;">
+						<div class="card" onclick="setPage('stt_report')" style="background:var(--surface-light); border:1px solid var(--primary); display:flex; align-items:center; gap:15px; padding:20px; margin-bottom:0;">
+							<div style="width:50px; height:50px; background:var(--primary); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px;">🎙️</div>
+							<div>
+								<div style="font-weight:bold; font-size:16px; color:var(--primary);">원터치 현장 보고서</div>
+								<div style="font-size:12px; color:var(--text-sub); margin-top:4px;">음성 보고 + GPS 사진 자동 증빙</div>
+							</div>
+						</div>
+
+						<div class="card" onclick="setPage('waste_vendors')" style="background:var(--surface-light); border:1px solid var(--primary); display:flex; align-items:center; gap:15px; padding:20px; margin-bottom:0;">
+							<div style="width:50px; height:50px; background:var(--primary); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px;">🚛</div>
+							<div>
+								<div style="font-weight:bold; font-size:16px; color:var(--primary);">폐기물수집운반 허가업체 조회</div>
+								<div style="font-size:12px; color:var(--text-sub); margin-top:4px;">특청 제휴 처리업체 매칭 및 상세내역</div>
+							</div>
+						</div>
+
+						<div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+							<div class="card" onclick="setPage('equipment_vendors')" style="background:var(--surface-light); border:1px solid var(--primary); padding:15px; margin-bottom:0; text-align:center;">
+								<div style="font-size:20px; margin-bottom:8px;">🏗️</div>
+								<div style="font-size:13px; font-weight:bold; color:var(--primary);">장비 임대 업체</div>
+							</div>
+							<div class="card" onclick="setPage('remodeling_vendors')" style="background:var(--surface-light); border:1px solid var(--primary); padding:15px; margin-bottom:0; text-align:center;">
+								<div style="font-size:20px; margin-bottom:8px;">🏠</div>
+								<div style="font-size:13px; font-weight:bold; color:var(--primary);">리모델링 업체</div>
+							</div>
 						</div>
 					</div>
 
-					<div class="card" onclick="setPage('waste_vendors')" style="background:var(--surface-light); border:1px solid var(--primary); display:flex; align-items:center; gap:15px; padding:20px;">
-						<div style="width:50px; height:50px; background:var(--primary); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px;">🚛</div>
-						<div>
-							<div style="font-weight:bold; font-size:16px; color:var(--primary);">폐기물수집운반 허가업체 조회</div>
-							<div style="font-size:12px; color:var(--text-sub); margin-top:4px;">특청 제휴 처리업체 매칭 및 상세내역</div>
+					<div style="font-weight:bold; margin-top:35px; margin-bottom:15px; font-size:16px;">견적 및 계약 관리</div>
+					<div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+						<div class="card" onclick="setPage('received_requests')" style="margin-bottom:0; padding:15px; text-align:center;">
+							<div style="font-size:20px; margin-bottom:8px;">📥</div>
+							<div style="font-size:13px; font-weight:bold;">받은 요청함</div>
 						</div>
+						<div class="card" onclick="setPage('sent_quotes')" style="margin-bottom:0; padding:15px; text-align:center;">
+							<div style="font-size:20px; margin-bottom:8px;">📤</div>
+							<div style="font-size:13px; font-weight:bold;">발송 견적함</div>
+						</div>
+					</div>
+					<div class="card" onclick="setPage('contract_status')" style="margin-top:12px; padding:20px; display:flex; justify-content:space-between; align-items:center;">
+						<div style="display:flex; align-items:center; gap:15px;">
+							<div style="font-size:24px;">📋</div>
+							<div>
+								<div style="font-weight:bold; font-size:15px;">계약단계 현황보기</div>
+								<div style="font-size:12px; color:var(--text-sub); margin-top:2px;">진행 중인 계약 2건</div>
+							</div>
+						</div>
+						<div style="font-size:14px; color:var(--primary);">상세보기 ❯</div>
 					</div>
 
 					<div style="font-weight:bold; margin-top:35px; margin-bottom:15px; font-size:16px;">현장 및 재고 상태</div>
@@ -845,6 +902,128 @@
 							</div>
 						</div>
 					</div>
+				</div>
+			`;
+		}
+		function renderEquipmentVendors() {
+			const equipmentVendors = [
+				{ name: '대박 중기', type: '포크레인/바브캣', loc: '광주 서구', phone: '062-111-1111' },
+				{ name: '스카이 연합', type: '스카이차/사다리차', loc: '광주 전역', phone: '062-222-2222' }
+			];
+			return `
+				<div class="padding">
+					<h2 style="margin-bottom:10px;">장비 임대 업체 조회</h2>
+					<p style="font-size:13px; color:var(--text-sub); margin-bottom:25px;">현장에 필요한 특수 장비 업체를 빠르게 매칭합니다.</p>
+					${equipmentVendors.map(v => `
+						<div class="card" style="padding:20px;">
+							<div style="display:flex; justify-content:space-between;">
+								<div>
+									<div style="font-size:11px; color:var(--primary); font-weight:bold; margin-bottom:4px;">${v.type}</div>
+									<div style="font-weight:bold; font-size:16px;">${v.name}</div>
+									<div style="font-size:12px; color:var(--text-sub); margin-top:4px;">${v.loc}</div>
+								</div>
+								<button class="primaryBtn" style="width:auto; padding:8px 15px; font-size:12px;" onclick="alert('${v.phone}번으로 연결합니다.')">📞 전화</button>
+							</div>
+						</div>
+					`).join('')}
+				</div>
+			`;
+		}
+		function renderRemodelingVendors() {
+			const remodelingVendors = [
+				{ name: '바른 인테리어', type: '부분/전체 리모델링', loc: '서울/경기', rating: 4.8 },
+				{ name: '깔끔 리폼', type: '도배/장판/특수도장', loc: '전국 출장', rating: 4.7 }
+			];
+			return `
+				<div class="padding">
+					<h2 style="margin-bottom:10px;">리모델링 업체 조회</h2>
+					<p style="font-size:13px; color:var(--text-sub); margin-bottom:25px;">청소 후 복구 및 리모델링 전문 파트너사입니다.</p>
+					${remodelingVendors.map(v => `
+						<div class="card" style="padding:20px;">
+							<div style="display:flex; justify-content:space-between; align-items:center;">
+								<div>
+									<div style="font-size:11px; color:var(--primary); font-weight:bold; margin-bottom:4px;">${v.type}</div>
+									<div style="font-weight:bold; font-size:16px;">${v.name}</div>
+									<div style="font-size:12px; color:var(--text-sub); margin-top:4px;">${v.loc} | ⭐ ${v.rating}</div>
+								</div>
+								<button class="primaryBtn" style="width:auto; padding:8px 15px; font-size:12px;" onclick="alert('업체 상세 포트폴리오를 요청했습니다.')">상담요청</button>
+							</div>
+						</div>
+					`).join('')}
+				</div>
+			`;
+		}
+		function renderReceivedRequests() {
+			return `
+				<div class="padding">
+					<h2 style="margin-bottom:20px;">받은 요청함</h2>
+					${state.receivedRequests.map(r => `
+						<div class="card" style="padding:20px;">
+							<div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+								<span style="font-size:12px; color:var(--text-dark);">${r.date}</span>
+								<span class="status-pill" style="background:rgba(201,160,80,0.1); color:var(--primary); padding:2px 8px; border-radius:4px; font-size:11px;">${r.status}</span>
+							</div>
+							<div style="font-weight:bold; font-size:17px; margin-bottom:6px;">${r.type}</div>
+							<div style="font-size:13px; color:var(--text-sub); margin-bottom:15px;">${r.loc} (${r.customer} 고객님)</div>
+							<button class="primaryBtn" onclick="alert('견적서 작성 화면으로 이동합니다.')">견적 보내기</button>
+						</div>
+					`).join('')}
+				</div>
+			`;
+		}
+		function renderSentQuotes() {
+			return `
+				<div class="padding">
+					<h2 style="margin-bottom:20px;">발송 견적함</h2>
+					${state.sentQuotes.map(q => `
+						<div class="card" style="padding:20px;">
+							<div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+								<span style="font-size:12px; color:var(--text-dark);">${q.date}</span>
+								<span style="font-size:12px; font-weight:bold; color:var(--primary);">${q.status}</span>
+							</div>
+							<div style="font-weight:bold; font-size:17px; margin-bottom:6px;">${q.customer} 고객님</div>
+							<div style="font-size:18px; font-weight:900; color:var(--text-main);">${q.amount.toLocaleString()}원</div>
+							<div style="margin-top:15px; display:flex; gap:10px;">
+								<button class="primaryBtn" style="background:#333; flex:1;" onclick="alert('견적 수정을 시작합니다.')">수정</button>
+								<button class="primaryBtn" style="flex:1;" onclick="setPage('chat')">채팅상담</button>
+							</div>
+						</div>
+					`).join('')}
+				</div>
+			`;
+		}
+		function renderContractStatus() {
+			return `
+				<div class="padding">
+					<h2 style="margin-bottom:10px;">계약단계 현황보기</h2>
+					<p style="font-size:13px; color:var(--text-sub); margin-bottom:25px;">현재 진행 중인 프로젝트의 공정 및 서류 상태입니다.</p>
+					${state.contractStatus.map(c => `
+						<div class="card" style="padding:20px;">
+							<div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+								<b style="font-size:16px;">${c.customer} - ${c.type}</b>
+								<span style="color:var(--primary); font-weight:bold;">${c.stage}</span>
+							</div>
+							<div style="height:8px; background:#222; border-radius:4px; overflow:hidden; margin-bottom:10px;">
+								<div style="width:${c.progress}%; height:100%; background:var(--primary);"></div>
+							</div>
+							<div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-dark);">
+								<span>계약 체결</span>
+								<span>서류 제출</span>
+								<span>정산 완료</span>
+							</div>
+							${c.stage === '서류제출' ? `
+								<div style="margin-top:20px; padding:15px; background:rgba(201,160,80,0.1); border-radius:10px; border:1px solid var(--primary);">
+									<div style="font-size:12px; font-weight:bold; color:var(--primary); margin-bottom:8px;">📌 관공서 필수 요청 서류</div>
+									<div style="font-size:11px; color:var(--text-sub); line-height:1.6;">
+										- 작업 전/후 GPS 사진 (자동취합 중)<br>
+										- 폐기물 처리 증명서<br>
+										- 국세/지방세 완납 증명서
+									</div>
+									<button class="primaryBtn" style="margin-top:10px; height:35px; font-size:12px;" onclick="alert('요청된 서류가 관공서로 자동 전송되었습니다.')">서류 즉시 전송</button>
+								</div>
+							` : ''}
+						</div>
+					`).join('')}
 				</div>
 			`;
 		}

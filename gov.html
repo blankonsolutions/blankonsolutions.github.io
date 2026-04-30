@@ -366,7 +366,15 @@
 			vendorSearch: '',
 			archiveFilter: '전체',
 			isPdfOpen: false,
-			pdfContent: null
+			pdfContent: null,
+			smallOrders: [
+				{ id: 'SO1', title: '관내 고독사 현장 긴급 청소', loc: '치평동 123-4', date: '2026-04-28', status: '견적중' },
+				{ id: 'SO2', title: '기초수급자 가구 쓰레기집 정리', loc: '상무동 456-7', date: '2026-04-25', status: '계약완료' }
+			],
+			govContracts: [
+				{ id: 'C1', comp: '명품특수청소', type: '고독사 특청', stage: '서류검토', progress: 75, docs: { idCard: true, license: true, report: false } },
+				{ id: 'C2', comp: '클린솔루션', type: '화재 복구', stage: '현장점검', progress: 40, docs: { idCard: true, license: true, report: true } }
+			]
 		};
 
 		function updateHeatmapData(period) {
@@ -506,6 +514,8 @@
 				case 'stats': return '고립 지수 히트맵';
 				case 'archive': return '행정 데이터 아카이브';
 				case 'ai_analysis': return 'AI 지능형 위험 분석';
+				case 'small_order': return '소액발주 시스템';
+				case 'contract_progress': return '계약단계 현황';
 				default: return '행정 관리';
 			}
 		}
@@ -532,6 +542,8 @@
 				case 'smart_matching': return renderSmartMatching();
 				case 'stats': return renderHeatmap();
 				case 'archive': return renderArchive();
+				case 'small_order': return renderSmallOrder();
+				case 'contract_progress': return renderContractProgress();
 				case 'dash': return renderDash();
 				case 'broadcast': return `
     <div class="padding">
@@ -579,6 +591,26 @@
 							<div style="font-size:24px; margin-bottom:8px;">🛡️</div>
 							<div style="font-size:13px; font-weight:bold;">행정 증빙 통합</div>
 						</div>
+					</div>
+
+					<div class="card" onclick="setPage('small_order')" style="background:linear-gradient(135deg, var(--primary), #218838); border:none; display:flex; align-items:center; gap:20px; padding:25px; margin-top:25px; box-shadow: 0 10px 20px rgba(40,167,69,0.2);">
+						<div style="width:55px; height:55px; background:rgba(255,255,255,0.2); border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:28px;">📝</div>
+						<div style="flex:1;">
+							<div style="font-size:18px; font-weight:800; color:#fff;">소액발주 메뉴</div>
+							<div style="font-size:11px; color:rgba(255,255,255,0.8); margin-top:4px;">수의계약 및 긴급 발주 요청</div>
+						</div>
+						<div style="font-size:18px; color:#fff;">❯</div>
+					</div>
+
+					<div class="card" onclick="setPage('contract_progress')" style="margin-top:15px; padding:20px; display:flex; justify-content:space-between; align-items:center; border-left:4px solid var(--info);">
+						<div style="display:flex; align-items:center; gap:15px;">
+							<div style="font-size:24px;">📊</div>
+							<div>
+								<div style="font-weight:bold; font-size:15px;">계약단계 현황보기</div>
+								<div style="font-size:12px; color:var(--text-sub); margin-top:2px;">진행 중인 행정 절차 2건</div>
+							</div>
+						</div>
+						<div style="font-size:14px; color:var(--info);">확인 ❯</div>
 					</div>
 
 					<div style="font-weight:bold; margin-top:35px; margin-bottom:15px; font-size:16px;">행정 특화 메뉴</div>
@@ -708,6 +740,77 @@
 				state.isGeneratingPackage = false; render();
 				openPdfOverlay('행정 증빙 통합 패키지', 'package');
 			}, 1500);
+		}
+
+		function renderSmallOrder() {
+			return `
+				<div class="padding">
+					<div onclick="setPage('dash')" style="cursor:pointer; color:var(--primary); font-size:14px; margin-bottom:20px;">← 뒤로</div>
+					<h2 style="margin-bottom:10px;">소액발주(수의계약) 요청</h2>
+					<p style="font-size:13px; color:var(--text-sub); margin-bottom:25px;">행정 절차를 간소화하여 업체에 긴급 발주를 보냅니다.</p>
+
+					<div class="card" style="padding:20px;">
+						<div style="font-size:12px; color:var(--text-dark); margin-bottom:8px;">발주 명칭</div>
+						<input class="input" type="text" placeholder="예: 관내 고독사 위험 가구 긴급 청소" style="width:100%; padding:15px; background:var(--bg); border:1px solid var(--border); color:#fff; border-radius:10px; margin-bottom:20px;">
+						
+						<div style="font-size:12px; color:var(--text-dark); margin-bottom:8px;">현장 주소</div>
+						<input class="input" type="text" placeholder="상세 주소를 입력하세요" style="width:100%; padding:15px; background:var(--bg); border:1px solid var(--border); color:#fff; border-radius:10px; margin-bottom:20px;">
+
+						<div style="font-size:12px; color:var(--text-dark); margin-bottom:8px;">발주 예산 (최대 2천만원)</div>
+						<input class="input" type="text" placeholder="예: 3,000,000원" style="width:100%; padding:15px; background:var(--bg); border:1px solid var(--border); color:#fff; border-radius:10px; margin-bottom:20px;">
+
+						<div style="font-size:12px; color:var(--text-dark); margin-bottom:8px;">상세 과업 지시</div>
+						<textarea class="input" placeholder="업체에게 전달할 상세 작업 내용을 입력하세요." style="width:100%; padding:15px; background:var(--bg); border:1px solid var(--border); color:#fff; border-radius:10px; height:120px; resize:none;"></textarea>
+						
+						<button class="primaryBtn" style="margin-top:10px;" onclick="alert('소액발주 요청이 등록되었습니다. 적격 업체들에게 알림이 발송됩니다.'); setPage('dash');">발주 요청서 전송</button>
+					</div>
+				</div>
+			`;
+		}
+
+		function renderContractProgress() {
+			return `
+				<div class="padding">
+					<div onclick="setPage('dash')" style="cursor:pointer; color:var(--primary); font-size:14px; margin-bottom:20px;">← 뒤로</div>
+					<h2 style="margin-bottom:10px;">계약단계 현황보기</h2>
+					<p style="font-size:13px; color:var(--text-sub); margin-bottom:25px;">현재 진행 중인 수의계약 및 일반계약의 공정 상태입니다.</p>
+
+					${state.govContracts.map(c => `
+						<div class="card" style="padding:20px;">
+							<div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+								<div>
+									<div style="font-size:11px; color:var(--primary); font-weight:bold; margin-bottom:4px;">${c.type}</div>
+									<b style="font-size:16px;">${c.comp}</b>
+								</div>
+								<span style="color:var(--info); font-weight:bold;">${c.stage}</span>
+							</div>
+
+							<div style="height:8px; background:#222; border-radius:4px; overflow:hidden; margin-bottom:10px;">
+								<div style="width:${c.progress}%; height:100%; background:var(--info);"></div>
+							</div>
+							
+							<div style="margin-top:20px; border-top:1px dashed #333; padding-top:15px;">
+								<div style="font-size:13px; font-weight:bold; margin-bottom:12px;">📑 필요 서류 체크리스트 (업체 자동요청)</div>
+								<div style="display:flex; flex-direction:column; gap:10px;">
+									<label style="display:flex; align-items:center; gap:10px; font-size:12px; cursor:pointer;" onclick="c.docs.idCard = !c.docs.idCard; render();">
+										<input type="checkbox" ${c.docs.idCard ? 'checked' : ''} style="accent-color:var(--primary);">
+										<span>사업자등록증 및 인허가증</span>
+									</label>
+									<label style="display:flex; align-items:center; gap:10px; font-size:12px; cursor:pointer;" onclick="c.docs.license = !c.docs.license; render();">
+										<input type="checkbox" ${c.docs.license ? 'checked' : ''} style="accent-color:var(--primary);">
+										<span>국세/지방세 완납 증명서</span>
+									</label>
+									<label style="display:flex; align-items:center; gap:10px; font-size:12px; cursor:pointer;" onclick="c.docs.report = !c.docs.report; render();">
+										<input type="checkbox" ${c.docs.report ? 'checked' : ''} style="accent-color:var(--primary);">
+										<span>작업 완료 보고서 (GPS 사진 포함)</span>
+									</label>
+								</div>
+								<button class="primaryBtn" style="margin-top:15px; height:40px; font-size:13px; background:var(--info);" onclick="alert('선택된 필요 서류들이 업체(business.html)에 자동으로 요청되었으며, 수신 시 즉시 통합 관리함에 취합됩니다.')">필요 서류 일괄 요청/취합</button>
+							</div>
+						</div>
+					`).join('')}
+				</div>
+			`;
 		}
 
 		function renderArchive() {
