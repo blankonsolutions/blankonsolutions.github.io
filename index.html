@@ -294,15 +294,18 @@
 				</div>
 				<div class="btn-icon">⚙️</div>
 			</a>
-			
+
 			<div style="margin-top: 10px; border-top: 1px solid var(--border); padding-top: 20px;">
-				<div style="text-align: center; margin-bottom: 15px; font-size: 14px; color: var(--text-sub);">아직 회원이 아니신가요?</div>
+				<div style="text-align: center; margin-bottom: 15px; font-size: 14px; color: var(--text-sub);">아직 회원이
+					아니신가요?</div>
 				<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-					<a href="customer.html?action=signup" class="portal-btn" style="padding: 15px; flex-direction: column; align-items: center; justify-content: center; border-color: var(--primary);">
+					<a href="customer.html?action=signup" class="portal-btn"
+						style="padding: 15px; flex-direction: column; align-items: center; justify-content: center; border-color: var(--primary);">
 						<div class="btn-icon" style="margin-bottom: 5px;">👤</div>
 						<span class="btn-title" style="font-size: 14px;">고객 회원가입</span>
 					</a>
-					<a href="business.html?action=signup" class="portal-btn" style="padding: 15px; flex-direction: column; align-items: center; justify-content: center; border-color: var(--accent);">
+					<a href="business.html?action=signup" class="portal-btn"
+						style="padding: 15px; flex-direction: column; align-items: center; justify-content: center; border-color: var(--accent);">
 						<div class="btn-icon" style="margin-bottom: 5px;">🏢</div>
 						<span class="btn-title" style="font-size: 14px;">사업자 가입</span>
 					</a>
@@ -317,7 +320,7 @@
 			<h2>대한민국 고립 대응 솔루션</h2>
 			<p style="color: var(--text-sub); margin-top: 20px;">특청은 단순한 중개를 넘어, 고독사 및 위기 가구 데이터 분석을 통해 대한민국 복지의 표준을
 				만들어갑니다.</p>
-			<a href="ppt.html" class="ppt-link">회사 소개서 보러가기 (Pitch Deck)</a>
+			<a href="ppt.html" class="ppt-link">플랫폼 소개서 보러가기 (Pitch Deck)</a>
 		</div>
 	</section>
 
@@ -377,18 +380,24 @@
 		}
 	</script>
 
-	<div id="signupModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:9999; padding:20px; overflow-y:auto; align-items:center; justify-content:center;">
-		<div style="background:var(--surface); border-radius:20px; width:100%; max-width:500px; padding:30px; position:relative; margin:auto;">
-			<div style="position:absolute; top:20px; right:20px; cursor:pointer; font-size:20px; color:var(--text-sub);" onclick="document.getElementById('signupModal').style.display='none'">✕</div>
-			
+	<div id="signupModal"
+		style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:9999; padding:20px; overflow-y:auto; align-items:center; justify-content:center;">
+		<div
+			style="background:var(--surface); border-radius:20px; width:100%; max-width:500px; padding:30px; position:relative; margin:auto;">
+			<div style="position:absolute; top:20px; right:20px; cursor:pointer; font-size:20px; color:var(--text-sub);"
+				onclick="document.getElementById('signupModal').style.display='none'">✕</div>
+
 			<div id="signupStep1">
 				<h2 style="margin-bottom:20px; text-align:center;">회원가입</h2>
 				<div style="display:grid; gap:15px;">
-					<button class="portal-btn" style="border-color:var(--primary); padding:20px; justify-content:center;" onclick="location.href='customer.html?action=signup'">
+					<button class="portal-btn"
+						style="border-color:var(--primary); padding:20px; justify-content:center;"
+						onclick="location.href='customer.html?action=signup'">
 						<div style="font-size:30px; margin-right:15px;">👤</div>
 						<div class="btn-label"><span class="btn-title">고객으로 가입하기</span></div>
 					</button>
-					<button class="portal-btn" style="border-color:var(--accent); padding:20px; justify-content:center;" onclick="document.getElementById('signupStep1').style.display='none'; document.getElementById('signupStep2').style.display='block';">
+					<button class="portal-btn" style="border-color:var(--accent); padding:20px; justify-content:center;"
+						onclick="document.getElementById('signupStep1').style.display='none'; document.getElementById('signupStep2').style.display='block';">
 						<div style="font-size:30px; margin-right:15px;">🏢</div>
 						<div class="btn-label"><span class="btn-title">사업자 파트너로 가입하기</span></div>
 					</button>
@@ -399,7 +408,8 @@
 				<h2 style="margin-bottom:20px;">사업자 파트너 가입</h2>
 				<div style="margin-bottom:15px;">
 					<div style="font-size:12px; color:var(--text-dark); margin-bottom:8px;">사업자 유형</div>
-					<select style="width:100%; padding:15px; border-radius:10px; background:var(--bg); border:1px solid var(--border); color:#fff;">
+					<select
+						style="width:100%; padding:15px; border-radius:10px; background:var(--bg); border:1px solid var(--border); color:#fff;">
 						<option>개인사업자</option>
 						<option>법인사업자</option>
 					</select>
@@ -412,35 +422,47 @@
 						<label style="font-size:13px;"><input type="checkbox"> 화재/침수 복구</label>
 						<label style="font-size:13px;"><input type="checkbox"> 강력범죄 현장</label>
 					</div>
-					<div style="font-size:11px; color:var(--primary); margin-top:8px;">* 선택하신 카테고리에 해당하는 인허가증을 추후 첨부해야 합니다.</div>
+					<div style="font-size:11px; color:var(--primary); margin-top:8px;">* 선택하신 카테고리에 해당하는 인허가증을 추후 첨부해야
+						합니다.</div>
 				</div>
 				<div style="margin-bottom:15px;">
 					<div style="font-size:12px; color:var(--text-dark); margin-bottom:8px;">상호명</div>
-					<input type="text" placeholder="상호명 입력" style="width:100%; padding:15px; border-radius:10px; background:var(--bg); border:1px solid var(--border); color:#fff;">
+					<input type="text" placeholder="상호명 입력"
+						style="width:100%; padding:15px; border-radius:10px; background:var(--bg); border:1px solid var(--border); color:#fff;">
 				</div>
 				<div style="margin-bottom:15px;">
 					<div style="font-size:12px; color:var(--text-dark); margin-bottom:8px;">사업자등록번호</div>
 					<div style="display:flex; gap:10px;">
-						<input type="text" placeholder="- 없이 숫자만 입력" style="flex:1; padding:15px; border-radius:10px; background:var(--bg); border:1px solid var(--border); color:#fff;">
-						<button style="padding:0 15px; border-radius:10px; background:var(--surface-light); border:1px solid var(--border); color:#fff; cursor:pointer;" onclick="alert('사용 가능한 사업자등록번호입니다.')">중복확인</button>
+						<input type="text" placeholder="- 없이 숫자만 입력"
+							style="flex:1; padding:15px; border-radius:10px; background:var(--bg); border:1px solid var(--border); color:#fff;">
+						<button
+							style="padding:0 15px; border-radius:10px; background:var(--surface-light); border:1px solid var(--border); color:#fff; cursor:pointer;"
+							onclick="alert('사용 가능한 사업자등록번호입니다.')">중복확인</button>
 					</div>
 				</div>
 				<div style="margin-bottom:15px;">
 					<div style="font-size:12px; color:var(--text-dark); margin-bottom:8px;">대표자명</div>
-					<input type="text" placeholder="대표자 성함" style="width:100%; padding:15px; border-radius:10px; background:var(--bg); border:1px solid var(--border); color:#fff;">
+					<input type="text" placeholder="대표자 성함"
+						style="width:100%; padding:15px; border-radius:10px; background:var(--bg); border:1px solid var(--border); color:#fff;">
 				</div>
 				<div style="margin-bottom:15px;">
 					<div style="font-size:12px; color:var(--text-dark); margin-bottom:8px;">사업장 주소</div>
-					<input type="text" placeholder="주소 입력" style="width:100%; padding:15px; border-radius:10px; background:var(--bg); border:1px solid var(--border); color:#fff;">
+					<input type="text" placeholder="주소 입력"
+						style="width:100%; padding:15px; border-radius:10px; background:var(--bg); border:1px solid var(--border); color:#fff;">
 				</div>
 				<div style="margin-bottom:25px;">
 					<div style="font-size:12px; color:var(--text-dark); margin-bottom:8px;">연락처</div>
 					<div style="display:flex; gap:10px;">
-						<input type="text" placeholder="휴대폰 번호" style="flex:1; padding:15px; border-radius:10px; background:var(--bg); border:1px solid var(--border); color:#fff;">
-						<button style="padding:0 15px; border-radius:10px; background:var(--surface-light); border:1px solid var(--border); color:#fff; cursor:pointer;" onclick="alert('인증번호가 발송되었습니다.')">인증요청</button>
+						<input type="text" placeholder="휴대폰 번호"
+							style="flex:1; padding:15px; border-radius:10px; background:var(--bg); border:1px solid var(--border); color:#fff;">
+						<button
+							style="padding:0 15px; border-radius:10px; background:var(--surface-light); border:1px solid var(--border); color:#fff; cursor:pointer;"
+							onclick="alert('인증번호가 발송되었습니다.')">인증요청</button>
 					</div>
 				</div>
-				<button style="width:100%; padding:18px; border-radius:10px; background:var(--accent); border:none; color:#fff; font-weight:bold; font-size:16px; cursor:pointer;" onclick="alert('회원가입이 완료되었습니다. 비즈니스 포털로 이동합니다.'); location.href='business.html';">가입 완료</button>
+				<button
+					style="width:100%; padding:18px; border-radius:10px; background:var(--accent); border:none; color:#fff; font-weight:bold; font-size:16px; cursor:pointer;"
+					onclick="alert('회원가입이 완료되었습니다. 비즈니스 포털로 이동합니다.'); location.href='business.html';">가입 완료</button>
 			</div>
 		</div>
 	</div>
