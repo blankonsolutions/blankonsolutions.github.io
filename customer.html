@@ -342,7 +342,8 @@
 			const root = document.getElementById('root');
 			let content = '';
 			let noHeader = ['login', 'signup_choice', 'signup_customer', 'find_idpw'].includes(state.page);
-			let hideTabBar = ['login', 'signup_choice', 'signup_customer', 'find_idpw', 'request', 'chat', 'contract', 'pro_profile', 'notifications', 'reviews_write', 'tips', 'tip_detail', 'guarantee', 'invite', 'help'].includes(state.page);
+			let isSubPage = state.page !== 'dash';
+			let hideTabBar = ['login', 'signup_choice', 'signup_customer', 'find_idpw', 'request', 'chat', 'contract', 'pro_profile', 'notifications', 'reviews_write', 'tips', 'tip_detail', 'guarantee', 'invite', 'help', 'premium_care', 'premium_apply', 'premium_input', 'premium_payment', 'premium_success'].includes(state.page);
 
 			switch (state.page) {
 				case 'login': content = renderLogin(); break;
@@ -367,10 +368,13 @@
 				case 'counseling_detail': content = renderCounselingDetail(); break;
 				case 'premium_care': content = renderPremiumCare(); break;
 				case 'premium_apply': content = renderPremiumApply(); break;
+				case 'premium_input': content = renderPremiumInput(); break;
+				case 'premium_payment': content = renderPremiumPayment(); break;
+				case 'premium_success': content = renderPremiumSuccess(); break;
 			}
 
 			root.innerHTML = `
-				${noHeader ? '' : renderHeader(hideTabBar)}
+				${noHeader ? '' : renderHeader(isSubPage)}
 				<div class="bg">${content}</div>
 				${hideTabBar ? '' : renderTabBar()}
 			`;
@@ -609,7 +613,7 @@
 						<div class="card" onclick="setPage('guarantee')" style="margin-bottom:0; text-align:center; padding:20px;"><div style="font-size:24px; margin-bottom:10px;">🛡️</div><div style="font-size:13px; font-weight:bold;">보상 제도</div></div>
 					</div>
 
-					<div class="card" onclick="setPage('counseling_centers')" style="background:linear-gradient(135deg, #111, #222); border:1px solid #444; display:flex; align-items:center; gap:20px; padding:25px; margin-bottom:35px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">
+					<div class="card" onclick="setPage('counseling_centers')" style="background:linear-gradient(135deg, #111, #222); border:1px solid #444; display:flex; align-items:center; gap:20px; padding:25px; margin-bottom:12px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">
 						<div style="width:55px; height:55px; background:rgba(0,123,255,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px;">🌿</div>
 						<div style="flex:1;">
 							<div style="font-size:13px; color:var(--info); font-weight:bold; margin-bottom:4px;">특청 X 연계 서비스</div>
@@ -617,6 +621,17 @@
 							<div style="font-size:11px; color:var(--text-sub); margin-top:4px;">정신과 및 상담센터 매칭 지원</div>
 						</div>
 						<div style="font-size:18px; color:var(--text-dark);">❯</div>
+					</div>
+
+					<!-- 리모델링 업체 광고 섹션 추가 -->
+					<div class="card" onclick="alert('제휴 리모델링 업체 리스트로 이동합니다.')" style="background:linear-gradient(135deg, #051937, #004d7a); border:1px solid #008793; display:flex; align-items:center; gap:20px; padding:25px; margin-bottom:35px; box-shadow: 0 10px 20px rgba(0,0,0,0.4);">
+						<div style="width:55px; height:55px; background:rgba(255,255,255,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px;">🏠</div>
+						<div style="flex:1;">
+							<div style="font-size:13px; color:#00bf72; font-weight:bold; margin-bottom:4px;">특청 X 인테리어</div>
+							<div style="font-size:18px; font-weight:800;">제휴 리모델링 업체</div>
+							<div style="font-size:11px; color:#fff; opacity:0.8; margin-top:4px;">특수청소 후 완벽한 공간 복구</div>
+						</div>
+						<div style="font-size:18px; color:rgba(255,255,255,0.5);">❯</div>
 					</div>
 
 					<div style="font-weight:bold; margin-bottom:15px; font-size:16px;">최근 요청 상태</div>
@@ -1142,16 +1157,16 @@
 						</p>
 					</div>
 
-					<!-- 긴급성/심각성 고지 섹션 -->
+					<!-- 긴급성/심각성 고지 섹션 보완 -->
 					<div class="card" style="background: rgba(229, 9, 20, 0.1); border: 1px solid var(--primary); margin-bottom: 30px;">
 						<div style="font-size: 15px; font-weight: bold; color: var(--primary); margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
-							<span>⚠️</span> 소비자 피해 급증 주의보
+							<span>⚠️</span> 소비자 피해 급증 주의보 (필독)
 						</div>
 						<div style="font-size: 13px; color: var(--text-main); line-height: 1.6;">
-							최근 저가형 비전문 업체의 시공으로 인해 <b>악취 재발, 인체 유해 약품 오남용</b> 등의 피해 사례가 300% 이상 급증하고 있습니다. 특수청소는 눈에 보이는 깨끗함보다 <b style="color:var(--primary);">'보이지 않는 오염'</b>의 완벽한 제거가 핵심입니다.
+							단순히 <b>"향료로 냄새를 덮는(Masking)"</b> 저가형 시공은 며칠 뒤 악취가 다시 올라오는 심각한 부작용을 초래합니다. 근본적인 원인인 <b style="color:var(--primary);">사체 유기물 및 혈흔의 완전 분해</b> 없이 진행되는 시공은 고객님의 건강을 위협하고 추가 비용을 발생시킵니다.
 						</div>
 						<div style="margin-top: 12px; font-size: 12px; color: var(--text-sub); border-top: 1px solid rgba(229, 9, 20, 0.2); padding-top: 10px;">
-							* 프리미엄 케어는 본사가 직접 모든 과정을 데이터로 검증합니다.
+							* 특청 프리미엄은 '덮는 방식'이 아닌 '분자 단위 제거'를 본사가 보증합니다.
 						</div>
 					</div>
 
@@ -1212,36 +1227,61 @@
 					</div>
 
 					<div style="display:flex; flex-direction:column; gap:15px; margin-bottom:40px;">
-						<div class="card" style="margin-bottom:0; animation: fadeIn 0.5s ease forwards 0.2s; opacity:0;">
+						<div class="card" style="margin-bottom:0; animation: fadeIn 0.5s ease forwards 0.2s; opacity:0; border-left: 4px solid var(--primary);">
 							<div style="display:flex; justify-content:space-between; align-items:center;">
-								<div style="font-weight:bold;">🔬 정밀 가스/균 측정</div>
-								<div style="color:var(--primary); font-size:12px;">매니저 전담</div>
+								<div style="font-weight:bold;">🔎 본사 매니저 현장 사전 점검</div>
+								<div style="color:var(--primary); font-size:12px;">핵심 가치</div>
 							</div>
-							<div style="font-size:12px; color:var(--text-dark); margin-top:8px;">작업 전/후 0.01ppm 단위 데이터 리포트 발행</div>
+							<div style="font-size:12px; color:var(--text-sub); margin-top:8px; line-height:1.5;">
+								매니저가 현장 방문 후 오염도를 분석하여 <b>AI 기반의 정밀 견적</b>을 산출합니다. 업체와의 모든 작업 일정 및 방식 조율을 본사가 전담합니다.
+							</div>
+							<div style="margin-top:10px; padding:8px; background:rgba(229,9,20,0.05); border-radius:5px; font-size:11px; color:var(--primary); font-weight:bold;">
+								※ 업체-고객 간 직접 연락 일절 금지 (본사 중재 100%)
+							</div>
 						</div>
-						<div class="card" style="margin-bottom:0; animation: fadeIn 0.5s ease forwards 0.4s; opacity:0;">
+						<div class="card" style="margin-bottom:0; animation: fadeIn 0.5s ease forwards 0.4s; opacity:0; border-left: 4px solid var(--info);">
 							<div style="display:flex; justify-content:space-between; align-items:center;">
-								<div style="font-weight:bold;">🛡️ 본사 100% 책임 보증</div>
-								<div style="color:var(--primary); font-size:12px;">중재 보장</div>
+								<div style="font-weight:bold;">📡 STT 기반 본사 실시간 관제</div>
+								<div style="color:var(--info); font-size:12px;">현장 통제</div>
 							</div>
-							<div style="font-size:12px; color:var(--text-dark); margin-top:8px;">악취 재발 시 본사 직접 100% 재시공 및 보상</div>
+							<div style="font-size:12px; color:var(--text-sub); margin-top:8px; line-height:1.5;">
+								현장 작업자의 모든 특이사항과 작업 과정을 <b>STT(Speech-to-Text) 서비스</b>로 기록하여 본사 중앙 관제 센터에서 실시간으로 모니터링합니다.
+							</div>
+						</div>
+						<div class="card" style="margin-bottom:0; animation: fadeIn 0.5s ease forwards 0.6s; opacity:0; border-left: 4px solid #FFD700;">
+							<div style="display:flex; justify-content:space-between; align-items:center;">
+								<div style="font-weight:bold;">⚖️ 100% 본사 직속 중재 시스템</div>
+								<div style="color:#FFD700; font-size:12px;">권리 보호</div>
+							</div>
+							<div style="font-size:12px; color:var(--text-sub); margin-top:8px; line-height:1.5;">
+								작업 중 발생하는 모든 커뮤니케이션과 불만 사항은 본사가 직접 중재합니다. 고객님은 현장과의 마찰 걱정 없이 결과만 확인하세요.
+							</div>
+						</div>
+						<div class="card" style="margin-bottom:0; animation: fadeIn 0.5s ease forwards 0.8s; opacity:0; border-left: 4px solid #28a745;">
+							<div style="display:flex; justify-content:space-between; align-items:center;">
+								<div style="font-weight:bold;">📜 데이터 검증 리포트 발행</div>
+								<div style="color:#28a745; font-size:12px;">투명성</div>
+							</div>
+							<div style="font-size:12px; color:var(--text-sub); margin-top:8px; line-height:1.5;">
+								시공 전/후 오염도 수치 비교 및 전체 시공 로그가 담긴 <b>프리미엄 인증 리포트</b>를 모바일로 즉시 발송해 드립니다.
+							</div>
 						</div>
 					</div>
 
-					<div class="card" style="background:#1a1a1a; border:2px solid #FFD700; animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards 0.6s; opacity:0;">
+					<div class="card" style="background:#1a1a1a; border:2px solid #FFD700; animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards 1s; opacity:0;">
 						<div style="text-align:center; margin-bottom:20px;">
-							<div style="font-size:12px; color:#FFD700; font-weight:bold; margin-bottom:8px;">[ 한정 프로모션 진행 중 ]</div>
+							<div style="font-size:12px; color:#FFD700; font-weight:bold; margin-bottom:8px;">[ 선착순 마감 임박 프로모션 ]</div>
 							<div style="font-size:18px; font-weight:bold; text-decoration:line-through; color:var(--text-dark); margin-bottom:5px;">정상가 350,000원</div>
-							<div style="font-size:32px; font-weight:900; color:#FFD700;">최종가 200,000원</div>
-							<div style="font-size:11px; color:var(--text-sub); margin-top:8px;">* 프리미엄 전용 리포트 및 매니저 방문비 포함</div>
+							<div style="font-size:32px; font-weight:900; color:#FFD700;">최종가 180,000원 <small style="font-size:11px; font-weight:normal; opacity:0.8;">(부가세별도)</small></div>
+							<div style="font-size:11px; color:var(--text-sub); margin-top:8px;">* 현장 점검 및 AI 견적 리포트 포함</div>
 						</div>
 						<div style="background:rgba(255,215,0,0.1); padding:10px; border-radius:8px; font-size:11px; color:#FFD700; text-align:center;">
-							신규 고객 및 선착순 50명 대상 할인 적용가
+							오늘 신청 시에만 적용되는 기간 한정 혜택
 						</div>
 					</div>
 
 					<div style="height:30px;"></div>
-					<button class="primaryBtn" style="background:#FFD700; color:#000; font-weight:900; box-shadow: 0 10px 20px rgba(255,215,0,0.3);" onclick="alert('프리미엄 안심 케어 결제 및 예약이 완료되었습니다. 담당 매니저가 유선으로 세부 일정을 조율해 드립니다.')">프리미엄 서비스 즉시 예약하기</button>
+					<button class="primaryBtn" style="background:#FFD700; color:#000; font-weight:900; box-shadow: 0 10px 20px rgba(255,215,0,0.3);" onclick="setPage('premium_input')">프리미엄 서비스 즉시 예약하기</button>
 					<button class="primaryBtn" style="margin-top:10px; background:transparent; border:1px solid var(--border); color:var(--text-dark);" onclick="setPage('premium_care')">이전으로</button>
 				</div>
 				<style>
@@ -1252,6 +1292,119 @@
 						100% { transform: scale(1); opacity: 1; }
 					}
 				</style>
+			`;
+		}
+
+		function renderPremiumSuccess() {
+			return `
+				<div class="padding" style="text-align:center; animation: fadeIn 0.8s ease;">
+					<div style="margin-top:50px; margin-bottom:40px;">
+						<div style="font-size:80px; margin-bottom:25px;">🎉</div>
+						<h2 style="font-size:26px; font-weight:800; margin-bottom:15px; letter-spacing:-0.05em;">프리미엄 예약 완료!</h2>
+						<p style="font-size:14px; color:var(--text-sub); line-height:1.7;">
+							고객님의 현장을 본사가 직접 책임지고 관리합니다.<br>
+							가장 안전하고 깨끗한 결과를 약속드립니다.
+						</p>
+					</div>
+
+					<div class="card" style="text-align:left; background:var(--surface);">
+						<div style="font-weight:bold; font-size:16px; margin-bottom:20px; border-bottom:1px solid var(--border); padding-bottom:10px;">향후 진행 절차</div>
+						
+						<div style="display:flex; gap:15px; margin-bottom:20px;">
+							<div style="width:24px; height:24px; background:var(--primary); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; font-weight:bold; flex-shrink:0;">1</div>
+							<div>
+								<div style="font-weight:bold; font-size:14px;">본사 매니저 해피콜</div>
+								<div style="font-size:12px; color:var(--text-sub); margin-top:4px;">10분 이내로 담당 매니저가 유선 연락을 드려 현장 방문 일정을 조율합니다.</div>
+							</div>
+						</div>
+
+						<div style="display:flex; gap:15px; margin-bottom:20px;">
+							<div style="width:24px; height:24px; background:var(--primary); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; font-weight:bold; flex-shrink:0;">2</div>
+							<div>
+								<div style="font-weight:bold; font-size:14px;">현장 방문 및 AI 분석</div>
+								<div style="font-size:12px; color:var(--text-sub); margin-top:4px;">현장에서 정밀 측정 후 최적의 시공법과 견적을 최종 확정합니다.</div>
+							</div>
+						</div>
+
+						<div style="display:flex; gap:15px;">
+							<div style="width:24px; height:24px; background:var(--primary); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; font-weight:bold; flex-shrink:0;">3</div>
+							<div>
+								<div style="font-weight:bold; font-size:14px;">중앙 관제 시공 시작</div>
+								<div style="font-size:12px; color:var(--text-sub); margin-top:4px;">본사의 실시간 모니터링 하에 안심 시공이 시작됩니다.</div>
+							</div>
+						</div>
+					</div>
+
+					<button class="primaryBtn" style="margin-top:30px;" onclick="setPage('dash')">홈으로 돌아가기</button>
+				</div>
+			`;
+		}
+
+		function renderPremiumInput() {
+			return `
+				<div class="padding">
+					<h2 style="font-size:24px; font-weight:800; margin-bottom:10px;">현장 상황 입력</h2>
+					<p style="font-size:14px; color:var(--text-sub); margin-bottom:30px;">매니저가 방문 전 참고할 수 있도록 현장 정보를 입력해 주세요.</p>
+					
+					<div class="card">
+						<label style="font-size:13px; font-weight:bold; margin-bottom:10px; display:block;">오염 종류 (중복 선택 가능)</label>
+						<div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+							<div style="border:1px solid var(--border); padding:12px; border-radius:8px; font-size:12px; text-align:center; cursor:pointer; background:var(--surface-light);">고독사</div>
+							<div style="border:1px solid var(--border); padding:12px; border-radius:8px; font-size:12px; text-align:center; cursor:pointer;">화재</div>
+							<div style="border:1px solid var(--border); padding:12px; border-radius:8px; font-size:12px; text-align:center; cursor:pointer;">쓰레기집</div>
+							<div style="border:1px solid var(--border); padding:12px; border-radius:8px; font-size:12px; text-align:center; cursor:pointer;">기타</div>
+						</div>
+					</div>
+
+					<div class="card">
+						<label style="font-size:13px; font-weight:bold; margin-bottom:10px; display:block;">추가 요청 사항</label>
+						<textarea class="input" style="width:100%; height:120px; padding:15px; background:var(--bg); border:1px solid var(--border); color:#fff; border-radius:10px; resize:none;" placeholder="현장의 특이사항이나 가장 우려되는 부분을 적어주세요."></textarea>
+					</div>
+
+					<button class="primaryBtn" style="margin-top:20px;" onclick="setPage('premium_payment')">결제 단계로 이동</button>
+					<button class="primaryBtn" style="margin-top:10px; background:transparent; border:1px solid var(--border); color:var(--text-dark);" onclick="setPage('premium_apply')">이전으로</button>
+				</div>
+			`;
+		}
+
+		function renderPremiumPayment() {
+			return `
+				<div class="padding">
+					<h2 style="font-size:24px; font-weight:800; margin-bottom:10px;">결제하기</h2>
+					<p style="font-size:14px; color:var(--text-sub); margin-bottom:30px;">안전한 결제를 위해 보안 시스템을 통해 진행됩니다.</p>
+
+					<div class="card" style="background:#1a1a1a; border:1px solid #FFD700;">
+						<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+							<div style="font-size:14px; color:var(--text-sub);">신청 상품</div>
+							<div style="font-weight:bold;">특청 프리미엄 케어</div>
+						</div>
+						<div style="display:flex; justify-content:space-between; align-items:center;">
+							<div style="font-size:14px; color:var(--text-sub);">결제 금액</div>
+							<div style="font-size:20px; font-weight:900; color:#FFD700;">198,000원 <small style="font-size:11px; font-weight:normal; opacity:0.8;">(VAT 포함)</small></div>
+						</div>
+					</div>
+
+					<div class="card">
+						<label style="font-size:13px; font-weight:bold; margin-bottom:15px; display:block;">결제 수단 선택</label>
+						<div style="display:flex; flex-direction:column; gap:10px;">
+							<div style="border:2px solid var(--primary); padding:15px; border-radius:10px; display:flex; align-items:center; gap:10px; cursor:pointer;">
+								<span style="font-size:20px;">💳</span>
+								<span style="font-size:14px; font-weight:bold;">신용/체크카드</span>
+							</div>
+							<div style="border:1px solid var(--border); padding:15px; border-radius:10px; display:flex; align-items:center; gap:10px; cursor:pointer; opacity:0.6;">
+								<span style="font-size:20px;">📱</span>
+								<span style="font-size:14px;">간편 결제 (카카오/네이버)</span>
+							</div>
+							<div style="border:1px solid var(--border); padding:15px; border-radius:10px; display:flex; align-items:center; gap:10px; cursor:pointer; opacity:0.6;">
+								<span style="font-size:20px;">🏦</span>
+								<span style="font-size:14px;">무통장 입금</span>
+							</div>
+						</div>
+					</div>
+
+					<button class="primaryBtn" style="margin-top:20px; background:#FFD700; color:#000;" onclick="setPage('premium_success')">198,000원 결제하기</button>
+					<button class="primaryBtn" style="margin-top:10px; background:transparent; border:1px solid var(--border); color:var(--text-dark);" onclick="setPage('premium_input')">이전으로</button>
+				</div>
 			`;
 		}
 
