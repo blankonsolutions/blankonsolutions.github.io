@@ -500,9 +500,10 @@
 		}
 
 		function renderHeader() {
+			let isSub = state.page !== 'dash';
 			return `
 				<div class="header">
-					<div class="backBtn" onclick="setPage('dash')">←</div>
+					${isSub ? `<div class="backBtn" onclick="setPage('dash')" style="cursor:pointer;">←</div>` : `<div onclick="location.href='index.html'" style="font-size:13px; border:1px solid #333; padding:6px 12px; border-radius:8px; cursor:pointer;">🏠 홈</div>`}
 					<div class="headerTitle">${getHeaderTitle()}</div>
 					<div style="cursor:pointer; font-size:18px;" onclick="toggleTheme()">🌓</div>
 				</div>
