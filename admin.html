@@ -331,14 +331,14 @@
 						${state.pendingVendors.map(v => `
 							<div class="card">
 								<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-									<div>
-										<div style="font-weight:bold; font-size:17px;">${v.name}</div>
+									<div onclick="setPage('vendor_detail', ${JSON.stringify(v).replace(/"/g, '&quot;')})" style="cursor:pointer;">
+										<div style="font-weight:bold; font-size:17px; color:var(--primary); text-decoration:underline;">${v.name}</div>
 										<div style="font-size:12px; color:var(--text-sub);">${v.type} 사업자 • ${v.date} 신청</div>
 									</div>
 									<div style="font-size:11px; background:var(--surface-light); padding:4px 8px; border-radius:5px; border:1px solid var(--border);">서류 ${v.files}건</div>
 								</div>
 								<div style="display:grid; grid-template-columns: 1fr; gap:10px;">
-									<button class="primaryBtn" style="padding:12px; background:var(--surface-light); color:var(--text-main); font-size:13px; border:1px solid var(--border);" onclick="setPage('vendor_detail', ${JSON.stringify(v)})">서류 검토 및 심사</button>
+									<button class="primaryBtn" style="padding:12px; background:var(--surface-light); color:var(--text-main); font-size:13px; border:1px solid var(--border);" onclick="setPage('vendor_detail', ${JSON.stringify(v).replace(/"/g, '&quot;')})">서류 검토 및 심사</button>
 								</div>
 							</div>
 						`).join('')}
@@ -368,15 +368,15 @@
 							</div>
 
 							<div style="display:grid; grid-template-columns: 1fr 1.5fr; gap:15px;">
-								<button class="primaryBtn" style="background:#333;" onclick="setPage('reject_confirm', ${JSON.stringify(v)})">가입 반려</button>
-								<button class="primaryBtn" onclick="setPage('approve_confirm', ${JSON.stringify(v)})">최종 승인</button>
+								<button class="primaryBtn" style="background:#333;" onclick="setPage('reject_confirm', ${JSON.stringify(v).replace(/"/g, '&quot;')})">가입 반려</button>
+								<button class="primaryBtn" onclick="setPage('approve_confirm', ${JSON.stringify(v).replace(/"/g, '&quot;')})">최종 승인</button>
 							</div>
 						</div>
 					`;
 				case 'approve_confirm':
 					const av = state.selectedItem;
-					const now = new Date();
-					const today = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0') + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+					const nowApprove = new Date();
+					const todayApprove = nowApprove.getFullYear() + '-' + String(nowApprove.getMonth() + 1).padStart(2, '0') + '-' + String(nowApprove.getDate()).padStart(2, '0');
 					return `
 						<div class="padding">
 							<h2 style="margin-bottom:10px;">승인 최종 확인</h2>
@@ -386,20 +386,25 @@
 								<div style="font-size:14px; color:var(--text-dark); margin-bottom:5px;">승인 대상</div>
 								<div style="font-size:18px; font-weight:bold; margin-bottom:20px;">${av.name}</div>
 								
-								<div style="font-size:12px; color:var(--text-dark); margin-bottom:5px;">승인 일시 (자동)</div>
-								<div style="font-size:15px; font-weight:bold; margin-bottom:20px;">${today}</div>
+								<div style="font-size:12px; color:var(--text-dark); margin-bottom:5px;">승인 일자 (자동)</div>
+								<div style="font-size:15px; font-weight:bold; margin-bottom:20px;">${todayApprove}</div>
+
+								<div style="font-size:12px; color:var(--text-dark); margin-bottom:5px;">추가 코멘트</div>
+								<textarea id="approve_comment" class="input" placeholder="업체에게 전달할 추가 메시지를 입력하세요 (선택)" style="border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--bg); color:#fff; width:100%; height:80px; resize:none; margin-bottom:20px;"></textarea>
 
 								<div style="font-size:12px; color:var(--text-dark); margin-bottom:10px;">승인자 확인</div>
-								<input class="input" type="text" placeholder="성함 입력" value="${state.currentUser.name}" style="border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--bg); color:#fff; width:100%; margin-bottom:10px;">
-								<input class="input" type="text" placeholder="사원번호 입력" value="${state.currentUser.adminId}" style="border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--bg); color:#fff; width:100%;">
+								<input id="admin_name" class="input" type="text" placeholder="성함 입력" value="${state.currentUser.name}" style="border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--bg); color:#fff; width:100%; margin-bottom:10px;">
+								<input id="admin_id" class="input" type="text" placeholder="사원번호 입력" value="${state.currentUser.adminId}" style="border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--bg); color:#fff; width:100%;">
 							</div>
 
-							<button class="primaryBtn" style="margin-top:20px;" onclick="alert('최종 승인 처리가 완료되었습니다.'); setPage('vendors');">승인 완료 및 인장 날인</button>
-							<button class="primaryBtn" style="margin-top:10px; background:transparent; color:var(--text-dark); border:1px solid var(--border);" onclick="setPage('vendor_detail', ${JSON.stringify(av)})">취소</button>
+							<button class="primaryBtn" style="margin-top:20px;" onclick="confirmAudit('approve')">승인 완료 및 인장 날인</button>
+							<button class="primaryBtn" style="margin-top:10px; background:transparent; color:var(--text-dark); border:1px solid var(--border);" onclick="setPage('vendor_detail', ${JSON.stringify(av).replace(/"/g, '&quot;')})">취소</button>
 						</div>
 					`;
 				case 'reject_confirm':
 					const rv = state.selectedItem;
+					const nowReject = new Date();
+					const todayReject = nowReject.getFullYear() + '-' + String(nowReject.getMonth() + 1).padStart(2, '0') + '-' + String(nowReject.getDate()).padStart(2, '0');
 					return `
 						<div class="padding">
 							<h2 style="margin-bottom:10px; color:var(--danger);">반려 사유 입력</h2>
@@ -407,22 +412,33 @@
 
 							<div class="card" style="cursor:default;">
 								<div style="font-size:14px; font-weight:bold; margin-bottom:15px;">반려 대상: ${rv.name}</div>
-								<select class="input" style="border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--bg); color:#fff; width:100%; margin-bottom:15px;">
+								
+								<div style="font-size:12px; color:var(--text-dark); margin-bottom:5px;">반려 일자 (자동)</div>
+								<div style="font-size:15px; font-weight:bold; margin-bottom:20px;">${todayReject}</div>
+
+								<div style="font-size:12px; color:var(--text-dark); margin-bottom:10px;">반려 사유 선택</div>
+								<select id="reject_reason" class="input" style="border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--bg); color:#fff; width:100%; margin-bottom:15px;">
 									<option>서류 식별 불가 (사진 흐림)</option>
 									<option>인허가증 유효기간 만료</option>
 									<option>사업자 정보 불일치</option>
 									<option>부적합 업종 (특수청소 미포함)</option>
 									<option>기타 (직접 입력)</option>
 								</select>
-								<textarea class="input" placeholder="상세 반려 사유를 입력하세요." style="border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--bg); color:#fff; width:100%; height:100px; resize:none;"></textarea>
+
+								<div style="font-size:12px; color:var(--text-dark); margin-bottom:10px;">추가 코멘트</div>
+								<textarea id="reject_comment" class="input" placeholder="상세 반려 사유 또는 추가 코멘트를 입력하세요." style="border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--bg); color:#fff; width:100%; height:100px; resize:none; margin-bottom:20px;"></textarea>
+
+								<div style="font-size:12px; color:var(--text-dark); margin-bottom:10px;">처리자 확인</div>
+								<input id="admin_name" class="input" type="text" placeholder="성함 입력" value="${state.currentUser.name}" style="border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--bg); color:#fff; width:100%; margin-bottom:10px;">
+								<input id="admin_id" class="input" type="text" placeholder="사원번호 입력" value="${state.currentUser.adminId}" style="border:1px solid var(--border); padding:12px; border-radius:8px; background:var(--bg); color:#fff; width:100%;">
 							</div>
 
 							<div style="margin-top:20px; padding:15px; background:rgba(220,53,69,0.1); border-radius:10px; border:1px solid var(--danger); font-size:12px; color:var(--danger); line-height:1.5;">
 								주의: 반려 처리 후 업체는 서류를 다시 보완하여 제출해야 합니다. 정말 반려하시겠습니까?
 							</div>
 
-							<button class="primaryBtn" style="margin-top:20px; background:var(--danger);" onclick="alert('반려 처리가 완료되었습니다.'); setPage('vendors');">네, 반려합니다</button>
-							<button class="primaryBtn" style="margin-top:10px; background:transparent; color:var(--text-dark); border:1px solid var(--border);" onclick="setPage('vendor_detail', ${JSON.stringify(rv)})">취소</button>
+							<button class="primaryBtn" style="margin-top:20px; background:var(--danger);" onclick="confirmAudit('reject')">네, 반려합니다</button>
+							<button class="primaryBtn" style="margin-top:10px; background:transparent; color:var(--text-dark); border:1px solid var(--border);" onclick="setPage('vendor_detail', ${JSON.stringify(rv).replace(/"/g, '&quot;')})">취소</button>
 						</div>
 					`;
 				case 'settings': return `
@@ -467,6 +483,33 @@
 					<div onclick="location.href='index.html'" style="text-align:center; margin-top:30px; font-size:13px; color:var(--text-dark); cursor:pointer;">게이트웨이로 돌아가기</div>
 				</div>
 			`;
+		}
+
+		function confirmAudit(type) {
+			const adminName = document.getElementById('admin_name').value;
+			const adminId = document.getElementById('admin_id').value;
+			const vendorName = state.selectedItem.name;
+			
+			if (!adminName || !adminId) {
+				alert('직원명과 사원번호를 모두 입력해주세요.');
+				return;
+			}
+
+			let message = `[${type === 'approve' ? '승인' : '반려'} 확인]\n\n`;
+			message += `대상 업체: ${vendorName}\n`;
+			message += `처리자: ${adminName} (${adminId})\n\n`;
+			
+			if (type === 'reject') {
+				const reason = document.getElementById('reject_reason').value;
+				message += `반려 사유: ${reason}\n`;
+			}
+			
+			message += `위 내용으로 최종 처리하시겠습니까?`;
+
+			if (confirm(message)) {
+				alert(`${type === 'approve' ? '승인' : '반려'} 처리가 완료되었습니다.`);
+				setPage('vendors');
+			}
 		}
 
 		window.onload = render;

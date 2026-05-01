@@ -365,6 +365,7 @@
 				case 'chat': content = renderChat(); break;
 				case 'counseling_centers': content = renderCounselingCenters(); break;
 				case 'counseling_detail': content = renderCounselingDetail(); break;
+				case 'premium_care': content = renderPremiumCare(); break;
 			}
 
 			root.innerHTML = `
@@ -591,8 +592,14 @@
 				<div class="padding">
 					<div style="font-size: 26px; font-weight: 800; margin-bottom: 30px; letter-spacing:-0.04em;">세상의 모든 현장을<br>가장 깨끗하게 돌려드립니다.</div>
 
-					<div style="background: linear-gradient(135deg, #E50914, #ff4d4d); padding: 30px; border-radius: 20px; color: #fff; margin-bottom: 35px; cursor: pointer; box-shadow: 0 12px 24px rgba(229,9,20,0.3);" onclick="setPage('request')">
-						<div style="font-size: 13px; opacity: 0.9; margin-bottom: 8px;">3분이면 신청 끝!</div>
+					<div style="background: linear-gradient(135deg, #000, #222); border: 2px solid #FFD700; padding: 30px; border-radius: 20px; color: #fff; margin-bottom: 15px; cursor: pointer; box-shadow: 0 12px 24px rgba(255,215,0,0.15); position: relative; overflow: hidden;" onclick="setPage('premium_care')">
+						<div style="position: absolute; top: 10px; right: 10px; background: #FFD700; color: #000; font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 4px;">PREMIUM</div>
+						<div style="font-size: 13px; color: #FFD700; opacity: 0.9; margin-bottom: 8px; font-weight: bold;">본사 직속 데이터 검증 솔루션</div>
+						<div style="font-size: 20px; font-weight: 800;">✨ 특청 안심 케어 프리미엄</div>
+					</div>
+
+					<div style="background: transparent; border: 2px solid var(--primary); padding: 30px; border-radius: 20px; color: var(--text-main); margin-bottom: 35px; cursor: pointer;" onclick="setPage('request')">
+						<div style="font-size: 13px; color: var(--primary); opacity: 0.9; margin-bottom: 8px;">3분이면 신청 끝!</div>
 						<div style="font-size: 20px; font-weight: 800;">⚡ 무료 안심 견적 신청하기</div>
 					</div>
 
@@ -1121,6 +1128,66 @@
 
 		function renderReviewsWrite() { return `<div class="padding">리뷰 작성 페이지 로딩 중...</div>`; }
 		function renderProProfileView() { return `<div class="padding">프로필 상세 보기...</div>`; }
+
+		function renderPremiumCare() {
+			return `
+				<div class="padding">
+					<div style="text-align:center; margin-bottom:40px; margin-top:20px;">
+						<div style="font-size:50px; margin-bottom:20px;">✨</div>
+						<h2 style="font-size:24px; font-weight:800; margin-bottom:15px; letter-spacing:-0.05em;">특청 안심 케어 프리미엄</h2>
+						<p style="font-size:14px; color:var(--text-sub); line-height:1.7;">
+							악취 등 주관적인 불만 요소를<br>
+							<b style="color:#FFD700;">'객관적 수치'</b>로 증명하는 B2C 유료 옵션입니다.
+						</p>
+					</div>
+
+					<div class="card" style="border-left: 4px solid #FFD700; cursor:default;">
+						<div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+							<div style="font-size:20px;">①</div>
+							<div style="font-weight:bold; font-size:17px;">사전 진단 서비스</div>
+						</div>
+						<div style="font-size:13px; color:var(--text-sub); line-height:1.6;">
+							전문 매니저가 현장에 즉시 출동하여 가스 및 오염도를 정밀 측정하고 최적의 작업 지시서를 작성합니다.
+						</div>
+					</div>
+
+					<div class="card" style="border-left: 4px solid #FFD700; cursor:default;">
+						<div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+							<div style="font-size:20px;">②</div>
+							<div style="font-weight:bold; font-size:17px;">실시간 작업 통제</div>
+						</div>
+						<div style="font-size:13px; color:var(--text-sub); line-height:1.6;">
+							전용 앱(STT 로그)을 통해 현장 상황을 실시간으로 기록하며, 본사에서 비대면으로 중앙 관제를 실시합니다.
+						</div>
+					</div>
+
+					<div class="card" style="border-left: 4px solid #FFD700; cursor:default;">
+						<div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+							<div style="font-size:20px;">③</div>
+							<div style="font-weight:bold; font-size:17px;">철저한 사후 검수</div>
+						</div>
+						<div style="font-size:13px; color:var(--text-sub); line-height:1.6;">
+							작업 완료 후 매니저가 재방문하여 최종 수치를 측정하고, 전 과정을 담은 데이터 리포트를 고객님께 제공합니다.
+						</div>
+					</div>
+
+					<div class="card" style="border-left: 4px solid #E50914; cursor:default; background: rgba(229, 9, 20, 0.05);">
+						<div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+							<div style="font-size:20px;">④</div>
+							<div style="font-weight:bold; font-size:17px; color:var(--primary);">양방향 안심 분쟁 중재</div>
+						</div>
+						<div style="font-size:13px; color:var(--text-sub); line-height:1.6;">
+							<b>[본사 직속]</b> 시스템으로 운영됩니다. 본사가 100% 개입하여 CS 중재 및 파트너 보호를 보장하는 강력한 신뢰 시스템입니다.
+						</div>
+					</div>
+
+					<div style="height:20px;"></div>
+					<button class="primaryBtn" style="background: linear-gradient(135deg, #000, #222); border: 1px solid #FFD700; color: #FFD700;" onclick="alert('프리미엄 안심 케어 서비스 신청 상담이 접수되었습니다. 담당 매니저가 곧 연락드리겠습니다.')">프리미엄 케어 신청하기</button>
+					<button class="primaryBtn" style="margin-top:10px; background:transparent; border:1px solid var(--border); color:var(--text-dark);" onclick="setPage('dash')">나중에 하기</button>
+					<div style="height:40px;"></div>
+				</div>
+			`;
+		}
 
 		window.onload = render;
 	</script>

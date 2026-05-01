@@ -346,9 +346,11 @@
 				{ id: 'D3', comp: '깨끗한세상', type: '전자세금계산서', status: '발행완료', date: '2026-04-25' }
 			],
 			vendors: [
-				{ name: '명품특수청소', rating: 4.9, contracts: 42, badges: ['경찰청 표창', '수의계약 1위', '민원 0%'], verified: true },
-				{ name: '클린솔루션', rating: 4.7, contracts: 28, badges: ['G2B 등록', '민원 0%'], verified: true },
-				{ name: '광주특청', rating: 4.5, contracts: 15, badges: ['지역강소기업'], verified: true }
+				{ name: '명품특수청소', rating: 4.9, contracts: 42, badges: ['경찰청 표창', '수의계약 1위', '민원 0%'], verified: true, reviews: 156, distance: 1.2, years: 12, employees: 25 },
+				{ name: '클린솔루션', rating: 4.7, contracts: 28, badges: ['G2B 등록', '민원 0%'], verified: true, reviews: 98, distance: 3.5, years: 8, employees: 18 },
+				{ name: '광주특청', rating: 4.5, contracts: 15, badges: ['지역강소기업'], verified: true, reviews: 45, distance: 0.8, years: 5, employees: 10 },
+				{ name: '바른환경', rating: 4.8, contracts: 35, badges: ['친환경 인증'], verified: true, reviews: 120, distance: 5.2, years: 10, employees: 22 },
+				{ name: '대구특수세척', rating: 4.6, contracts: 22, badges: ['우수기업'], verified: true, reviews: 75, distance: 12.5, years: 7, employees: 15 }
 			],
 			smartMatch: { area: '15', type: '고독사 현장', budget: '3,000,000' },
 			archiveDocs: [
@@ -374,7 +376,9 @@
 			govContracts: [
 				{ id: 'C1', comp: '명품특수청소', type: '고독사 특청', stage: '서류검토', progress: 75, docs: { idCard: true, license: true, report: false } },
 				{ id: 'C2', comp: '클린솔루션', type: '화재 복구', stage: '현장점검', progress: 40, docs: { idCard: true, license: true, report: true } }
-			]
+			],
+			vendorSort: 'default',
+			selectedVendor: null
 		};
 
 		function updateHeatmapData(period) {
@@ -1069,23 +1073,61 @@
 					</div>
 
 					${state.matchedVendors ? `
-						<div style="font-weight:bold; margin-top:30px; margin-bottom:15px;">💡 AI 추천 매칭 결과</div>
+						<div style="font-weight:bold; margin-top:30px; margin-bottom:15px; display:flex; align-items:center; gap:8px;">
+							<span style="color:var(--primary);">💡</span> AI 추천 매칭 결과
+						</div>
 						${state.matchedVendors.map((v, i) => `
-							<div class="card" style="border:2px solid ${i === 0 ? 'var(--primary)' : '#333'}; padding:20px; margin-bottom:15px;">
+							<div class="card" style="border:2px solid ${i === 0 ? 'var(--primary)' : '#333'}; padding:20px; margin-bottom:15px; background: ${i === 0 ? 'rgba(40,167,69,0.05)' : 'var(--surface)'};">
 								<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
-									<div>
+									<div onclick="toggleVendorSummary('${v.name}')" style="cursor:pointer;">
 										<div style="font-size:11px; color:var(--primary); font-weight:bold; margin-bottom:4px;">${i === 0 ? '★ 최적의 매칭 (98% 일치)' : '대안 매칭 (85% 일치)'}</div>
-										<b style="font-size:18px;">${v.name}</b>
+										<b style="font-size:18px; text-decoration:underline;">${v.name}</b>
 									</div>
 									<div style="text-align:right;">
 										<div style="font-size:12px; color:var(--warning);">⭐ ${v.rating}</div>
 										<div style="font-size:12px; color:var(--text-sub);">누적 ${v.contracts}건</div>
 									</div>
 								</div>
+								
+								${state.selectedVendor === v.name ? `
+									<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:15px; font-size:12px; line-height:1.6; animation: fadeIn 0.3s ease;">
+										<b>업체 요약:</b> ${v.name}은(는) 관내 ${v.contracts}건의 계약을 성공적으로 수행한 검증된 파트너입니다. 
+										주요 강점으로는 신속한 현장 대응(평균 2시간 내 출동)과 완벽한 행정 서류 구비가 꼽힙니다.
+										<button class="primaryBtn" style="margin-top:12px; height:35px; font-size:11px; background:transparent; border:1px solid var(--primary); color:var(--primary);" onclick="alert('${v.name} 업체 상세 행정 정보 페이지로 이동합니다.')">업체 상세보기</button>
+									</div>
+								` : ''}
+
 								<div style="font-size:12px; color:var(--text-dark); margin-bottom:15px; border-top:1px dashed #333; padding-top:10px;">
 									<b>추천 사유:</b> 선택하신 예산 범위(${v.estPrice}원 예상)에 부합하며, 최근 3개월 내 해당 지역 동종 현장 처리 이력이 우수합니다.
 								</div>
 								<button class="primaryBtn" style="padding:12px; font-size:13px; background:${i === 0 ? 'var(--primary)' : 'var(--surface-light)'}; border:1px solid var(--primary); color:${i === 0 ? '#fff' : 'var(--primary)'};" onclick="alert('${v.name} 업체로 매칭 요청이 전송되었습니다.')">이 업체로 요청 전송</button>
+							</div>
+						`).join('')}
+
+						<div style="height:1px; background:var(--border); margin:40px 0;"></div>
+						
+						<div style="font-weight:bold; margin-bottom:15px; display:flex; justify-content:space-between; align-items:center;">
+							<span>🔍 일반 업체 목록</span>
+							<div style="display:flex; gap:5px; font-size:10px;">
+								<span style="color:${state.vendorSort === 'reviews' ? 'var(--primary)' : 'var(--text-dark)'}; cursor:pointer;" onclick="sortVendors('reviews')">리뷰순</span>
+								<span style="color:var(--border);">|</span>
+								<span style="color:${state.vendorSort === 'distance' ? 'var(--primary)' : 'var(--text-dark)'}; cursor:pointer;" onclick="sortVendors('distance')">거리순</span>
+								<span style="color:var(--border);">|</span>
+								<span style="color:${state.vendorSort === 'years' ? 'var(--primary)' : 'var(--text-dark)'}; cursor:pointer;" onclick="sortVendors('years')">연차순</span>
+								<span style="color:var(--border);">|</span>
+								<span style="color:${state.vendorSort === 'employees' ? 'var(--primary)' : 'var(--text-dark)'}; cursor:pointer;" onclick="sortVendors('employees')">고용횟수순</span>
+							</div>
+						</div>
+						
+						${getSortedVendors().map(v => `
+							<div class="card" style="padding:15px; margin-bottom:10px; opacity:0.8;">
+								<div style="display:flex; justify-content:space-between; align-items:center;">
+									<div>
+										<b style="font-size:15px;">${v.name}</b>
+										<div style="font-size:11px; color:var(--text-sub); margin-top:4px;">⭐ ${v.rating} (${v.reviews}) | ${v.distance}km | ${v.years}년차</div>
+									</div>
+									<button style="font-size:11px; background:transparent; border:1px solid var(--border); color:var(--text-sub); padding:4px 8px; border-radius:5px;" onclick="alert('${v.name} 상세 페이지')">보기</button>
+								</div>
 							</div>
 						`).join('')}
 					` : ''}
@@ -1107,6 +1149,28 @@
 				render();
 			}, 2000);
 		}
+
+		function toggleVendorSummary(name) {
+			state.selectedVendor = state.selectedVendor === name ? null : name;
+			render();
+		}
+
+		function sortVendors(type) {
+			state.vendorSort = type;
+			render();
+		}
+
+		function getSortedVendors() {
+			let list = [...state.vendors];
+			switch (state.vendorSort) {
+				case 'reviews': return list.sort((a, b) => b.reviews - a.reviews);
+				case 'distance': return list.sort((a, b) => a.distance - b.distance);
+				case 'years': return list.sort((a, b) => b.years - a.years);
+				case 'employees': return list.sort((a, b) => b.contracts - a.contracts);
+				default: return list;
+			}
+		}
+
 		function renderSignupChoice() { return `<div class="padding"><h2>회원가입</h2></div>`; }
 		function renderSignupGov() { return `<div class="padding"><h2>정보 입력</h2></div>`; }
 		function renderFindIDPW() { return `<div class="padding"><h2>계정 찾기</h2></div>`; }
