@@ -348,10 +348,12 @@
 			vendors: [
 				{ name: '명품특수청소', rating: 4.9, contracts: 42, badges: ['경찰청 표창', '수의계약 1위', '민원 0%'], verified: true, reviews: 156, distance: 1.2, years: 12, employees: 25 },
 				{ name: '클린솔루션', rating: 4.7, contracts: 28, badges: ['G2B 등록', '민원 0%'], verified: true, reviews: 98, distance: 3.5, years: 8, employees: 18 },
-				{ name: '광주특청', rating: 4.5, contracts: 15, badges: ['지역강소기업'], verified: true, reviews: 45, distance: 0.8, years: 5, employees: 10 },
+				{ name: '스마트청소', rating: 4.5, contracts: 15, badges: ['G2B 등록'], verified: true, reviews: 42, distance: 5.8, years: 5, employees: 10 },
 				{ name: '바른환경', rating: 4.8, contracts: 35, badges: ['친환경 인증'], verified: true, reviews: 120, distance: 5.2, years: 10, employees: 22 },
 				{ name: '대구특수세척', rating: 4.6, contracts: 22, badges: ['우수기업'], verified: true, reviews: 75, distance: 12.5, years: 7, employees: 15 }
 			],
+			selectedVendor: null,
+			vendorSearch: '',
 			smartMatch: { area: '15', type: '고독사 현장', budget: '3,000,000' },
 			archiveDocs: [
 				{ id: 'A1', title: '2025년 하반기 관내 특수청소 통계 보고서', cat: '통계', date: '2025-12-30' },
@@ -549,6 +551,7 @@
 				case 'archive': return renderArchive();
 				case 'small_order': return renderSmallOrder();
 				case 'contract_progress': return renderContractProgress();
+				case 'vendor_detail': return renderVendorDetail();
 				case 'dash': return renderDash();
 				case 'broadcast': return `
     <div class="padding">
@@ -619,16 +622,7 @@
 					</div>
 
 					<div style="font-weight:bold; margin-top:35px; margin-bottom:15px; font-size:16px;">행정 특화 메뉴</div>
-					<div class="card" onclick="setPage('vendor_db')" style="margin-top:10px; padding:20px; display:flex; justify-content:space-between; align-items:center; border-left:4px solid var(--primary);">
-						<div style="display:flex; align-items:center; gap:15px;">
-							<div style="font-size:22px;">🔍</div>
-							<div>
-								<div style="font-weight:bold; font-size:15px;">인증 파트너 통합 DB</div>
-								<div style="font-size:12px; color:var(--text-sub); margin-top:2px;">전국 특수청소 전문가 관리</div>
-							</div>
-						</div>
-						<div style="font-size:14px; color:var(--primary);">❯</div>
-					</div>
+					
 					<div class="card" onclick="setPage('ai_analysis')" style="margin-top:10px; padding:20px; display:flex; justify-content:space-between; align-items:center; border-left:4px solid #8e44ad;">
 						<div style="display:flex; align-items:center; gap:15px;">
 							<div style="font-size:22px;">🤖</div>
@@ -639,6 +633,18 @@
 						</div>
 						<div style="font-size:14px; color:#8e44ad;">❯</div>
 					</div>
+
+					<div class="card" onclick="setPage('stats')" style="margin-top:10px; padding:20px; display:flex; justify-content:space-between; align-items:center; border-left:4px solid var(--danger);">
+						<div style="display:flex; align-items:center; gap:15px;">
+							<div style="font-size:22px;">🗺️</div>
+							<div>
+								<div style="font-weight:bold; font-size:15px;">지역별 고립 지수 히트맵</div>
+								<div style="font-size:12px; color:var(--text-sub); margin-top:2px;">실시간 관내 위험도 모니터링</div>
+							</div>
+						</div>
+						<div style="font-size:14px; color:var(--danger);">❯</div>
+					</div>
+
 					<div class="card" onclick="setPage('archive')" style="margin-top:10px; padding:20px; display:flex; justify-content:space-between; align-items:center; border-left:4px solid #e67e22;">
 						<div style="display:flex; align-items:center; gap:15px;">
 							<div style="font-size:22px;">📂</div>
@@ -649,15 +655,16 @@
 						</div>
 						<div style="font-size:14px; color:#e67e22;">❯</div>
 					</div>
-					<div class="card" onclick="setPage('stats')" style="margin-top:10px; padding:20px; display:flex; justify-content:space-between; align-items:center; border-left:4px solid var(--danger);">
+
+					<div class="card" onclick="setPage('vendor_db')" style="margin-top:10px; padding:20px; display:flex; justify-content:space-between; align-items:center; border-left:4px solid var(--primary);">
 						<div style="display:flex; align-items:center; gap:15px;">
-							<div style="font-size:22px;">🗺️</div>
+							<div style="font-size:22px;">🔍</div>
 							<div>
-								<div style="font-weight:bold; font-size:15px;">지역별 고립 지수 히트맵</div>
-								<div style="font-size:12px; color:var(--text-sub); margin-top:2px;">실시간 관내 위험도 모니터링</div>
+								<div style="font-weight:bold; font-size:15px;">인증 파트너 통합 DB</div>
+								<div style="font-size:12px; color:var(--text-sub); margin-top:2px;">전국 특수청소 전문가 관리</div>
 							</div>
 						</div>
-						<div style="font-size:14px; color:var(--danger);">❯</div>
+						<div style="font-size:14px; color:var(--primary);">❯</div>
 					</div>
 				</div>
 			`;
@@ -879,6 +886,54 @@
 			`;
 		}
 
+		function renderVendorDetail() {
+			const v = state.vendors.find(v => v.name === state.selectedVendor) || state.vendors[0];
+			const histories = [
+				{ date: '2026-03-12', title: '치평동 고독사 현장 특수청소 및 유품정리', dept: '서구청 사회복지과', status: '완료' },
+				{ date: '2026-02-05', title: '화정동 쓰레기집 방역 및 소독 시공', dept: '서구청 기후환경과', status: '완료' },
+				{ date: '2026-01-20', title: '양동 고립위기가구 환경개선 사업', dept: '서구청 희망복지팀', status: '완료' }
+			];
+			return `
+				<div class="padding">
+					<div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+						<span style="font-size:18px; cursor:pointer;" onclick="setPage('vendor_db')">❮</span>
+						<h2 style="margin:0;">행정 이력 상세조회</h2>
+					</div>
+					
+					<div class="card" style="border-top: 4px solid var(--primary);">
+						<div style="font-size:20px; font-weight:bold; margin-bottom:8px;">${v.name}</div>
+						<div style="font-size:13px; color:var(--text-sub);">인증 번호: GC-2026-0422-01</div>
+						<div style="display:flex; gap:10px; margin-top:15px;">
+							<div style="flex:1; text-align:center; background:#222; padding:10px; border-radius:8px;">
+								<div style="font-size:10px; color:var(--text-dark);">평균 평점</div>
+								<div style="font-size:16px; font-weight:bold; color:var(--warning);">★ ${v.rating}</div>
+							</div>
+							<div style="flex:1; text-align:center; background:#222; padding:10px; border-radius:8px;">
+								<div style="font-size:10px; color:var(--text-dark);">누적 수주</div>
+								<div style="font-size:16px; font-weight:bold;">${v.contracts}건</div>
+							</div>
+							<div style="flex:1; text-align:center; background:#222; padding:10px; border-radius:8px;">
+								<div style="font-size:10px; color:var(--text-dark);">민원 발생</div>
+								<div style="font-size:16px; font-weight:bold; color:var(--primary);">0건</div>
+							</div>
+						</div>
+					</div>
+
+					<div style="font-weight:bold; margin:25px 0 15px; font-size:15px;">최근 행정 용역 수행 이력</div>
+					${histories.map(h => `
+						<div class="card" style="padding:15px; margin-bottom:12px; font-size:13px;">
+							<div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+								<span style="color:var(--text-dark);">${h.date}</span>
+								<span style="color:var(--primary); font-weight:bold;">${h.status}</span>
+							</div>
+							<div style="font-weight:bold; font-size:14px; margin-bottom:6px;">${h.title}</div>
+							<div style="color:var(--text-sub); font-size:12px;">발주부서: ${h.dept}</div>
+							<button style="margin-top:10px; width:100%; padding:8px; background:var(--surface-light); border:1px solid #333; color:var(--text-sub); font-size:11px; border-radius:6px; cursor:pointer;" onclick="alert('감사 증빙용 PDF 패키지가 아카이브에서 로드됩니다.')">증빙 서류 묶음 보기 ❯</button>
+						</div>
+					`).join('')}
+				</div>
+			`;
+		}
 		function renderVendorDB() {
 			const filteredVendors = state.vendors.filter(v => v.name.includes(state.vendorSearch));
 			return `
@@ -900,7 +955,7 @@
 								<b>보유 장비:</b> 오존발생기 3대, Level D 방호복 자체 수급<br>
 								<b>행정 평가:</b> 서류 제출 기한 준수율 100%
 							</div>
-							<button class="primaryBtn" style="margin-top:15px; height:40px; font-size:13px; background:var(--surface-light); border:1px solid var(--primary); color:var(--primary);" onclick="alert('${v.name}의 상세 행정 이력 조회 페이지로 이동합니다.')">행정 이력 상세 조회</button>
+							<button class="primaryBtn" style="margin-top:15px; height:40px; font-size:13px; background:var(--surface-light); border:1px solid var(--primary); color:var(--primary);" onclick="state.selectedVendor='${v.name}'; setPage('vendor_detail');">행정 이력 상세 조회</button>
 						</div>
 					`).join('')}
 				</div>
