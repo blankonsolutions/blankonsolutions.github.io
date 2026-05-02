@@ -619,10 +619,46 @@
 					</div>
 
 					<div style="font-weight:bold; margin-top:35px; margin-bottom:15px; font-size:16px;">행정 특화 메뉴</div>
-					<div class="menuCard" onclick="setPage('vendor_db')"><span>🔍 인증 파트너 통합 DB</span><span>❯</span></div>
-					<div class="menuCard" onclick="setPage('ai_analysis')"><span>🤖 AI 위험가구 지능형 분석</span><span>❯</span></div>
-					<div class="menuCard" onclick="setPage('archive')"><span>📂 행정 데이터 아카이브</span><span>❯</span></div>
-					<div class="menuCard" onclick="setPage('stats')"><span>🗺️ 지역별 고립 지수 히트맵</span><span>❯</span></div>
+					<div class="card" onclick="setPage('vendor_db')" style="margin-top:10px; padding:20px; display:flex; justify-content:space-between; align-items:center; border-left:4px solid var(--primary);">
+						<div style="display:flex; align-items:center; gap:15px;">
+							<div style="font-size:22px;">🔍</div>
+							<div>
+								<div style="font-weight:bold; font-size:15px;">인증 파트너 통합 DB</div>
+								<div style="font-size:12px; color:var(--text-sub); margin-top:2px;">전국 특수청소 전문가 관리</div>
+							</div>
+						</div>
+						<div style="font-size:14px; color:var(--primary);">❯</div>
+					</div>
+					<div class="card" onclick="setPage('ai_analysis')" style="margin-top:10px; padding:20px; display:flex; justify-content:space-between; align-items:center; border-left:4px solid #8e44ad;">
+						<div style="display:flex; align-items:center; gap:15px;">
+							<div style="font-size:22px;">🤖</div>
+							<div>
+								<div style="font-weight:bold; font-size:15px;">AI 위험가구 지능형 분석</div>
+								<div style="font-size:12px; color:var(--text-sub); margin-top:2px;">고독사 및 위기 가구 선제 대응</div>
+							</div>
+						</div>
+						<div style="font-size:14px; color:#8e44ad;">❯</div>
+					</div>
+					<div class="card" onclick="setPage('archive')" style="margin-top:10px; padding:20px; display:flex; justify-content:space-between; align-items:center; border-left:4px solid #e67e22;">
+						<div style="display:flex; align-items:center; gap:15px;">
+							<div style="font-size:22px;">📂</div>
+							<div>
+								<div style="font-weight:bold; font-size:15px;">행정 데이터 아카이브</div>
+								<div style="font-size:12px; color:var(--text-sub); margin-top:2px;">실적 및 감사 자료 통합 저장소</div>
+							</div>
+						</div>
+						<div style="font-size:14px; color:#e67e22;">❯</div>
+					</div>
+					<div class="card" onclick="setPage('stats')" style="margin-top:10px; padding:20px; display:flex; justify-content:space-between; align-items:center; border-left:4px solid var(--danger);">
+						<div style="display:flex; align-items:center; gap:15px;">
+							<div style="font-size:22px;">🗺️</div>
+							<div>
+								<div style="font-weight:bold; font-size:15px;">지역별 고립 지수 히트맵</div>
+								<div style="font-size:12px; color:var(--text-sub); margin-top:2px;">실시간 관내 위험도 모니터링</div>
+							</div>
+						</div>
+						<div style="font-size:14px; color:var(--danger);">❯</div>
+					</div>
 				</div>
 			`;
 		}

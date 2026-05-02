@@ -384,6 +384,7 @@
 				case 'premium_input': content = renderPremiumInput(); break;
 				case 'premium_payment': content = renderPremiumPayment(); break;
 				case 'premium_success': content = renderPremiumSuccess(); break;
+				case 'remodeling_list': content = renderRemodelingList(); break;
 			}
 
 			root.innerHTML = `
@@ -610,10 +611,11 @@
 				<div class="padding">
 					<div style="font-size: 26px; font-weight: 800; margin-bottom: 30px; letter-spacing:-0.04em;">세상의 모든 현장을<br>가장 깨끗하게 돌려드립니다.</div>
 
-					<div style="background: linear-gradient(135deg, #000, #222); border: 2px solid #FFD700; padding: 30px; border-radius: 20px; color: #fff; margin-bottom: 15px; cursor: pointer; box-shadow: 0 12px 24px rgba(255,215,0,0.15); position: relative; overflow: hidden;" onclick="setPage('premium_care')">
-						<div style="position: absolute; top: 10px; right: 10px; background: #FFD700; color: #000; font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 4px;">PREMIUM</div>
-						<div style="font-size: 13px; color: #FFD700; opacity: 0.9; margin-bottom: 8px; font-weight: bold;">본사 직속 데이터 검증 솔루션</div>
-						<div style="font-size: 20px; font-weight: 800;">✨ 특청 안심 케어 프리미엄</div>
+					<!-- 특청 안심 케어 프리미엄 (개별 크기 확대 및 배경 극대화) -->
+					<div style="background: linear-gradient(135deg, #1a1400, #4d3d00); border: 3px solid #FFD700; padding: 45px 30px; border-radius: 25px; color: #fff; margin-bottom: 20px; cursor: pointer; box-shadow: 0 15px 35px rgba(255, 215, 0, 0.25); position: relative; overflow: hidden; transform: scale(1.02);" onclick="setPage('premium_care')">
+						<div style="position: absolute; top: 15px; right: 15px; background: #FFD700; color: #000; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 4px;">PREMIUM</div>
+						<div style="font-size: 16px; color: #FFD700; opacity: 1; margin-bottom: 12px; font-weight: 700;">본사 직속 데이터 검증 솔루션</div>
+						<div style="font-size: 26px; font-weight: 900; line-height: 1.2;">✨ 특청 안심 케어<br>프리미엄</div>
 					</div>
 
 					<div style="background: transparent; border: 2px solid var(--primary); padding: 30px; border-radius: 20px; color: var(--text-main); margin-bottom: 35px; cursor: pointer;" onclick="setPage('request')">
@@ -621,23 +623,18 @@
 						<div style="font-size: 20px; font-weight: 800;">⚡ 무료 안심 견적 신청하기</div>
 					</div>
 
-					<div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:30px;">
-						<div class="card" onclick="setPage('tips')" style="margin-bottom:0; text-align:center; padding:20px;"><div style="font-size:24px; margin-bottom:10px;">💡</div><div style="font-size:13px; font-weight:bold;">청소 가이드</div></div>
-						<div class="card" onclick="setPage('guarantee')" style="margin-bottom:0; text-align:center; padding:20px;"><div style="font-size:24px; margin-bottom:10px;">🛡️</div><div style="font-size:13px; font-weight:bold;">보상 제도</div></div>
-					</div>
-
-					<div class="card" onclick="setPage('counseling_centers')" style="background:linear-gradient(135deg, #111, #222); border:1px solid #444; display:flex; align-items:center; gap:20px; padding:25px; margin-bottom:12px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">
-						<div style="width:55px; height:55px; background:rgba(0,123,255,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px;">🌿</div>
+					<div class="card" onclick="setPage('counseling_centers')" style="background:linear-gradient(135deg, #0a2e24, #006044); border:1px solid #00a67d; display:flex; align-items:center; gap:20px; padding:25px; margin-bottom:12px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);">
+						<div style="width:55px; height:55px; background:rgba(255,255,255,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px;">🌿</div>
 						<div style="flex:1;">
-							<div style="font-size:13px; color:var(--info); font-weight:bold; margin-bottom:4px;">특청 X 연계 서비스</div>
+							<div style="font-size:13px; color:#51cf66; font-weight:bold; margin-bottom:4px;">특청 X 연계 서비스</div>
 							<div style="font-size:18px; font-weight:800;">심리 케어 연계 서비스</div>
-							<div style="font-size:11px; color:var(--text-sub); margin-top:4px;">정신과 및 상담센터 매칭 지원</div>
+							<div style="font-size:11px; color:rgba(255,255,255,0.8); margin-top:4px;">정신과 및 상담센터 매칭 지원</div>
 						</div>
-						<div style="font-size:18px; color:var(--text-dark);">❯</div>
+						<div style="font-size:18px; color:rgba(255,255,255,0.5);">❯</div>
 					</div>
 
-					<!-- 리모델링 업체 광고 섹션 추가 -->
-					<div class="card" onclick="alert('제휴 리모델링 업체 리스트로 이동합니다.')" style="background:linear-gradient(135deg, #051937, #004d7a); border:1px solid #008793; display:flex; align-items:center; gap:20px; padding:25px; margin-bottom:35px; box-shadow: 0 10px 20px rgba(0,0,0,0.4);">
+					<!-- 리모델링 업체 광고 섹션 (현실적으로 작동) -->
+					<div class="card" onclick="setPage('remodeling_list')" style="background:linear-gradient(135deg, #051937, #004d7a); border:1px solid #008793; display:flex; align-items:center; gap:20px; padding:25px; margin-bottom:35px; box-shadow: 0 10px 20px rgba(0,0,0,0.4);">
 						<div style="width:55px; height:55px; background:rgba(255,255,255,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px;">🏠</div>
 						<div style="flex:1;">
 							<div style="font-size:13px; color:#00bf72; font-weight:bold; margin-bottom:4px;">특청 X 인테리어</div>
@@ -645,6 +642,11 @@
 							<div style="font-size:11px; color:#fff; opacity:0.8; margin-top:4px;">특수청소 후 완벽한 공간 복구</div>
 						</div>
 						<div style="font-size:18px; color:rgba(255,255,255,0.5);">❯</div>
+					</div>
+
+					<div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:30px;">
+						<div class="card" onclick="setPage('tips')" style="margin-bottom:0; text-align:center; padding:20px;"><div style="font-size:24px; margin-bottom:10px;">💡</div><div style="font-size:13px; font-weight:bold;">청소 가이드</div></div>
+						<div class="card" onclick="setPage('guarantee')" style="margin-bottom:0; text-align:center; padding:20px;"><div style="font-size:24px; margin-bottom:10px;">🛡️</div><div style="font-size:13px; font-weight:bold;">보상 제도</div></div>
 					</div>
 
 					<div style="font-weight:bold; margin-bottom:15px; font-size:16px;">최근 요청 상태</div>
@@ -656,6 +658,39 @@
 							</div>
 							<span style="font-size:12px; color:var(--text-sub);">관리 ❯</span>
 						</div>
+					</div>
+				</div>
+			`;
+		}
+
+		function renderRemodelingList() {
+			const remodelers = [
+				{ name: '공간의 정석', type: '종합 인테리어', tags: ['무료견적', 'A/S 2년'], rating: 4.9 },
+				{ name: '바른디자인', type: '부분 리모델링', tags: ['친환경자재', '당일시공'], rating: 4.8 }
+			];
+			return `
+				<div class="padding">
+					<div style="font-size:13px; color:var(--primary); font-weight:bold; margin-bottom:10px;">특청 인증 파트너</div>
+					<h2 style="margin-bottom:25px;">제휴 리모델링 업체</h2>
+					<p style="font-size:14px; color:var(--text-sub); margin-bottom:30px;">특수청소 후 완벽한 공간 복구를 책임지는 전문 파트너사입니다.</p>
+					
+					${remodelers.map(r => `
+						<div class="card" onclick="alert('${r.name} 상담 예약이 신청되었습니다.')">
+							<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+								<div>
+									<div style="font-size:18px; font-weight:bold;">${r.name}</div>
+									<div style="font-size:12px; color:var(--text-dark); margin-top:4px;">${r.type}</div>
+								</div>
+								<div style="color:var(--warning); font-size:14px;">★ ${r.rating}</div>
+							</div>
+							<div style="display:flex; gap:8px;">
+								${r.tags.map(t => `<span class="item-tag">${t}</span>`).join('')}
+							</div>
+						</div>
+					`).join('')}
+					
+					<div style="background:var(--surface); padding:20px; border-radius:12px; font-size:12px; color:var(--text-dark); margin-top:20px;">
+						* 특청을 통해 리모델링 계약 시, 특수청소 비용의 5%를 포인트로 적립해 드립니다.
 					</div>
 				</div>
 			`;
