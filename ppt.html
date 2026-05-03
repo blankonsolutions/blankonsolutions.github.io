@@ -331,13 +331,16 @@
 			flex-direction: column;
 			flex: 1;
 			padding: 40px 30px;
-			text-align: center;
+			text-align: left;
+			align-items: flex-start;
+			word-break: keep-all;
 		}
 
 		.tile .icon {
 			color: #d32f2f;
 			font-size: 50px;
 			margin-bottom: 25px;
+			align-self: flex-start;
 		}
 
 		.tile.highlight {
@@ -532,11 +535,8 @@
 					</p>
 					<div
 						style="background: rgba(211,47,47,0.1); border-left: 4px solid #d32f2f; padding: 25px; border-radius: 8px;">
-						<h3 class="text-accent" style="margin-bottom: 10px; font-size: 28px;">골든타임의 상실</h3>
-						<p style="font-size: 18px; margin: 0;">
-							• 업체 선정 평균 60시간 이상 소요<br>
-							• 행정 절차 지연에 따른 골든타임 상실
-						</p>
+						<h3 class="text-accent" style="margin-bottom: 10px; font-size: 28px;">업체선정 등 행정 절차에 따른 골든타임의 상실
+						</h3>
 					</div>
 				</div>
 				<div style="display: flex; flex-direction: column; gap: 20px;">
@@ -561,8 +561,8 @@
 
 	<div class="slide-container" id="slide4">
 		<div style="text-align: center; width: 100%;">
-			<div style="font-size: 28px; color: #d32f2f; font-weight: 800; margin-bottom: 20px; letter-spacing: 2px;">
-				FIELD CHALLENGES</div>
+			<div style="font-size: 38px; color: #dbbe17; font-weight: 800; margin-bottom: 20px; letter-spacing: 2px;">
+				현장의 과제</div>
 			<h2
 				style="font-size: 55px; color: #fff; margin-bottom: 40px; border:none; text-align:center; align-self:center; line-height: 1.3;">
 				수요 폭발적 증가 및 <span class="text-accent">제도적 대응 한계</span>
@@ -597,17 +597,17 @@
 			<div class="tiled-content">
 				<div class="tile">
 					<div class="icon"><i class="fa-solid fa-money-bill-wave"></i></div>
-					<h3 style="color: #ffffff;">바가지 요금 및 불투명한 견적</h3>
+					<h3 style="color: #ffffff;">바가지요금 및<br>불투명한 견적</h3>
 					<p>• 명확한 단가표 부재 및 업체별 견적 격차<br>• 미끼 견적에 따른 소비자 금전 피해 발생</p>
 				</div>
 				<div class="tile">
 					<div class="icon"><i class="fa-solid fa-user-shield"></i></div>
-					<h3 style="color: #ffffff;">무허가 업체 및 전문성 검증 부재</h3>
-					<p>• 라이센스 및 특수 장비 보유 여부 확인 불가<br>• 미숙한 처리 작업에 따른 2차 피해 급증</p>
+					<h3 style="color: #ffffff;">무허가업체 및<br>전문성검증 부재</h3>
+					<p>• 라이센스 및 특수장비 보유여부 확인불가<br>• 미숙한 처리 작업에 따른 2차 피해 급증</p>
 				</div>
 				<div class="tile">
 					<div class="icon"><i class="fa-solid fa-eye-slash"></i></div>
-					<h3 style="color: #ffffff;">사생활 노출 및 대면 거부감</h3>
+					<h3 style="color: #ffffff;">사생활노출 및<br>대면거부감</h3>
 					<p>• 쓰레기집 등 노출에 대한 심리적 수치심<br>• 방문 견적에 대한 강력한 거부감 존재</p>
 				</div>
 			</div>
@@ -620,18 +620,18 @@
 			<div class="tiled-content">
 				<div class="tile highlight">
 					<div class="icon"><i class="fa-solid fa-file-circle-exclamation"></i></div>
-					<h3 style="color: #ffffff;">전용 코드 부재 및 낙찰 맹점</h3>
-					<p>• 일반 청소 업체 낙찰에 따른 현장 수습 실패<br>• 비전문 업체 난립으로 행정 신뢰도 저하</p>
+					<h3 style="color: #ffffff;">전용코드 부재 및 낙찰맹점</h3>
+					<p style="text-align: left;">• 일반 청소업체 낙찰에 따른 현장수습 실패<br>• 비전문 업체 난립으로 행정 신뢰도 저하</p>
 				</div>
 				<div class="tile highlight">
 					<div class="icon"><i class="fa-solid fa-copy"></i></div>
-					<h3 style="color: #ffffff;">복잡한 수작업 행정 증빙</h3>
-					<p>• 전/후 사진 및 서류 등 수작업 증빙 업무 과중<br>• 예산 집행 과정의 담당자 업무 피로도 극심</p>
+					<h3 style="color: #ffffff;">복잡한 수작업 행정증빙</h3>
+					<p style="text-align: left;">• 작업사진, 서류 등 수작업 증빙업무 과중<br>• 예산집행 과정의 담당자 업무피로도 극심</p>
 				</div>
 				<div class="tile highlight">
 					<div class="icon"><i class="fa-solid fa-hourglass-half"></i></div>
-					<h3 style="color: #ffffff;">긴급 상황 대응 골든타임 상실</h3>
-					<p>• 행정 절차 대기로 인한 즉각 투입 지연<br>• 악취 등 민원 폭주 상황 시 신속 대응 불가</p>
+					<h3 style="color: #ffffff;">긴급상황 대응을 위한 골든타임 상실</h3>
+					<p style="text-align: left;">• 행정 절차 대기로 인한 즉각 투입지연<br>• 악취 등 민원폭주 상황 시 신속 대응 불가</p>
 				</div>
 			</div>
 		</div>
@@ -646,7 +646,7 @@
 						통제합니다</span></h3>
 				<p style="color: #cbd5e1; line-height: 1.6; margin-bottom: 40px;">
 					• 단순 중개 탈피 및 전 공정 통합 제어<br>
-					• 발주 - 시공 - 서류 마감 원스톱 관리
+					• 발주 - 시공 - 검수 - 서류 - 마감 원스톱 관리
 				</p>
 
 				<div style="display:flex; flex-direction:column; gap:20px;">
@@ -697,29 +697,32 @@
 		<h2 class="slide-title">B2C / B2B 솔루션 : 현장에 최적화된 스마트 기술</h2>
 		<div class="content-area">
 			<div class="tiled-content">
-				<div class="tile" style="background:#111b2b; border:1px solid rgba(255,255,255,0.05);">
+				<div class="tile"
+					style="background:#111b2b; border:1px solid rgba(255,255,255,0.05); align-items: flex-start;">
 					<div
-						style="height: 100px; display:flex; align-items:center; justify-content:center; margin-bottom: 20px;">
+						style="height: 100px; display:flex; align-items:center; justify-content:flex-start; margin-bottom: 20px;">
 						<i class="fa-solid fa-mobile-button" style="font-size: 50px; color: #E50914;"></i>
 					</div>
 					<h3 style="color: #ffffff;">[B2C] 익명·AI 예상 견적</h3>
-					<p>• 심리적 보호를 위한 익명 채팅 및 비대면 옵션<br>• 평수·오염도 기반 객관적 예상 단가 선제공</p>
+					<p style="text-align: left;">• 심리적보호를 위한 익명채팅 비대면옵션<br>• 평수·오염도 기반 객관적 예상단가 선제공</p>
 				</div>
-				<div class="tile" style="background:#111b2b; border:1px solid rgba(255,255,255,0.05);">
+				<div class="tile"
+					style="background:#111b2b; border:1px solid rgba(255,255,255,0.05); align-items: flex-start;">
 					<div
-						style="height: 100px; display:flex; align-items:center; justify-content:center; margin-bottom: 20px;">
+						style="height: 100px; display:flex; align-items:center; justify-content:flex-start; margin-bottom: 20px;">
 						<i class="fa-solid fa-microphone" style="font-size: 50px; color: #c9a050;"></i>
 					</div>
-					<h3 style="color: #ffffff;">[B2B] STT 기반 실시간 로그</h3>
-					<p>• 방호복 착용 상태 음성 기반 현장 데이터 기록<br>• 관공서 증빙 및 본사 원격 관제용 데이터 확보</p>
+					<h3 style="color: #ffffff;">[B2B] 음성 인식(STT) 기반 실시간 기록</h3>
+					<p style="text-align: left;">• 작업 과정 음성기반 현장 데이터 기록<br>• 공공기관 제출 및 본사 중앙 관제용 데이터 확보</p>
 				</div>
-				<div class="tile" style="background:#111b2b; border:1px solid rgba(255,255,255,0.05);">
+				<div class="tile"
+					style="background:#111b2b; border:1px solid rgba(255,255,255,0.05); align-items: flex-start;">
 					<div
-						style="height: 100px; display:flex; align-items:center; justify-content:center; margin-bottom: 20px;">
+						style="height: 100px; display:flex; align-items:center; justify-content:flex-start; margin-bottom: 20px;">
 						<i class="fa-solid fa-shield-halved" style="font-size: 50px; color: #c9a050;"></i>
 					</div>
-					<h3 style="color: #ffffff;">[B2B] 마케팅 ZERO & 수익 보호</h3>
-					<p>• 관공서 연계 오더 활용 마케팅 비용 절감<br>• 에스크로 기반 노쇼 방지 및 파트너 수익 보호</p>
+					<h3 style="color: #ffffff;">[B2B] 마케팅 제로 & 수익 보호</h3>
+					<p style="text-align: left;">• 관공서 연계 오더 활용 마케팅 비용 절감<br>• 에스크로 기반 노쇼 방지 및 파트너 수익 보호</p>
 				</div>
 			</div>
 		</div>
@@ -796,9 +799,9 @@
 					style="background: rgba(255,255,255,0.05); padding: 35px; border-radius: 15px; border-left: 4px solid #28a745;">
 					<h3 style="color:#ffffff; margin-bottom: 20px;"><i class="fa-solid fa-shield-halved text-accent"
 							style="color:#28a745;"></i> 검증기반 패스트트랙 프로세스 구축</h3>
-					<p>
+					<p style="text-align: left; word-break: keep-all;">
 						• 전용 코드 부재에 따른 비전문 업체 난립 차단<br>
-						• 검증 DB 기반 '수의계약 및 제한경쟁' 법적 근거 마련
+						• 감사 대응(Audit-Ready) DB 기반 '수의계약 및 제한경쟁' 법적 근거 마련
 					</p>
 				</div>
 				<div
@@ -821,7 +824,7 @@
 			<div class="two-column">
 				<div>
 					<h3 style="font-size: 50px; margin-bottom: 20px;">사후 수습을 넘어<br><span
-							class="text-accent">예측복지</span>로</h3>
+							style="color:#14db0d;">예측복지</span>로</h3>
 					<p style="margin-bottom: 30px;">
 						• 현장 데이터 활용 복지 사각지대 선제 발굴<br>
 						• 실시간 데이터 기반 능동적 예측 행정 실현
@@ -877,7 +880,7 @@
 	</div>
 
 	<div class="slide-container" id="slide13()">
-		<h2 class="slide-title">단순 중개를 넘어, <span class="text-accent">국가 고립 예방 기술 플랫폼</span>으로</h2>
+		<h2 class="slide-title">단순 중개를 넘어, <span style="color:#c9a050">국가 고립 예방 기술 플랫폼</span>으로</h2>
 		<div class="content-area">
 			<div class="two-column">
 				<div
@@ -893,10 +896,8 @@
 				</div>
 				<div
 					style="text-align: center; background: rgba(0,0,0,0.2); padding: 50px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">
-					<i class="fa-solid fa-network-wired"
-						style="font-size: 80px; color: #d32f2f; margin-bottom: 30px;"></i>
 					<p style="font-size: 34px; font-weight: 700; line-height: 1.5; color: #fff; margin: 0;">
-						청소는 '수단'일 뿐,<br>본질은<br><span class="text-accent">'국가 고립 예방 인프라'<br></span>입니다.
+						청소는 '수단'일 뿐,<br>본질은<br><span style="color:#c9a050">'국가 고립 예방 인프라' </span>입니다
 					</p>
 				</div>
 			</div>
@@ -945,7 +946,7 @@
 				<div
 					style="display: flex; justify-content: center; gap: 15px; font-size: 18px; color: #f8fafc; flex-wrap: wrap;">
 					<div style="background: rgba(0,0,0,0.3); padding: 10px 15px; border-radius: 8px;"><strong>기본 수수료
-							(9.9%)</strong><br><span style="color:#fbbf24;">약 20만원</span></div>
+							(9.9%)</strong><br><span style="color:#d32f2f;">약 20만원</span></div>
 					<div style="font-size: 20px; font-weight: bold; align-self: center; color: #d32f2f;">+</div>
 					<div style="background: rgba(0,0,0,0.3); padding: 10px 15px; border-radius: 8px;"><strong>안심케어
 							(선택)</strong><br><span style="color:#fbbf24;">15~20만원</span></div>
@@ -1058,7 +1059,7 @@
 						</div>
 					</div>
 					<h3 style="font-size: 32px; margin-bottom: 5px; font-weight: 700; color: #fff;">김도영 대표</h3>
-					<p style="font-size: 24px; color: #d32f2f; font-weight: bold; margin: 0;">BLANKON SOLUTIONS</p>
+					<p style="font-size: 24px; color:#c9a050; font-weight: bold; margin: 0;">BLANKON SOLUTIONS</p>
 				</div>
 
 				<!-- 우측: 공공 기관 검증 및 우측 상단 이미지 (여백 및 패딩 축소 반영) -->
@@ -1222,7 +1223,7 @@
 						<div
 							style="background: rgba(255,255,255,0.07); padding: 20px 25px; border-radius: 10px; border: 1px solid rgba(211,47,47,0.3);">
 							<strong style="color: #fff; font-size: 22px; display: block; margin-bottom: 8px;">파이낸셜뉴스
-								기획취재 인터뷰(한승곤 기자)</strong>
+								기획취재 인터뷰</strong>
 							<p style="font-size: 18px; color: #94a3b8; margin: 0;">'죽음 뒤에야 열리는 문' - 고독사 현장 인터뷰</p>
 						</div>
 					</div>
@@ -1327,14 +1328,14 @@
 		</style>
 
 
-		<h2 class="slide-title">Global Benchmark 1 : 일본 '특수청소 110번'</h2>
+		<h2 class="slide-title">글로벌 벤치마킹 1 : 일본 '특수청소 110번'</h2>
 		<div class="content-area" style="margin-top: -20px;">
 			<div class="benchmark-wrapper">
 				<div class="img-box">
 					<img src="https://i.postimg.cc/tJT4H2BL/hwamyeon-kaebcheo-2026-04-29-154413.png" alt="특수청소110번">
 				</div>
 
-				<div class="desc-box">
+				<div class="desc-box" style="text-align: left; word-break: keep-all;">
 					<p style="font-size: 50px; color: #d32f2f; font-weight: bold; margin: 0;">特殊淸掃110番</p></strong><br>
 					<p style="font-size: 30px; font-weight: 700; color:#fff; margin-bottom:20px; line-height: 1.4;">"일본
 						최대 규모의 특수 서비스 플랫폼"</p>
@@ -1360,24 +1361,24 @@
 		</div>
 	</div>
 	<div class="slide-container" id="slide15">
-		<h2 class="slide-title">Global Benchmark 2 : 거버넌스와 대중화</h2>
+		<h2 class="slide-title">글로벌 벤치마킹 2 : 거버넌스와 대중화</h2>
 		<div class="content-area">
 			<div class="two-column">
 				<div style="background: rgba(255,255,255,0.05); padding: 40px; border-radius: 15px;">
 					<div style="color: #fbbf24; font-size:35px; margin-bottom: 15px;"><i
 							class="fa-solid fa-house-chimney-window"></i> 쿠라시노 마켓</div>
 					<p>
-						일본 내 1,000만 명 이상이 사용하는 앱.<br><br>
+						일본 내 1,000만 명 이상이 사용하는 앱<br><br>
 						<strong style="color:white;">특수청소 카테고리를 독립 서비스로 격상</strong>시켜, 단순 혐오 시설이 아닌 '주거 복원 서비스'로 대중화에
-						성공했습니다.
+						성공
 					</p>
 				</div>
 				<div style="background: rgba(255,255,255,0.05); padding: 40px; border-radius: 15px;">
 					<div style="color: #fbbf24; font-size:35px; margin-bottom: 15px;"><i
 							class="fa-solid fa-hand-holding-heart"></i> 고독사 방지/인증 협회</div>
 					<p>
-						민간 자격 제도를 통해 '특수청소 전문가'에 대한 사회적 신뢰를 구축.<br><br>
-						<strong style="color:white;">지자체가 이 협회 인증 업체를 우선 선정</strong>하는 민관 협력(거버넌스) 구조를 확립했습니다.
+						민간 자격 제도를 통해 '특수청소 전문가'에 대한 사회적 신뢰를 구축<br><br>
+						<strong style="color:white;">지자체가 이 협회 인증 업체를 우선 선정</strong>하는 민관 협력(거버넌스) 구조를 확립
 					</p>
 				</div>
 			</div>
@@ -1391,19 +1392,21 @@
 	</div>
 
 	<div class="slide-container" id="slide_export_japan">
-		<h2 class="slide-title">Global Expansion : <span class="text-accent">일본 시장 플랫폼 역수출</span></h2>
+		<h2 class="slide-title">글로벌 시장 진출 : <span class="text-accent">일본 시장 플랫폼 역수출</span></h2>
 		<div class="content-area">
 			<div class="two-column" style="align-items: stretch;">
 				<div
-					style="background: rgba(255,255,255,0.05); padding: 35px; border-radius: 15px; border-left: 4px solid #d32f2f;">
+					style="background: rgba(255,255,255,0.05); padding: 35px; border-radius: 15px; border-left: 4px solid #d32f2f; word-break: keep-all;">
 					<h3 style="color:#ffffff; margin-bottom: 20px;"><i class="fa-solid fa-plane-up text-accent"></i> 기술
 						기반 '역수출'의 당위성</h3>
-					<p style="font-size: 19px; line-height: 1.6;">
+					<p style="font-size: 19px; line-height: 1.6; text-align: left;">
 						일본은 특수청소의 발상지이나, 여전히 <strong>'인력 중심의 아날로그 행정'</strong>에 머물러 있습니다.
-						특청의 [B2G 행정 자동화]와 [STT 로그 시스템]은 일본 지자체의 고독사 수습 효율을 300% 이상 개선할 수 있는 독보적 솔루션입니다.
+						특청의 [B2G 행정 자동화]와 [음성 인식(STT) 기록 시스템]은 일본 지자체의 고독사 수습 효율을 300% 이상 개선할 수 있는 독보적 솔루션입니다.
 					</p>
-					<ul style="list-style:none; padding:0; margin-top:20px; font-size:18px; color:#cbd5e1;">
-						<li style="margin-bottom:10px;">• <strong>GovTech 수출:</strong> 일본 지자체 전용 행정 보고 SaaS 공급</li>
+					<ul
+						style="list-style:none; padding:0; margin-top:20px; font-size:18px; color:#cbd5e1; text-align: left;">
+						<li style="margin-bottom:10px;">• <strong>정부 기술(GovTech) 수출:</strong> 일본 지자체 전용 행정 보고 SaaS 공급
+						</li>
 						<li style="margin-bottom:10px;">• <strong>기술 라이선싱:</strong> 현지 대형 플랫폼(110번 등)에 엔진 API 판매</li>
 						<li>• <strong>표준화 전수:</strong> 한국형 AI 위험도 분석 데이터 모델 수출</li>
 					</ul>
@@ -1411,26 +1414,28 @@
 
 				<div style="display: flex; flex-direction: column; gap: 20px;">
 					<div
-						style="background: rgba(211,47,47,0.1); padding: 25px; border-radius: 12px; border: 1px solid rgba(211,47,47,0.3);">
-						<h4 style="color:#fff; font-size:22px; margin-bottom:10px;">현지화 전략 (Glocalization)</h4>
-						<p style="font-size:17px; margin:0;">일본 '사건현장특수청소사' 협회 연계 및 일본어 특화 STT 엔진 탑재를 통한 현지 맞춤형 UI/UX 제공
+						style="background: rgba(211,47,47,0.1); padding: 25px; border-radius: 12px; border: 1px solid rgba(211,47,47,0.3); word-break: keep-all;">
+						<h4 style="color:#fff; font-size:22px; margin-bottom:10px;">글로벌 현지화 전략</h4>
+						<p style="font-size:17px; margin:0; text-align: left;">일본 '사건현장특수청소사' 협회 연계 및 일본어 특화 음성 인식(STT)
+							엔진 탑재를 통한 현지 맞춤형 사용자 환경(UI/UX) 제공
 						</p>
 					</div>
 					<div class="tiled-content" style="gap:15px; height: auto;">
-						<div class="tile" style="padding:20px;">
+						<div class="tile" style="padding:20px; align-items: flex-start;">
 							<div style="font-size:30px; color:#fbbf24; margin-bottom:10px;"><i
 									class="fa-solid fa-landmark"></i></div>
 							<h4 style="color:#fff; font-size:18px;">지자체 협업</h4>
 							<p style="font-size:15px;">고독사 제로 프로젝트 파트너십</p>
 						</div>
-						<div class="tile" style="padding:20px;">
+						<div class="tile" style="padding:20px; align-items: flex-start;">
 							<div style="font-size:30px; color:#38bdf8; margin-bottom:10px;"><i
 									class="fa-solid fa-file-invoice-dollar"></i></div>
 							<h4 style="color:#fff; font-size:18px;">SaaS 수익</h4>
 							<p style="font-size:15px;">매월 시스템 구독료 발생</p>
 						</div>
 					</div>
-					<div style="background:rgba(0,0,0,0.3); padding:20px; border-radius:10px; text-align:center;">
+					<div
+						style="background:rgba(0,0,0,0.3); padding:20px; border-radius:10px; text-align:center; word-break: keep-all;">
 						<p style="font-size:20px; font-weight:bold; color:#fff; margin:0;">
 							"청소 기술은 배웠지만, <span class="text-accent">운영 시스템</span>은 우리가 앞섭니다."
 						</p>
@@ -1454,7 +1459,7 @@
 				<div class="timeline-item" style="width: 19%;">
 					<div class="timeline-dot"></div>
 					<h4 style="font-size:22px;">STEP 1</h4>
-					<p style="font-size:18px; line-height: 1.4; margin-top: 10px;">MVP 앱 상용화<br>행정 대행 수수료 정립</p>
+					<p style="font-size:18px; line-height: 1.4; margin-top: 10px;">최소 기능 제품(MVP) 상용화<br>행정 대행 수수료 정립</p>
 				</div>
 
 				<div class="timeline-item" style="width: 19%;">
@@ -1466,7 +1471,7 @@
 				<div class="timeline-item" style="width: 19%;">
 					<div class="timeline-dot"></div>
 					<h4 style="font-size:22px;">STEP 3</h4>
-					<p style="font-size:18px; line-height: 1.4; margin-top: 10px;">BM 특허 출원 및<br>GS 인증 확보</p>
+					<p style="font-size:18px; line-height: 1.4; margin-top: 10px;">비즈니스 모델(BM) 특허 출원 및<br>GS 인증 확보</p>
 				</div>
 
 				<div class="timeline-item" style="width: 19%;">
@@ -1481,18 +1486,21 @@
 					</div>
 					<h4 class="text-accent" style="font-size:24px;">STEP 5</h4>
 					<p style="color:#fff; font-weight:bold; font-size:19px; line-height: 1.4; margin-top: 10px;">일본 시장
-						플랫폼 역수출<br><span style="color:#c9a050; font-size:16px;">(GovTech SaaS / API)</span></p>
+						플랫폼 역수출<br><span style="color:#c9a050; font-size:16px;">(정부 기술 SaaS / API)</span></p>
 				</div>
 			</div>
 
 			<div
-				style="background: rgba(40,167,69,0.1); border: 1px solid #28a745; padding: 30px; border-radius: 15px; display:flex; align-items:center; gap:25px;">
+				style="background: rgba(40,167,69,0.1); border: 1px solid #28a745; padding: 30px; border-radius: 15px; display:flex; align-items:center; gap:25px; word-break: keep-all;">
 				<div style="font-size:50px;">🚩</div>
 				<div>
 					<strong style="color:#4ade80; font-size:26px;">국가 고립 예방 인프라 표준화 및 글로벌 진출</strong>
-					<p style="margin-top:10px; margin-bottom:0; font-size: 21px; line-height: 1.6; color: #cbd5e1;">단순한
-						민간 중개를 넘어, 전국 지자체의 고독사 예방 필수 행정망으로 자리매김한 뒤,<br>아날로그 행정에 머물러 있는 <strong>글로벌(일본) 특수청소 시장에 '특청'의 IT
-							관제 시스템을 수출</strong>합니다.</p>
+					<p
+						style="margin-top:10px; margin-bottom:0; font-size: 21px; line-height: 1.6; color: #cbd5e1; text-align: left;">
+						단순한
+						민간 중개를 넘어, 전국 지자체의 고독사 예방 필수 행정망으로 자리매김(Lock-in)한 뒤,<br>아날로그 행정에 머물러 있는 글로벌(일본) 특수청소 시장에 '특청'의
+						IT
+						관제 시스템을 수출합니다.</p>
 				</div>
 			</div>
 		</div>
