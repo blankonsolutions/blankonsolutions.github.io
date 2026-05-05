@@ -1600,8 +1600,10 @@
 		function prevSlide() { showSlide(currentSlide - 1); }
 
 		document.addEventListener('keydown', (e) => {
-			if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
-			else if (e.key === 'ArrowLeft') prevSlide();
+			// 프리젠터(PageDown)와 방향키, 스페이스바, 엔터키 모두 인식하도록 추가
+			if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown' || e.key === 'Enter') nextSlide();
+			// 프리젠터(PageUp)와 왼쪽 방향키 인식하도록 추가
+			else if (e.key === 'ArrowLeft' || e.key === 'PageUp') prevSlide();
 		});
 		showSlide(0);
 	</script>
