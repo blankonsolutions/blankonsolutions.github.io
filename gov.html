@@ -730,9 +730,10 @@
 					</div>
 					<div class="card" style="padding:15px; border-left:4px solid var(--danger);">
 						<div style="font-size:13px; font-weight:bold; margin-bottom:8px;">🚨 AI 정밀 분석 특이사항</div>
-						<div style="font-size:11px; color:var(--text-sub); line-height:1.6;">
+						<div style="font-size:11px; color:var(--text-sub); line-height:1.6; margin-bottom:15px;">
 							현재 ${state.selectedDong} 내 저층 빌라 밀집 구역에서 '장기 미수령 우편물' 및 '전력 사용량 급감' 사례가 다수 감지되었습니다. 즉시 방문 현장 점검이 권고됩니다.
 						</div>
+						<button class="primaryBtn" style="padding:12px; font-size:12px;" onclick="state.smartMatch.type='고독사 현장'; state.smartMatch.area='12'; setPage('smart_matching')">📍 해당 지역 스마트 매칭/발주 ❯</button>
 					</div>
 				</div>
 				

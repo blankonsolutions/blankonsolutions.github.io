@@ -379,7 +379,15 @@
 				fireDamage: '',
 				preferredDate: '일주일 이내'
 			},
-			selectedPayment: 'card'
+			selectedPayment: 'card',
+			auctionItems: [
+				{ id: 'a1', title: '앤티크 원목 서랍장', startPrice: 50000, currentPrice: 85000, timeLeft: '02:14:55', img: 'https://placehold.co/100x100?text=Antique' },
+				{ id: 'a2', title: '빈티지 LP 플레이어', startPrice: 30000, currentPrice: 35000, timeLeft: '05:20:10', img: 'https://placehold.co/100x100?text=LP' }
+			],
+			remoteItems: [
+				{ id: 'ri1', name: '현금/통장 뭉치', loc: '장롱 하단', img: 'https://placehold.co/150x150?text=Money', status: 'pending' },
+				{ id: 'ri2', name: '유년시절 사진첩', loc: '거실 서랍', img: 'https://placehold.co/150x150?text=Photos', status: 'pending' }
+			]
 		};
 
 		function setPage(p, data = null) {
@@ -423,6 +431,9 @@
 				case 'premium_payment': content = renderPremiumPayment(); break;
 				case 'premium_success': content = renderPremiumSuccess(); break;
 				case 'remodeling_list': content = renderRemodelingList(); break;
+				case 'auction': content = renderAuctionList(); break;
+				case 'remote_selection': content = renderRemoteSelection(); break;
+				case 'vehicle_request': content = renderVehicleRequest(); break;
 			}
 
 			root.innerHTML = `
@@ -629,6 +640,10 @@
 				case 'mypage': return '마이페이지';
 				case 'counseling_centers': return '심리 케어 서비스';
 				case 'counseling_detail': return '센터 상세 정보';
+				case 'auction': return '유품 경매 센터';
+				case 'remote_selection': return '비대면 유품 선별';
+				case 'vehicle_request': return '차량 특수청소 견적';
+				case 'premium_care': return '특청 프리미엄';
 				default: return '특청';
 			}
 		}
@@ -680,6 +695,17 @@
 							<div style="font-size:11px; color:#fff; opacity:0.8; margin-top:4px;">특수청소 후 완벽한 공간 복구</div>
 						</div>
 						<div style="font-size:18px; color:rgba(255,255,255,0.5);">❯</div>
+					</div>
+
+					<div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:12px;">
+						<div class="card" onclick="setPage('auction')" style="margin-bottom:0; text-align:center; border:1px solid var(--border); padding:20px;">
+							<div style="font-size:24px; margin-bottom:8px;">⚖️</div>
+							<div style="font-size:13px; font-weight:bold;">유품 경매</div>
+						</div>
+						<div class="card" onclick="setPage('vehicle_request')" style="margin-bottom:0; text-align:center; border:1px solid var(--border); padding:20px;">
+							<div style="font-size:24px; margin-bottom:8px;">🚗</div>
+							<div style="font-size:13px; font-weight:bold;">차량 특수청소</div>
+						</div>
 					</div>
 
 					<div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:30px;">
@@ -1009,6 +1035,7 @@
 				{ id: 'trash', label: '쓰레기집' },
 				{ id: 'fire', label: '화재' },
 				{ id: 'flood', label: '침수' },
+				{ id: 'vehicle', label: '차량특수청소' },
 				{ id: 'legacy', label: '유품정리' },
 				{ id: 'odor', label: '악취제거' }
 			];
@@ -1142,8 +1169,12 @@
 								<div style="font-size:20px; font-weight:900; color:var(--text-main); text-align:center; padding:10px 0;">
 									약 ${range.min.toLocaleString()}원 ~ ${range.max.toLocaleString()}원
 								</div>
-								<div style="font-size:11px; color:var(--text-sub); text-align:center; margin-top:5px;">
-									* 현장 상황 및 폐기물량에 따라 실제 견적은 달라질 수 있습니다.
+								<div style="display:flex; align-items:center; justify-content:center; gap:5px; margin-top:5px; font-size:11px; color:var(--warning);">
+									<span>🛡️ 에스크로(결제대금보호) 시스템 적용</span>
+								</div>
+								<div style="font-size:10px; color:var(--text-sub); text-align:center; margin-top:10px; line-height:1.4;">
+									* 현장 상황 및 폐기물량에 따라 실제 견적은 달라질 수 있습니다.<br>
+									* 본 견적 범위는 설계도면 v2.0 AI 알고리즘을 기반으로 산출되었습니다.
 								</div>
 							</div>
 						`;
@@ -1476,6 +1507,7 @@
 				{ id: 'trash', label: '쓰레기집' },
 				{ id: 'fire', label: '화재' },
 				{ id: 'flood', label: '침수' },
+				{ id: 'vehicle', label: '차량특수청소' },
 				{ id: 'legacy', label: '유품정리' },
 				{ id: 'odor', label: '악취제거' }
 			];
@@ -1573,6 +1605,212 @@
 					<button class="primaryBtn" style="margin-top:20px; background:#FFD700; color:#000; font-size:17px; height:60px;" 
 							onclick="alert('결제가 안전하게 승인되었습니다.'); setPage('premium_success');">198,000원 결제하기</button>
 					<button class="primaryBtn" style="margin-top:10px; background:transparent; border:1px solid var(--border); color:var(--text-dark);" onclick="setPage('premium_input')">이전으로</button>
+					<div style="height:40px;"></div>
+				</div>
+			`;
+		}
+
+		function renderAuctionList() {
+			return `
+				<div class="padding">
+					<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+						<h2 style="margin:0;">유품 경매 센터</h2>
+						<div style="font-size:12px; color:var(--primary); font-weight:bold;">라이브 진행 중</div>
+					</div>
+					<p style="font-size:13px; color:var(--text-sub); margin-bottom:25px;">유가족이 위탁한 소중한 물건들이 새로운 주인을 기다립니다.</p>
+
+					${state.auctionItems.map(item => `
+						<div class="card" style="display:flex; gap:15px; padding:15px;">
+							<div style="width:100px; height:100px; background:#333; border-radius:10px; overflow:hidden;">
+								<img src="${item.img}" style="width:100%; height:100%; object-fit:cover;">
+							</div>
+							<div style="flex:1;">
+								<div style="font-weight:bold; font-size:15px; margin-bottom:4px;">${item.title}</div>
+								<div style="font-size:12px; color:var(--text-dark); margin-bottom:10px;">남은 시간: <span style="color:var(--primary)">${item.timeLeft}</span></div>
+								<div style="display:flex; justify-content:space-between; align-items:flex-end;">
+									<div>
+										<div style="font-size:11px; color:var(--text-sub);">현재가</div>
+										<div style="font-size:16px; font-weight:800; color:var(--primary);">${item.currentPrice.toLocaleString()}원</div>
+									</div>
+									<button style="padding:6px 12px; background:var(--primary); border:none; border-radius:6px; color:#fff; font-size:12px; font-weight:bold;" onclick="alert('${item.title} 입찰 화면으로 이동합니다.')">입찰하기</button>
+								</div>
+							</div>
+						</div>
+					`).join('')}
+				</div>
+			`;
+		}
+
+		function renderRemoteSelection() {
+			return `
+				<div class="padding">
+					<div style="background:rgba(229,9,20,0.1); border:1px solid var(--primary); padding:15px; border-radius:12px; margin-bottom:25px;">
+						<div style="font-size:14px; font-weight:bold; color:var(--primary); margin-bottom:5px;">🛡️ 프리미엄 원격 선별 서비스</div>
+						<div style="font-size:12px; color:var(--text-main); line-height:1.5;">작업자가 현장에서 발견한 중요 유품입니다. 실시간으로 처리 지침을 하달해 주세요.</div>
+					</div>
+
+					${state.remoteItems.map(item => `
+						<div class="card" style="padding:20px;">
+							<div style="display:flex; gap:15px; margin-bottom:15px;">
+								<div style="width:120px; height:120px; background:#222; border-radius:10px; overflow:hidden;">
+									<img src="${item.img}" style="width:100%; height:100%; object-fit:cover;">
+								</div>
+								<div style="flex:1;">
+									<div style="font-size:11px; color:var(--text-dark); margin-bottom:4px;">발견 위치: ${item.loc}</div>
+									<div style="font-weight:bold; font-size:16px; margin-bottom:10px;">${item.name}</div>
+									<div style="font-size:12px; color:var(--info);">* 상태: ${item.status === 'pending' ? '지침 대기' : '처리 완료'}</div>
+								</div>
+							</div>
+							<div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
+								<button style="padding:10px 0; background:var(--surface-light); border:1px solid var(--border); border-radius:8px; color:var(--text-main); font-size:11px;" onclick="alert('유품 보관으로 설정되었습니다.')">📦 보관</button>
+								<button style="padding:10px 0; background:var(--surface-light); border:1px solid var(--border); border-radius:8px; color:var(--danger); font-size:11px;" onclick="alert('보안 파쇄가 예약되었습니다.')">🔥 파쇄</button>
+								<button style="padding:10px 0; background:var(--primary); border:none; border-radius:8px; color:#fff; font-size:11px;" onclick="alert('소독 후 택배 발송이 예약되었습니다.')">🚛 소독/배송</button>
+							</div>
+						</div>
+					`).join('')}
+					
+					<button class="primaryBtn" style="margin-top:20px; background:#333;" onclick="setPage('dash')">대시보드 종료</button>
+				</div>
+			`;
+		}
+
+		function renderVehicleRequest() {
+			return `
+				<div class="padding">
+					<h2 style="font-size:22px; font-weight:800; margin-bottom:10px;">차량 특수청소 견적</h2>
+					<p style="font-size:13px; color:var(--text-sub); margin-bottom:30px;">차량 내 변사, 화재, 악취 제거를 위한 전문 서비스를 신청하세요.</p>
+
+					<div class="label">차량 종류 *</div>
+					<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-bottom:25px;">
+						${['경차/승용', 'SUV/RV', '화물/대형'].map(v => `
+							<div class="item-tag" style="text-align:center; padding:15px 0;">${v}</div>
+						`).join('')}
+					</div>
+
+					<div class="label">피해 원인 *</div>
+					<div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:25px;">
+						<div class="item-tag" style="text-align:center;">변사/혈흔</div>
+						<div class="item-tag" style="text-align:center;">화재/그을음</div>
+						<div class="item-tag" style="text-align:center;">심한 악취</div>
+						<div class="item-tag" style="text-align:center;">기타 오염</div>
+					</div>
+
+					<div class="label">차량 번호 (선택)</div>
+					<input class="input" type="text" placeholder="예: 12가 3456">
+
+					<div class="label">현장 위치</div>
+					<button class="input" style="text-align:left; color:var(--text-dark);" onclick="alert('위치 검색')">주소 또는 차량 위치 검색</button>
+
+					<div style="background:rgba(229,9,20,0.05); border:1px solid var(--primary); padding:20px; border-radius:15px; margin-top:20px; text-align:center;">
+						<div style="font-size:12px; color:var(--primary); font-weight:bold; margin-bottom:5px;">AI 안심 예상 견적</div>
+						<div style="font-size:22px; font-weight:900;">약 450,000원 ~ 800,000원</div>
+						<div style="font-size:11px; color:var(--text-dark); margin-top:10px;">* 차량 해체 여부에 따라 견적이 변동될 수 있습니다.</div>
+					</div>
+
+					<button class="primaryBtn" style="margin-top:30px; height:60px; font-size:17px;" onclick="alert('차량 특수청소 견적 요청이 완료되었습니다.'); setPage('dash');">견적 요청서 발송</button>
+					<div style="height:40px;"></div>
+				</div>
+			`;
+		}
+
+		function renderAuctionList() {
+			return `
+				<div class="padding">
+					<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+						<h2 style="margin:0;">유품 경매 센터</h2>
+						<div style="font-size:12px; color:var(--primary); font-weight:bold;">라이브 진행 중</div>
+					</div>
+					<p style="font-size:13px; color:var(--text-sub); margin-bottom:25px;">유가족이 위탁한 소중한 물건들이 새로운 주인을 기다립니다.</p>
+
+					${state.auctionItems.map(item => `
+						<div class="card" style="display:flex; gap:15px; padding:15px;">
+							<div style="width:100px; height:100px; background:#333; border-radius:10px; overflow:hidden;">
+								<img src="${item.img}" style="width:100%; height:100%; object-fit:cover;">
+							</div>
+							<div style="flex:1;">
+								<div style="font-weight:bold; font-size:15px; margin-bottom:4px;">${item.title}</div>
+								<div style="font-size:12px; color:var(--text-dark); margin-bottom:10px;">남은 시간: <span style="color:var(--primary)">${item.timeLeft}</span></div>
+								<div style="display:flex; justify-content:space-between; align-items:flex-end;">
+									<div>
+										<div style="font-size:11px; color:var(--text-sub);">현재가</div>
+										<div style="font-size:16px; font-weight:800; color:var(--primary);">${item.currentPrice.toLocaleString()}원</div>
+									</div>
+									<button style="padding:6px 12px; background:var(--primary); border:none; border-radius:6px; color:#fff; font-size:12px; font-weight:bold;" onclick="alert('${item.title} 입찰 화면으로 이동합니다.')">입찰하기</button>
+								</div>
+							</div>
+						</div>
+					`).join('')}
+				</div>
+			`;
+		}
+
+		function renderRemoteSelection() {
+			return `
+				<div class="padding">
+					<div style="background:rgba(229,9,20,0.1); border:1px solid var(--primary); padding:15px; border-radius:12px; margin-bottom:25px;">
+						<div style="font-size:14px; font-weight:bold; color:var(--primary); margin-bottom:5px;">🛡️ 프리미엄 원격 선별 서비스</div>
+						<div style="font-size:12px; color:var(--text-main); line-height:1.5;">작업자가 현장에서 발견한 중요 유품입니다. 실시간으로 처리 지침을 하달해 주세요.</div>
+					</div>
+
+					${state.remoteItems.map(item => `
+						<div class="card" style="padding:20px;">
+							<div style="display:flex; gap:15px; margin-bottom:15px;">
+								<div style="width:120px; height:120px; background:#222; border-radius:10px; overflow:hidden;">
+									<img src="${item.img}" style="width:100%; height:100%; object-fit:cover;">
+								</div>
+								<div style="flex:1;">
+									<div style="font-size:11px; color:var(--text-dark); margin-bottom:4px;">발견 위치: ${item.loc}</div>
+									<div style="font-weight:bold; font-size:16px; margin-bottom:10px;">${item.name}</div>
+									<div style="font-size:12px; color:var(--info);">* 상태: ${item.status === 'pending' ? '지침 대기' : '처리 완료'}</div>
+								</div>
+							</div>
+							<div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
+								<button style="padding:10px 0; background:var(--surface-light); border:1px solid var(--border); border-radius:8px; color:var(--text-main); font-size:11px;" onclick="alert('유품 보관으로 설정되었습니다.')">📦 보관</button>
+								<button style="padding:10px 0; background:var(--surface-light); border:1px solid var(--border); border-radius:8px; color:var(--danger); font-size:11px;" onclick="alert('보안 파쇄가 예약되었습니다.')">🔥 파쇄</button>
+								<button style="padding:10px 0; background:var(--primary); border:none; border-radius:8px; color:#fff; font-size:11px;" onclick="alert('소독 후 택배 발송이 예약되었습니다.')">🚛 소독/배송</button>
+							</div>
+						</div>
+					`).join('')}
+					
+					<button class="primaryBtn" style="margin-top:20px; background:#333;" onclick="setPage('dash')">대시보드 종료</button>
+				</div>
+			`;
+		}
+
+		function renderVehicleRequest() {
+			return `
+				<div class="padding">
+					<h2 style="font-size:22px; font-weight:800; margin-bottom:10px;">차량 특수청소 견적</h2>
+					<p style="font-size:13px; color:var(--text-sub); margin-bottom:30px;">차량 내 변사, 화재, 악취 제거를 위한 전문 서비스를 신청하세요.</p>
+
+					<div class="label">차량 종류 *</div>
+					<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-bottom:25px;">
+						${['경차/승용', 'SUV/RV', '화물/대형'].map(v => `
+							<div class="item-tag" style="text-align:center; padding:15px 0;">${v}</div>
+						`).join('')}
+					</div>
+
+					<div class="label">피해 원인 *</div>
+					<div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:25px;">
+						<div class="item-tag" style="text-align:center;">변사/혈흔</div>
+						<div class="item-tag" style="text-align:center;">화재/그을음</div>
+						<div class="item-tag" style="text-align:center;">심한 악취</div>
+						<div class="item-tag" style="text-align:center;">기타 오염</div>
+					</div>
+
+					<div class="label">차량 번호 (선택)</div>
+					<input class="input" type="text" placeholder="예: 12가 3456">
+
+					<div class="label">현장 위치</div>
+					<button class="input" style="text-align:left; color:var(--text-dark);" onclick="alert('위치 검색')">주소 또는 차량 위치 검색</button>
+
+					<div style="background:rgba(229,9,20,0.05); border:1px solid var(--primary); padding:20px; border-radius:15px; margin-top:20px; text-align:center;">
+						<div style="font-size:12px; color:var(--primary); font-weight:bold; margin-bottom:5px;">AI 안심 예상 견적</div>
+						<div style="font-size:22px; font-weight:900;">약 450,000원 ~ 800,000원</div>
+						<div style="font-size:11px; color:var(--text-dark); margin-top:10px;">* 차량 해체 여부에 따라 견적이 변동될 수 있습니다.</div>
+					</div>
+
+					<button class="primaryBtn" style="margin-top:30px; height:60px; font-size:17px;" onclick="alert('차량 특수청소 견적 요청이 완료되었습니다.'); setPage('dash');">견적 요청서 발송</button>
 					<div style="height:40px;"></div>
 				</div>
 			`;
