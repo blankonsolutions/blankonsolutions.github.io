@@ -838,6 +838,7 @@
 		function renderSignupBusiness() { 
 			return `
 				<div class="padding">
+					<div onclick="setPage('signup_choice')" style="cursor:pointer; font-size:20px; margin-bottom:20px;">←</div>
 					<h2 style="margin-bottom:10px;">${state.signupType} 파트너 가입</h2>
 					<p style="font-size:13px; color:var(--text-sub); margin-bottom:20px;">특청의 인증된 파트너로 비즈니스를 확장하세요.</p>
 					
@@ -845,25 +846,40 @@
 					<input class="input" type="text" placeholder="회사명 (상호)" style="width:100%; padding:15px; background:var(--bg); border:1px solid var(--border); color:#fff; border-radius:10px; margin-bottom:10px;">
 					<input class="input" type="text" placeholder="사업자등록번호" style="width:100%; padding:15px; background:var(--bg); border:1px solid var(--border); color:#fff; border-radius:10px; margin-bottom:20px;">
 					
-					<div style="font-size:12px; color:var(--text-dark); margin-bottom:8px;">전문 카테고리 선택 (복수 선택 가능)</div>
+					<div style="font-size:12px; color:var(--text-dark); margin-bottom:8px;">작업 가능 특수청소 키워드 선택</div>
 					<div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:20px;">
 						${state.categories.map(c => `
-							<div style="padding:10px; border:1px solid ${state.selectedCategories.includes(c)?'var(--primary)':'var(--border)'}; border-radius:8px; font-size:12px; text-align:center; cursor:pointer;" onclick="if(state.selectedCategories.includes('${c}')) state.selectedCategories=state.selectedCategories.filter(x=>x!=='${c}'); else state.selectedCategories.push('${c}'); render();">${c}</div>
+							<div style="padding:10px; border:1px solid ${state.selectedCategories.includes(c)?'var(--primary)':'var(--border)'}; border-radius:8px; font-size:12px; text-align:center; cursor:pointer; background:${state.selectedCategories.includes(c)?'rgba(201,160,80,0.1)':'transparent'};" onclick="if(state.selectedCategories.includes('${c}')) state.selectedCategories=state.selectedCategories.filter(x=>x!=='${c}'); else state.selectedCategories.push('${c}'); render();">
+								${state.selectedCategories.includes(c)?'✅ ':''}${c}
+							</div>
 						`).join('')}
 					</div>
 
-					<div style="font-size:12px; color:var(--text-dark); margin-bottom:8px;">필수 서류 제출 안내</div>
-					<div style="background:rgba(201,160,80,0.1); padding:15px; border-radius:10px; border:1px solid var(--primary); margin-bottom:25px;">
-						<div style="font-size:12px; color:var(--primary); font-weight:bold; margin-bottom:5px;">선택한 카테고리에 따른 인허가증을 첨부해야 합니다.</div>
-						<div style="font-size:11px; color:var(--text-sub); line-height:1.5;">
-							- 공통: 사업자등록증<br>
-							- 특수청소/고독사: 소독업 신고증<br>
-							- 쓰레기집/폐기물: 폐기물수집운반 허가증<br>
-							추후 마이페이지에서 스캔본을 제출해 주세요.
+					<div style="font-size:12px; color:var(--text-dark); margin-bottom:12px;">인허가증 및 보험 증권 첨부</div>
+					<div style="display:flex; flex-direction:column; gap:10px; margin-bottom:25px;">
+						<div class="menuCard" style="margin-bottom:0; padding:15px; border:1px dashed var(--border);" onclick="alert('파일 탐색기가 열립니다.')">
+							<span style="font-size:13px;">📄 사업자등록증 첨부</span>
+							<span style="font-size:11px; color:var(--primary);">첨부하기</span>
+						</div>
+						<div class="menuCard" style="margin-bottom:0; padding:15px; border:1px dashed var(--border);" onclick="alert('파일 탐색기가 열립니다.')">
+							<span style="font-size:13px;">📄 소독업 신고증 첨부</span>
+							<span style="font-size:11px; color:var(--primary);">첨부하기</span>
+						</div>
+						<div class="menuCard" style="margin-bottom:0; padding:15px; border:1px dashed var(--border);" onclick="alert('파일 탐색기가 열립니다.')">
+							<span style="font-size:13px;">📄 영업배상책임보험 증권 첨부</span>
+							<span style="font-size:11px; color:var(--primary);">첨부하기</span>
 						</div>
 					</div>
 
-					<button class="primaryBtn" onclick="alert('가입이 완료되었습니다. 관리자 승인 후 모든 기능이 활성화됩니다.'); location.href='index.html';">회원가입 완료</button>
+					<div style="background:rgba(201,160,80,0.05); padding:15px; border-radius:10px; border:1px solid var(--border); margin-bottom:25px;">
+						<div style="font-size:12px; color:var(--primary); font-weight:bold; margin-bottom:5px;">⚠️ 승인 안내</div>
+						<div style="font-size:11px; color:var(--text-sub); line-height:1.5;">
+							제출하신 서류는 본사 담당자가 24시간 이내에 검토하여 승인 여부를 결정합니다. 승인 후 고객 견적 발송이 가능하며, 인증 마크가 부여됩니다.
+						</div>
+					</div>
+
+					<button class="primaryBtn" onclick="alert('가입 신청이 완료되었습니다. 본사 승인 대기 단계로 진입합니다.'); setPage('login');">파트너 가입 신청</button>
+					<div style="height:30px;"></div>
 				</div>
 			`;
 		}

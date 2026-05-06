@@ -284,8 +284,45 @@
 				{ id: 'cr2', centerId: 'cc2', nickname: '초록잎', content: '선생님이 너무 친절하셔서 마음이 편해졌어요.', rating: 5, verified: true }
 			],
 			usersDB: [
-				{ id: 'pro1', compName: '명품특수청소', intro: '15년 경격의 고독사/화재 전문 팀', keywords: ['고독사', '화재'], reviews: [{ rating: 5, text: '완벽한 처리 감사합니다.' }], verified: true, insurance: '영업배상보험 가입', guarantee: true },
-				{ id: 'pro2', compName: '깨끗한세상', intro: '성실과 정직으로 다가가는 특수청소', keywords: ['쓰레기집'], reviews: [], verified: true, insurance: '책임보험 가입', guarantee: true }
+				{
+					id: 'pro1',
+					compName: '명품특수청소',
+					intro: '15년 경격의 고독사/화재 전문 팀',
+					keywords: ['고독사', '화재', '쓰레기집'],
+					reviews: [{ rating: 5, text: '완벽한 처리 감사합니다.' }],
+					verified: true,
+					hygieneCert: true,
+					disinfectionCert: true,
+					insuranceCert: true,
+					insurance: '영업배상보험 가입',
+					guarantee: true
+				},
+				{
+					id: 'pro2',
+					compName: '깨끗한세상',
+					intro: '성실과 정직으로 다가가는 특수청소',
+					keywords: ['쓰레기집', '유품정리'],
+					reviews: [],
+					verified: true,
+					hygieneCert: true,
+					disinfectionCert: false,
+					insuranceCert: true,
+					insurance: '책임보험 가입',
+					guarantee: true
+				},
+				{
+					id: 'pro3',
+					compName: '24시 긴급특수청소',
+					intro: '수도권 전지역 1시간 내 방문 가능',
+					keywords: ['고독사', '자살'],
+					reviews: [{ rating: 4, text: '빨리 와주셔서 감사해요.' }],
+					verified: true,
+					hygieneCert: false,
+					disinfectionCert: true,
+					insuranceCert: false,
+					insurance: '미가입',
+					guarantee: false
+				}
 			],
 			requestsDB: [
 				{ id: 'r1', tags: ['고독사'], area: '25평', loc: '서울 강남구 역삼동', status: '견적 도착', createdAt: '2026-04-24' },
@@ -293,7 +330,8 @@
 			],
 			quotesDB: [
 				{ id: 'q1', proId: 'pro1', proName: '명품특수청소', price: 1500000, msg: '최고급 장비와 전문 약품으로 신속하게 처리해 드리겠습니다.', status: 'pending', rating: 4.9, count: 124 },
-				{ id: 'q2', proId: 'pro2', proName: '깨끗한세상', price: 1350000, msg: '믿고 맡겨주시면 최선을 다하겠습니다.', status: 'pending', rating: 4.7, count: 58 }
+				{ id: 'q2', proId: 'pro2', proName: '깨끗한세상', price: 1350000, msg: '믿고 맡겨주시면 최선을 다하겠습니다.', status: 'pending', rating: 4.7, count: 58 },
+				{ id: 'q3', proId: 'pro3', proName: '24시 긴급특수청소', price: 1800000, msg: '긴급 상황에 맞춰 즉시 출동하겠습니다.', status: 'pending', rating: 4.5, count: 32 }
 			],
 			notifs: [
 				{ id: 'n1', title: '새로운 견적 도착', desc: '명품특수청소 업체로부터 1,500,000원 견적이 도착했습니다.', date: '방금 전', unread: true },
@@ -721,8 +759,10 @@
 				<div class="padding">
 					<h2 style="margin-bottom:15px;">도착한 견적</h2>
 					<p style="font-size:14px; color:var(--text-sub); margin-bottom:30px;">업체의 경력과 리뷰를 꼼꼼히 확인해 보세요.</p>
-					${state.quotesDB.map(q => `
-						<div class="card">
+					${state.quotesDB.map(q => {
+				const pro = state.usersDB.find(u => u.id === q.proId);
+				return `
+						<div class="card" onclick="setPage('pro_profile', '${q.proId}')">
 							<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
 								<div>
 									<div style="font-size:18px; font-weight:bold; margin-bottom:4px;">${q.proName}</div>
@@ -733,6 +773,20 @@
 								</div>
 								<div style="font-size:20px; font-weight:800; color:var(--primary);">${(q.price / 10000).toLocaleString()}만원</div>
 							</div>
+
+							<!-- 인증 마크 섹션 -->
+							<div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:15px;">
+								<span style="font-size:10px; padding:3px 8px; border-radius:4px; background:${pro.hygieneCert ? 'rgba(40,167,69,0.1)' : 'rgba(136,136,136,0.1)'}; color:${pro.hygieneCert ? '#28a745' : '#888'}; border:1px solid ${pro.hygieneCert ? '#28a745' : '#888'};">
+									건물위생관리업 ${pro.hygieneCert ? '인증' : '미인증'}
+								</span>
+								<span style="font-size:10px; padding:3px 8px; border-radius:4px; background:${pro.disinfectionCert ? 'rgba(40,167,69,0.1)' : 'rgba(136,136,136,0.1)'}; color:${pro.disinfectionCert ? '#28a745' : '#888'}; border:1px solid ${pro.disinfectionCert ? '#28a745' : '#888'};">
+									소독업 ${pro.disinfectionCert ? '인증' : '미인증'}
+								</span>
+								<span style="font-size:10px; padding:3px 8px; border-radius:4px; background:${pro.insuranceCert ? 'rgba(40,167,69,0.1)' : 'rgba(136,136,136,0.1)'}; color:${pro.insuranceCert ? '#28a745' : '#888'}; border:1px solid ${pro.insuranceCert ? '#28a745' : '#888'};">
+									배상책임보험 ${pro.insuranceCert ? '가입' : '미가입'}
+								</span>
+							</div>
+
 							<div style="background:var(--surface-light); padding:15px; border-radius:10px; font-size:13px; color:var(--text-sub); line-height:1.5; margin-bottom:20px;">
 								"${q.msg}"
 							</div>
@@ -741,7 +795,8 @@
 								<button class="primaryBtn" style="padding:12px; font-size:13px;" onclick="setPage('chat', state.usersDB.find(u=>u.id==='${q.proId}'))">상담하기</button>
 							</div>
 						</div>
-					`).join('')}
+					`;
+			}).join('')}
 				</div>
 			`;
 		}
@@ -758,9 +813,22 @@
 					<div class="card">
 						<div style="font-weight:bold; margin-bottom:15px;">검증 내역</div>
 						<div style="display:flex; flex-direction:column; gap:10px;">
-							<div style="display:flex; justify-content:space-between; font-size:13px;"><span>✔️ 신원 및 사업자 인증</span><span style="color:var(--success);">완료</span></div>
-							<div style="display:flex; justify-content:space-between; font-size:13px;"><span>✔️ ${pro.insurance}</span><span style="color:var(--success);">확인됨</span></div>
-							<div style="display:flex; justify-content:space-between; font-size:13px;"><span>✔️ 100% 만족 보장 파트너</span><span style="color:var(--success);">가입</span></div>
+							<div style="display:flex; justify-content:space-between; font-size:13px;">
+								<span>✔️ 건물위생관리업 인증</span>
+								<span style="color:${pro.hygieneCert ? 'var(--success)' : 'var(--text-dark)'}">${pro.hygieneCert ? '인증완료' : '미인증'}</span>
+							</div>
+							<div style="display:flex; justify-content:space-between; font-size:13px;">
+								<span>✔️ 소독업 인증</span>
+								<span style="color:${pro.disinfectionCert ? 'var(--success)' : 'var(--text-dark)'}">${pro.disinfectionCert ? '인증완료' : '미인증'}</span>
+							</div>
+							<div style="display:flex; justify-content:space-between; font-size:13px;">
+								<span>✔️ 영업배상책임보험</span>
+								<span style="color:${pro.insuranceCert ? 'var(--success)' : 'var(--text-dark)'}">${pro.insuranceCert ? '가입' : '미가입'}</span>
+							</div>
+							<div style="display:flex; justify-content:space-between; font-size:13px; margin-top:5px; padding-top:10px; border-top:1px solid var(--border);">
+								<span>✔️ 본사 신원 및 사업자 인증</span>
+								<span style="color:var(--success);">완료</span>
+							</div>
 						</div>
 					</div>
 					<div style="font-weight:bold; margin-bottom:15px; font-size:16px;">리뷰 (${pro.reviews.length})</div>
