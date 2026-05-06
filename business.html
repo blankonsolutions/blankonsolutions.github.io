@@ -337,6 +337,9 @@
 				case 'received_requests': return '받은 요청함';
 				case 'sent_quotes': return '발송 견적함';
 				case 'contract_status': return '계약단계 현황';
+				case 'group_purchase': return '파트너 공동구매';
+				case 'group_purchase_confirm': return '공동구매 참여 확인';
+				case 'group_purchase_success': return '참여 완료';
 				default: return '비즈니스';
 			}
 		}
@@ -376,6 +379,9 @@
 				case 'community': return renderCommunity();
 				case 'scorecard': return renderScorecard();
 				case 'partnership': return renderPartnership();
+				case 'group_purchase': return renderGroupPurchase();
+				case 'group_purchase_confirm': return renderGroupPurchaseConfirm();
+				case 'group_purchase_success': return renderGroupPurchaseSuccess();
 				default: return ``;
 			}
 		}
@@ -483,6 +489,10 @@
 					</div>
 
 					<div style="font-weight:bold; margin-top:35px; margin-bottom:15px; font-size:16px;">파트너 전용 서비스</div>
+					<div class="menuCard" onclick="setPage('group_purchase')" style="border: 1px solid var(--primary); background: rgba(201,160,80,0.1);">
+						<span style="font-weight:bold; color:var(--primary);">📦 파트너 공동구매 센터 (Hot)</span>
+						<span style="color:var(--primary);">❯</span>
+					</div>
 					<div class="menuCard" onclick="setPage('chat')"><span>💬 실시간 고객 상담</span><span>❯</span></div>
 					<div class="menuCard" onclick="setPage('community')"><span>🤝 프로 커뮤니티</span><span>❯</span></div>
 					<div class="menuCard" onclick="alert('신규 제안 및 기능 요청 화면으로 이동합니다.')"><span>💡 신규 제안 / 기능 요청</span><span>❯</span></div>
@@ -1089,7 +1099,115 @@
 		}
 		function renderFindIDPW() { return `<div class="padding"><h2>계정 찾기</h2></div>`; }
 
+		function renderGroupPurchase() {
+			const products = [
+				{ name: '초강력 혈흔 분해제 (20L)', price: 85000, marketPrice: 120000, deadline: '3일 남음', count: 42, img: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=150&auto=format&fit=crop' },
+				{ name: '산업용 오존발생기 PRO', price: 450000, marketPrice: 650000, deadline: '5일 남음', count: 15, img: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=150&auto=format&fit=crop' },
+				{ name: 'Level D 방호복 (50벌)', price: 180000, marketPrice: 250000, deadline: '1일 남음', count: 88, img: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=150&auto=format&fit=crop' }
+			];
+			return `
+				<div class="padding">
+					<div style="background:linear-gradient(135deg, #c9a050, #8a6d3b); padding:25px; border-radius:15px; color:#000; margin-bottom:30px; box-shadow: 0 10px 20px rgba(201,160,80,0.2);">
+						<div style="font-weight:900; font-size:20px;">📦 파트너 공동구매</div>
+						<div style="font-size:13px; margin-top:5px; opacity:0.9;">필요한 장비와 약품을 공동구매로 저렴하게 확보하세요.</div>
+					</div>
+
+					${products.map(p => `
+						<div class="card" style="display:flex; gap:15px; padding:15px;">
+							<div style="width:100px; height:100px; background:#222; border-radius:10px; overflow:hidden;">
+								<img src="${p.img}" style="width:100%; height:100%; object-fit:cover;">
+							</div>
+							<div style="flex:1;">
+								<div style="font-weight:bold; font-size:15px; margin-bottom:4px;">${p.name}</div>
+								<div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+									<span style="font-size:11px; color:var(--text-dark); text-decoration:line-through;">${p.marketPrice.toLocaleString()}원</span>
+									<span style="font-size:14px; font-weight:800; color:var(--primary);">${p.price.toLocaleString()}원</span>
+									<span style="font-size:10px; background:var(--primary); color:#000; padding:1px 4px; border-radius:3px; font-weight:bold;">-${Math.round((1 - p.price/p.marketPrice)*100)}%</span>
+								</div>
+								<div style="display:flex; justify-content:space-between; align-items:center;">
+									<div style="font-size:11px; color:var(--text-sub);">${p.count}명 참여 중 • ${p.deadline}</div>
+									<button style="padding:6px 12px; background:var(--primary); border:none; border-radius:6px; color:#000; font-size:12px; font-weight:bold;" onclick="setPage('group_purchase_confirm', ${JSON.stringify(p).replace(/"/g, '&quot;')})">참여하기</button>
+								</div>
+							</div>
+						</div>
+					`).join('')}
+					
+					<div class="card" style="background:rgba(201,160,80,0.05); border:1px dashed var(--primary); text-align:center; padding:20px;">
+						<div style="font-size:13px; color:var(--text-sub);">원하시는 품목이 없나요?</div>
+						<div style="font-weight:bold; color:var(--primary); margin-top:5px; cursor:pointer;" onclick="setPage('partnership')">공구 품목 제안하기 ❯</div>
+					<div style="height:40px;"></div>
+				</div>
+			`;
+		}
+
+		function renderGroupPurchaseConfirm() {
+			const item = state.selectedItem;
+			return `
+				<div class="padding">
+					<h2 style="font-size:22px; font-weight:800; margin-bottom:10px;">주문 확인</h2>
+					<p style="font-size:13px; color:var(--text-sub); margin-bottom:30px;">선택하신 상품의 상세 정보를 확인해 주세요.</p>
+
+					<div class="card" style="display:flex; gap:15px; padding:20px; border-color:var(--primary);">
+						<div style="width:80px; height:80px; background:#222; border-radius:10px; overflow:hidden;">
+							<img src="${item.img}" style="width:100%; height:100%; object-fit:cover;">
+						</div>
+						<div style="flex:1;">
+							<div style="font-weight:bold; font-size:16px; margin-bottom:5px;">${item.name}</div>
+							<div style="font-size:18px; font-weight:900; color:var(--primary);">${item.price.toLocaleString()}원</div>
+						</div>
+					</div>
+
+					<div class="label">수량 선택</div>
+					<div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:15px 20px;">
+						<span style="font-weight:bold;">구매 수량</span>
+						<div style="display:flex; align-items:center; gap:15px;">
+							<button style="width:30px; height:30px; border-radius:4px; border:1px solid var(--border); background:var(--bg); color:var(--text-main);">－</button>
+							<span style="font-weight:bold;">1</span>
+							<button style="width:30px; height:30px; border-radius:4px; border:1px solid var(--border); background:var(--bg); color:var(--text-main);">＋</button>
+						</div>
+					</div>
+
+					<div class="label">정산 방식</div>
+					<div class="card" style="padding:0; overflow:hidden;">
+						<div style="padding:15px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between;">
+							<span style="font-size:14px; color:var(--text-sub);">차기 정산금에서 차감</span>
+							<span style="color:var(--success); font-weight:bold;">선택됨</span>
+						</div>
+						<div style="padding:15px 20px; color:var(--text-dark); font-size:12px;">
+							* 공동구매 참여 시, 다음 정산 주기에서 해당 금액만큼 자동 차감됩니다.
+						</div>
+					</div>
+
+					<button class="primaryBtn" style="margin-top:20px; height:60px; font-size:17px;" onclick="setPage('group_purchase_success')">참여 확정하기</button>
+					<button class="primaryBtn" style="margin-top:10px; background:transparent; border:1px solid var(--border); color:var(--text-dark);" onclick="setPage('group_purchase')">취소</button>
+				</div>
+			`;
+		}
+
+		function renderGroupPurchaseSuccess() {
+			return `
+				<div class="padding" style="text-align:center; padding-top:60px;">
+					<div style="font-size:60px; margin-bottom:30px;">✅</div>
+					<h2 style="font-size:24px; font-weight:900; margin-bottom:15px;">참여가 완료되었습니다!</h2>
+					<p style="font-size:14px; color:var(--text-sub); line-height:1.6; margin-bottom:40px;">
+						공동구매 수량이 충족되면 배송이 시작됩니다.<br>
+						진행 현황은 [사업 데이터 분석]에서 확인 가능합니다.
+					</p>
+
+					<div class="card" style="text-align:left; border:1px solid var(--primary); background:rgba(201,160,80,0.05);">
+						<div style="font-size:13px; font-weight:bold; color:var(--primary); margin-bottom:10px;">💡 알림</div>
+						<div style="font-size:12px; color:var(--text-sub); line-height:1.6;">
+							공동구매는 파트너십 강화를 위해 본사 수수료 없이 공급됩니다. 단, 무분별한 취소 시 파트너 등급에 영향을 줄 수 있습니다.
+						</div>
+					</div>
+
+					<button class="primaryBtn" style="margin-top:40px;" onclick="setPage('dash')">메인으로 돌아가기</button>
+				</div>
+			`;
+		}
+
 		window.onload = render;
 	</script>
 </body>
+
 </html>

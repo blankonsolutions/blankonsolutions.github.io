@@ -387,7 +387,8 @@
 			remoteItems: [
 				{ id: 'ri1', name: '현금/통장 뭉치', loc: '장롱 하단', img: 'https://placehold.co/150x150?text=Money', status: 'pending' },
 				{ id: 'ri2', name: '유년시절 사진첩', loc: '거실 서랍', img: 'https://placehold.co/150x150?text=Photos', status: 'pending' }
-			]
+			],
+			cremationBoxCount: 1
 		};
 
 		function setPage(p, data = null) {
@@ -434,6 +435,9 @@
 				case 'auction': content = renderAuctionList(); break;
 				case 'remote_selection': content = renderRemoteSelection(); break;
 				case 'vehicle_request': content = renderVehicleRequest(); break;
+				case 'cremation': content = renderCremation(); break;
+				case 'cremation_apply': content = renderCremationApply(); break;
+				case 'cremation_success': content = renderCremationSuccess(); break;
 			}
 
 			root.innerHTML = `
@@ -644,6 +648,9 @@
 				case 'remote_selection': return '비대면 유품 선별';
 				case 'vehicle_request': return '차량 특수청소 견적';
 				case 'premium_care': return '특청 프리미엄';
+				case 'cremation': return '유품 소각 대행 서비스';
+				case 'cremation_apply': return '소각 서비스 신청';
+				case 'cremation_success': return '신청 완료';
 				default: return '특청';
 			}
 		}
@@ -682,6 +689,18 @@
 							<div style="font-size:13px; color:#51cf66; font-weight:bold; margin-bottom:4px;">특청 X 연계 서비스</div>
 							<div style="font-size:18px; font-weight:800;">심리 케어 연계 서비스</div>
 							<div style="font-size:11px; color:rgba(255,255,255,0.8); margin-top:4px;">정신과 및 상담센터 매칭 지원</div>
+						</div>
+						<div style="font-size:18px; color:rgba(255,255,255,0.5);">❯</div>
+					</div>
+
+					<!-- 유품 소각 대행 -->
+					<div class="card" onclick="setPage('cremation')" style="background:linear-gradient(135deg, #2c0000, #800000); border:1px solid #ff4d4d; display:flex; align-items:center; gap:20px; padding:25px; margin-bottom:12px; box-shadow: 0 10px 20px rgba(128,0,0,0.3); position:relative; overflow:hidden;">
+						<div style="position: absolute; top: 10px; right: 10px; background: #ff4d4d; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 20px; animation: pulse 2s infinite;">안전하고 경건한 소각 절차</div>
+						<div style="width:55px; height:55px; background:rgba(255,255,255,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px;">🔥</div>
+						<div style="flex:1;">
+							<div style="font-size:13px; color:#ff8080; font-weight:bold; margin-bottom:4px;">특청 다이렉트 서비스</div>
+							<div style="font-size:18px; font-weight:800;">유품 소각 대행 서비스</div>
+							<div style="font-size:11px; color:rgba(255,255,255,0.8); margin-top:4px;">우체국 5호 상자당 15만원 • 본사 직접 처리</div>
 						</div>
 						<div style="font-size:18px; color:rgba(255,255,255,0.5);">❯</div>
 					</div>
@@ -1812,6 +1831,128 @@
 
 					<button class="primaryBtn" style="margin-top:30px; height:60px; font-size:17px;" onclick="alert('차량 특수청소 견적 요청이 완료되었습니다.'); setPage('dash');">견적 요청서 발송</button>
 					<div style="height:40px;"></div>
+				</div>
+			`;
+		}
+
+		function renderCremation() {
+			return `
+				<div class="padding">
+					<div style="position:relative; border-radius:20px; overflow:hidden; margin-bottom:30px; height:200px;">
+						<img src="https://images.unsplash.com/photo-1518173946687-a4c8a9fb33ee?q=80&w=1000&auto=format&fit=crop" style="width:100%; height:100%; object-fit:cover; filter: brightness(0.6);">
+						<div style="position:absolute; bottom:20px; left:20px;">
+							<div style="font-size:12px; color:#ff4d4d; font-weight:bold; margin-bottom:5px;">PREMIUM CARE</div>
+							<div style="font-size:24px; font-weight:900; color:#fff;">유품 소각 대행 서비스</div>
+						</div>
+					</div>
+
+					<div class="card" style="border-left: 4px solid #ff4d4d; background: var(--surface-hover);">
+						<div style="font-size:14px; line-height:1.8; color:var(--text-main);">
+							유가족분들의 슬픔을 함께 나누며, 소중한 유품을 정성껏 소각하여 하늘로 보내드립니다. 본사가 직접 관리하는 전문 소각 시설에서 안전하고 경건하게 진행됩니다.
+						</div>
+					</div>
+
+					<div class="label">서비스 안내</div>
+					<div class="card" style="padding:0; overflow:hidden;">
+						<div style="padding:20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+							<span style="font-size:14px; color:var(--text-sub);">표준 규격</span>
+							<span style="font-weight:bold;">우체국 상자 5호 기준</span>
+						</div>
+						<div style="padding:20px; display:flex; justify-content:space-between; align-items:center;">
+							<span style="font-size:14px; color:var(--text-sub);">이용 요금</span>
+							<span style="font-size:18px; font-weight:900; color:#ff4d4d;">상자당 150,000원</span>
+						</div>
+					</div>
+
+					<div class="label">이용 절차</div>
+					<div style="display:flex; flex-direction:column; gap:15px; margin-bottom:30px;">
+						<div style="display:flex; gap:15px; align-items:flex-start;">
+							<div style="width:24px; height:24px; border-radius:50%; background:#ff4d4d; color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold; flex-shrink:0;">1</div>
+							<div style="font-size:14px; color:var(--text-main);">소각할 유품을 우체국 5호 상자에 정성껏 담아주세요.</div>
+						</div>
+						<div style="display:flex; gap:15px; align-items:flex-start;">
+							<div style="width:24px; height:24px; border-radius:50%; background:#ff4d4d; color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold; flex-shrink:0;">2</div>
+							<div style="font-size:14px; color:var(--text-main);">본사 주소로 택배 또는 퀵서비스를 통해 발송해 주세요.</div>
+						</div>
+						<div style="display:flex; gap:15px; align-items:flex-start;">
+							<div style="width:24px; height:24px; border-radius:50%; background:#ff4d4d; color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold; flex-shrink:0;">3</div>
+							<div style="font-size:14px; color:var(--text-main);">본사 접수 후 전문 소각장으로 이동하여 일괄 소각을 진행합니다.</div>
+						</div>
+					</div>
+
+					<div class="card" style="background:rgba(255,255,255,0.05); font-size:12px; color:var(--text-dark); line-height:1.6;">
+						* 액체류, 폭발 위험물, 전자제품 등 소각이 불가능한 물품은 제외됩니다.<br>
+						* 소각 완료 후 증빙 사진을 문자로 전송해 드립니다.
+					</div>
+
+					<button class="primaryBtn" style="margin-top:20px; background:#ff4d4d; color:#fff; height:60px; font-size:17px;" onclick="setPage('cremation_apply')">지금 신청하기</button>
+					<div style="height:40px;"></div>
+				</div>
+			`;
+		}
+
+		function renderCremationApply() {
+			const pricePerBox = 150000;
+			const totalPrice = state.cremationBoxCount * pricePerBox;
+
+			return `
+				<div class="padding">
+					<h2 style="font-size:22px; font-weight:800; margin-bottom:10px;">신청 정보 입력</h2>
+					<p style="font-size:13px; color:var(--text-sub); margin-bottom:30px;">소각하실 유품 상자의 수량을 선택해 주세요.</p>
+
+					<div class="card" style="background:var(--surface-hover); border:1px solid var(--border);">
+						<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+							<span style="font-weight:bold;">우체국 5호 상자 수량</span>
+							<div style="display:flex; align-items:center; gap:15px;">
+								<button style="width:30px; height:30px; border-radius:50%; border:1px solid var(--border); background:var(--surface); color:var(--text-main);" onclick="if(state.cremationBoxCount > 1) { state.cremationBoxCount--; render(); }">－</button>
+								<span style="font-size:18px; font-weight:bold; width:20px; text-align:center;">${state.cremationBoxCount}</span>
+								<button style="width:30px; height:30px; border-radius:50%; border:1px solid var(--border); background:var(--surface); color:var(--text-main);" onclick="state.cremationBoxCount++; render();">＋</button>
+							</div>
+						</div>
+						<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:15px;">
+							<span style="font-size:14px; color:var(--text-sub);">총 결제 금액</span>
+							<span style="font-size:20px; font-weight:900; color:#ff4d4d;">${totalPrice.toLocaleString()}원</span>
+						</div>
+					</div>
+
+					<div class="label">발송인 정보</div>
+					<input class="input" type="text" placeholder="성함" value="${state.currentUser.name}">
+					<input class="input" type="tel" placeholder="연락처" value="010-1234-5678">
+					<textarea class="input" style="height:80px; resize:none;" placeholder="참고사항 (예: 귀중품 확인 완료 등)"></textarea>
+
+					<div class="label">결제 수단</div>
+					<div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:30px;">
+						<div class="item-tag active" style="text-align:center; padding:15px 0;">신용카드</div>
+						<div class="item-tag" style="text-align:center; padding:15px 0;">무통장입금</div>
+					</div>
+
+					<button class="primaryBtn" style="background:#ff4d4d; color:#fff; height:60px; font-size:17px;" onclick="setPage('cremation_success')">${totalPrice.toLocaleString()}원 결제 및 신청</button>
+					<button class="primaryBtn" style="margin-top:10px; background:transparent; border:1px solid var(--border); color:var(--text-dark);" onclick="setPage('cremation')">이전으로</button>
+				</div>
+			`;
+		}
+
+		function renderCremationSuccess() {
+			return `
+				<div class="padding" style="text-align:center; padding-top:60px;">
+					<div style="font-size:60px; margin-bottom:30px;">✉️</div>
+					<h2 style="font-size:24px; font-weight:900; margin-bottom:15px;">신청이 완료되었습니다!</h2>
+					<p style="font-size:14px; color:var(--text-sub); line-height:1.6; margin-bottom:40px;">
+						아래 주소로 유품 상자를 발송해 주세요.<br>
+						본사 접수 즉시 알림 문자를 보내드립니다.
+					</p>
+
+					<div class="card" style="background:var(--surface-hover); text-align:left; border:1px solid #ff4d4d;">
+						<div style="font-size:12px; color:#ff4d4d; font-weight:bold; margin-bottom:10px;">📦 발송하실 주소 (본사)</div>
+						<div style="font-size:15px; font-weight:bold; color:var(--text-main); margin-bottom:5px;">서울특별시 강남구 테헤란로 123</div>
+						<div style="font-size:14px; color:var(--text-main);">특청 유품케어 센터 (유품소각 담당자 앞)</div>
+						<div style="font-size:13px; color:var(--text-dark); margin-top:10px;">TEL: 1588-XXXX</div>
+					</div>
+
+					<div style="margin-top:40px; display:flex; flex-direction:column; gap:12px;">
+						<button class="primaryBtn" onclick="setPage('dash')">대시보드로 이동</button>
+						<button class="primaryBtn" style="background:transparent; border:1px solid var(--border); color:var(--text-sub);" onclick="setPage('history')">신청 내역 확인</button>
+					</div>
 				</div>
 			`;
 		}
