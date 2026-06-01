@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>V8-CV DEEP LEARNING ENGINE</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+    <style>
+        body { background: #000; color: #0f0; font-family: monospace; padding: 20px; }
+        #log { height: 400px; overflow-y: auto; border: 1px solid #0f0; padding: 10px; margin-top: 20px; }
+        .progress { width: 100%; height: 20px; background: #333; margin-top: 10px; }
+        #bar { width: 0%; height: 100%; background: #0f0; }
+    </style>
+</head>
+<body>
+    <h1>[V8-CV] DEEP LEARNING ANALYSIS ENGINE (GPU ACCELERATED)</h1>
+    <div id="status">Loading MobileNet model...</div>
+    <div class="progress"><div id="bar"></div></div>
+    <div id="log"></div>
+
+    <script>
+        let model;
+        let anchors = [];
+        let anchorEmbeddings = [];
+
+        async function init() {
+            log("Initializing TensorFlow.js with WebGL/GPU...");
+            await tf.setBackend('webgl');
+            model = await mobilenet.load({ version: 2, alpha: 1.0 });
+            log("MobileNet V2 loaded successfully.");
+            
+            log("Fetching anchor samples...");
+            const anchorResp = await fetch('/api/anchors');
+            anchors = await anchorResp.json();
+            
+            log(`Analyzing ${anchors.length} anchor samples to create feature vectors...`);
+            for (let i = 0; i < anchors.length; i++) {
+                const emb = await getEmbedding('/samples/' + anchors[i].relPath);
+                if (emb) anchorEmbeddings.push({ ...anchors[i], emb });
+                updateProgress(i + 1, anchors.length);
+            }
+            log("Anchor analysis complete.");
+
+            startProcessing();
+        }
+
+        async function getEmbedding(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.crossOrigin = "Anonymous";
+                img.onload = () => {
+                    const activation = model.infer(img, true); // Get 1024-dim embedding
+                    resolve(activation.dataSync());
+                };
+                img.onerror = () => resolve(null);
+                img.src = url;
+            });
+        }
+
+        function cosineSimilarity(a, b) {
+            let dot = 0, ma = 0, mb = 0;
+            for (let i = 0; i < a.length; i++) {
+                dot += a[i] * b[i];
+                ma += a[i] * a[i];
+                mb += b[i] * b[i];
+            }
+            return dot / (Math.sqrt(ma) * Math.sqrt(mb));
+        }
+
+        async function startProcessing() {
+            log("Fetching 1.5만 source inventory...");
+            const resp = await fetch('/api/inventory');
+            const inventory = await resp.json();
+            log(`Ready to analyze ${inventory.length} images.`);
+
+            for (let i = 0; i < inventory.length; i++) {
+                const file = inventory[i];
+                const folderPath = file.relPath.toLowerCase();
+                
+                // [V9] Determine category from path first to narrow down search
+                let pathCategory = null;
+                if (folderPath.includes('고독사') || folderPath.includes('자살') || folderPath.includes('살인') || folderPath.includes('1.')) pathCategory = '01_BLOOD_DEATH';
+                else if (folderPath.includes('쓰레기집') || folderPath.includes('퇴거') || folderPath.includes('저장강박') || folderPath.includes('2.')) pathCategory = '02_TRASH_HOARDING';
+                else if (folderPath.includes('화재') || folderPath.includes('4.')) pathCategory = '03_FIRE_DAMAGE';
+                else if (folderPath.includes('동물') || folderPath.includes('사체')) pathCategory = '04_ANIMAL_WASTE';
+                else if (folderPath.includes('침수')) pathCategory = '05_EXTERIOR_CLEAN';
+
+                const emb = await getEmbedding('/source/' + file.relPath);
+                let bestMatch = { similarity: 0, status: 'UNKNOWN' };
+                
+                if (emb) {
+                    // Only compare with anchors of the SAME category (if detected)
+                    const relevantAnchors = pathCategory 
+                        ? anchorEmbeddings.filter(a => a.cat === pathCategory)
+                        : anchorEmbeddings;
+
+                    for (let anchor of relevantAnchors) {
+                        const sim = cosineSimilarity(emb, anchor.emb);
+                        if (sim > bestMatch.similarity) {
+                            bestMatch = { similarity: sim, status: anchor.status };
+                        }
+                    }
+                }
+
+                // Rule: > 70% similarity (0.7)
+                let status = 'UNKNOWN';
+                if (bestMatch.similarity > 0.7) {
+                    status = bestMatch.status;
+                }
+
+                // Move file
+                await fetch('/api/classify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        relPath: file.relPath,
+                        category: pathCategory || 'X_UNKNOWN',
+                        status: status
+                    })
+                });
+
+                if (i % 20 === 0) {
+                    updateProgress(i + 1, inventory.length);
+                    document.getElementById('status').innerText = `Analyzing: ${file.name} [${pathCategory || 'UNKNOWN'}] (Sim: ${Math.round(bestMatch.similarity*100)}%)`;
+                }
+            }
+            log("ALL PROCESS COMPLETE. TOTAL 1.5만 IMAGES ANALYZED.");
+        }
+
+        function log(msg) {
+            const div = document.createElement('div');
+            div.innerText = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            document.getElementById('log').appendChild(div);
+            document.getElementById('log').scrollTop = document.getElementById('log').scrollHeight;
+        }
+
+        function updateProgress(curr, total) {
+            const perc = (curr / total) * 100;
+            document.getElementById('bar').style.width = perc + '%';
+        }
+
+        init();
+    </script>
+</body>
+</html>

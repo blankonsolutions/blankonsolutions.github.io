@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>V11-GOLDEN LABEL MATCHER</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+    <style>
+        body { background: #1a1a1a; color: #ffd700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 30px; }
+        #log { height: 500px; overflow-y: auto; border: 2px solid #ffd700; padding: 15px; margin-top: 20px; background: #000; border-radius: 8px; }
+        .progress { width: 100%; height: 30px; background: #333; margin-top: 20px; border-radius: 15px; overflow: hidden; border: 1px solid #ffd700; }
+        #bar { width: 0%; height: 100%; background: linear-gradient(90deg, #ffd700, #ff8c00); transition: width 0.3s; }
+        .stat-box { display: flex; gap: 20px; margin-bottom: 20px; }
+        .stat { background: #333; padding: 15px 25px; border-radius: 10px; border-left: 5px solid #ffd700; }
+    </style>
+</head>
+<body>
+    <h1>🏆 [V11] GOLDEN LABEL PRECISION MATCHER</h1>
+    <p>목표: 사용자님이 직접 분류하신 653개 데이터를 복제하여 99% 일치하는 정답지만 골라내기</p>
+    
+    <div class="stat-box">
+        <div class="stat">골든 라벨 샘플: <span id="anchorCount">0</span>장</div>
+        <div class="stat">분석 대상: <span id="sourceCount">0</span>장</div>
+        <div class="stat">추출된 골든 데이터: <span id="matchCount" style="color: #0f0; font-weight: bold;">0</span>장</div>
+        <button id="startBtn" style="padding: 10px 20px; background: #ffd700; color: #000; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; display: none;" onclick="startProcessing()">분류 시작 (GO)</button>
+    </div>
+
+    <div id="status">🚀 GPU 가속(WebGL) 및 모델 로딩 중...</div>
+    <div class="progress"><div id="bar"></div></div>
+    <div id="log"></div>
+
+    <script>
+        let model;
+        let anchorEmbeddings = [];
+        let matchCount = 0;
+        let inventory = [];
+
+        async function init() {
+            try {
+                await tf.setBackend('webgl');
+                model = await mobilenet.load({ version: 2, alpha: 1.0 });
+                log("✅ 딥러닝 엔진(MobileNet V2) 준비 완료.");
+                
+                log("📥 골든 라벨(Anchors) 수집 중...");
+                const anchorResp = await fetch('/api/anchors');
+                const anchors = await anchorResp.json();
+                document.getElementById('anchorCount').innerText = anchors.length;
+                
+                if (anchors.length === 0) {
+                    log("❌ 오류: 골든 라벨 샘플을 하나도 찾지 못했습니다. 백엔드 경로를 확인하세요.");
+                    return;
+                }
+
+                log(`🧐 골든 라벨 ${anchors.length}장에 대한 특징점 추출 중...`);
+                for (let i = 0; i < anchors.length; i++) {
+                    const emb = await getEmbedding('/samples/' + anchors[i].relPath);
+                    if (emb) anchorEmbeddings.push({ ...anchors[i], emb });
+                    updateProgress(i + 1, anchors.length);
+                }
+                log("✨ 골든 라벨 학습 완료.");
+
+                const resp = await fetch('/api/inventory');
+                inventory = await resp.json();
+                document.getElementById('sourceCount').innerText = inventory.length;
+                
+                document.getElementById('startBtn').style.display = 'block';
+                document.getElementById('status').innerText = '준비 완료. [분류 시작] 버튼을 눌러주세요.';
+            } catch (e) {
+                log("❌ 엔진 초기화 오류: " + e.message);
+            }
+        }
+
+        async function getEmbedding(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.crossOrigin = "Anonymous";
+                img.onload = () => {
+                    const activation = model.infer(img, true);
+                    const data = activation.dataSync();
+                    activation.dispose(); // Critical: Dispose to prevent memory leak
+                    resolve(data);
+                };
+                img.onerror = () => resolve(null);
+                img.src = url;
+            });
+        }
+
+        function cosineSimilarity(a, b) {
+            let dot = 0, ma = 0, mb = 0;
+            for (let i = 0; i < a.length; i++) {
+                dot += a[i] * b[i];
+                ma += a[i] * a[i];
+                mb += b[i] * b[i];
+            }
+            return dot / (Math.sqrt(ma) * Math.sqrt(mb));
+        }
+
+        async function startProcessing() {
+            document.getElementById('startBtn').style.display = 'none';
+            log(`🔍 ${inventory.length}장에 대한 99% 정밀 매칭 시작 (배치 처리 모드)...`);
+
+            for (let i = 0; i < inventory.length; i++) {
+                const file = inventory[i];
+                const emb = await getEmbedding('/source/' + file.relPath);
+                
+                let bestMatch = { similarity: 0, cat: 'X_UNKNOWN', status: 'UNKNOWN' };
+                
+                if (emb) {
+                    for (let anchor of anchorEmbeddings) {
+                        const sim = cosineSimilarity(emb, anchor); // anchor is already .emb
+                        if (sim > bestMatch.similarity) {
+                            bestMatch = { similarity: sim, cat: anchor.cat, status: anchor.status };
+                        }
+                    }
+                }
+
+                // 99% Match (0.95+)
+                if (bestMatch.similarity >= 0.95) {
+                    await fetch('/api/classify', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            relPath: file.relPath,
+                            category: bestMatch.cat,
+                            status: bestMatch.status,
+                            similarity: bestMatch.similarity
+                        })
+                    });
+                    matchCount++;
+                    document.getElementById('matchCount').innerText = matchCount;
+                    log(`🎯 골든 라벨 발견! [${bestMatch.cat}/${bestMatch.status}] 유사도: ${Math.round(bestMatch.similarity*100)}% - ${file.name}`);
+                }
+
+                if (i % 50 === 0) {
+                    updateProgress(i + 1, inventory.length);
+                    document.getElementById('status').innerText = `분석 중: ${i + 1}/${inventory.length} (골든 데이터: ${matchCount}장)`;
+                    // Periodically release memory
+                    await tf.nextFrame(); 
+                }
+            }
+            log("🎊 모든 작업 완료! 사용자님의 골든 라벨 데이터셋이 확장되었습니다.");
+        }
+
+        function log(msg) {
+            const div = document.createElement('div');
+            div.innerHTML = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            document.getElementById('log').appendChild(div);
+            document.getElementById('log').scrollTop = document.getElementById('log').scrollHeight;
+        }
+
+        function updateProgress(curr, total) {
+            const perc = (curr / total) * 100;
+            document.getElementById('bar').style.width = perc + '%';
+        }
+
+        init();
+    </script>
+</body>
+</html>

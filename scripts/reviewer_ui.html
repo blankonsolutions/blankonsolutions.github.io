@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>특청 AI 데이터 검수 시스템</title>
+    <style>
+        :root {
+            --primary: #00f2fe;
+            --secondary: #4facfe;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f8fafc;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            padding: 1rem 2rem;
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .main-container {
+            flex: 1;
+            display: flex;
+            gap: 2rem;
+            padding: 2rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-viewer {
+            flex: 1;
+            max-width: 1000px;
+            height: 80vh;
+            background: var(--card);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        #current-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #000;
+        }
+
+        .controls {
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .key-guide {
+            background: var(--card);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .key-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .key-badge {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: #000;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .status-before { background: #64748b; }
+        .status-during { background: #f59e0b; }
+        .status-after { background: #10b981; }
+
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+
+        #progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .toast {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 2rem;
+            background: var(--primary);
+            color: #000;
+            border-radius: 30px;
+            font-weight: bold;
+            display: none;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translate(-50%, 20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <h1 style="margin:0; font-size: 1.5rem; background: linear-gradient(to right, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">특청 DATA REVIEWER v1.0</h1>
+            <p id="folder-info" style="margin:0; color: #94a3b8; font-size: 0.8rem;">폴더를 선택해주세요...</p>
+        </div>
+        <div style="text-align: right;">
+            <div id="stats">남은 파일: 0 / 전체: 0</div>
+            <div class="progress-container"><div id="progress-bar"></div></div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="image-viewer">
+            <img id="current-img" src="" alt="검수 이미지">
+            <div id="toast" class="toast">저장 완료!</div>
+        </div>
+
+        <div class="controls">
+            <div class="key-guide">
+                <h3>단축키 가이드</h3>
+                <div class="key-item">
+                    <div class="key-badge">1</div>
+                    <div>작업 전 (BEFORE)</div>
+                </div>
+                <div class="key-item">
+                    <div class="key-badge">2</div>
+                    <div>작업 중 (DURING)</div>
+                </div>
+                <div class="key-item">
+                    <div class="key-badge">3</div>
+                    <div>작업 후 (CLEAN)</div>
+                </div>
+                <div class="key-item">
+                    <div class="key-badge" style="background: #ec4899; color: #fff;">4</div>
+                    <div>특이사항 (SIGNIFICANT)</div>
+                </div>
+                <div class="key-item">
+                    <div class="key-badge" style="background: #ef4444; color: #fff;">5</div>
+                    <div>필요없음 (DELETE)</div>
+                </div>
+                <div class="key-item">
+                    <div class="key-badge" style="background: #8b5cf6; color: #fff;">0</div>
+                    <div>손상/착색 (DAMAGE)</div>
+                </div>
+                <div class="key-item" style="opacity: 0.7;">
+                    <div class="key-badge" style="background: #94a3b8;">9</div>
+                    <div>되돌리기 (UNDO)</div>
+                </div>
+                <p style="color: #94a3b8; font-size: 0.8rem; margin-top: 1.5rem;">
+                    * 번호를 누르면 즉시 다음 이미지로 넘어갑니다.
+                </p>
+            </div>
+            
+            <div class="key-guide" style="margin-top: 1rem;">
+                <h3>현재 파일 정보</h3>
+                <div id="file-name" style="word-break: break-all; font-size: 0.9rem; margin-bottom: 0.5rem;">-</div>
+                <div id="file-cat" class="status-badge status-before">CATEGORY</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let files = [];
+        let currentIndex = 0;
+        const config = {
+            split: 'train',
+            category: 'TRASH',
+            status: 'DURING'
+        };
+
+        async function loadFiles() {
+            const resp = await fetch(`/api/files?split=${config.split}&category=${config.category}&status=${config.status}`);
+            files = await resp.json();
+            updateUI();
+        }
+
+        function updateUI() {
+            if (files.length === 0) {
+                document.getElementById('current-img').src = 'https://via.placeholder.com/800x600?text=No+Files+Left';
+                return;
+            }
+
+            const file = files[currentIndex];
+            document.getElementById('current-img').src = '/images/' + file.path;
+            document.getElementById('file-name').innerText = file.name;
+            document.getElementById('stats').innerText = `남은 파일: ${files.length - currentIndex} / 전체: ${files.length}`;
+            document.getElementById('folder-info').innerText = `${config.split} > ${config.category} > ${config.status}`;
+            
+            const progress = (currentIndex / files.length) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+        }
+
+        async function moveFile(targetStatus) {
+            if (files.length === 0) return;
+
+            const file = files[currentIndex];
+            const resp = await fetch('/api/move', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    sourcePath: file.path,
+                    targetStatus: targetStatus,
+                    category: config.category,
+                    split: config.split
+                })
+            });
+
+            if (resp.ok) {
+                showToast(`${targetStatus} 폴더로 이동됨`);
+                currentIndex++;
+                if (currentIndex >= files.length) {
+                    alert('검수가 완료되었습니다!');
+                } else {
+                    updateUI();
+                }
+            }
+        }
+
+        async function undo() {
+            if (currentIndex === 0) return;
+            
+            const resp = await fetch('/api/undo', { method: 'POST' });
+            if (resp.ok) {
+                currentIndex--;
+                showToast("명령 취소됨 (되돌리기)");
+                updateUI();
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 1000);
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === '1') moveFile('BEFORE');
+            if (e.key === '2') moveFile('DURING');
+            if (e.key === '3') moveFile('AFTER');
+            if (e.key === '4') moveFile('SIGNIFICANT');
+            if (e.key === '5') moveFile('DELETED');
+            if (e.key === '0') moveFile('DAMAGED');
+            if (e.key === '9') undo();
+        });
+
+        // Initialize with prompts (simple way to choose folder for now)
+        async function init() {
+            const cat = prompt("검수할 카테고리를 입력하세요 (TRASH, BLOOD, REMOVAL 등)", "TRASH");
+            if (cat) config.category = cat;
+            loadFiles();
+        }
+
+        init();
+    </script>
+</body>
+</html>

@@ -33,10 +33,9 @@
 
 		/* 슬라이드 전환 스타일 */
 		.slide-container {
-			position: fixed !important;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
+			position: absolute !important;
+			top: 0;
+			left: 0;
 			display: none !important;
 			opacity: 0;
 			transition: opacity 0.5s ease;
@@ -53,12 +52,12 @@
 		@keyframes slideIn {
 			from {
 				opacity: 0;
-				transform: translate(-48%, -50%);
+				transform: translateY(20px);
 			}
 
 			to {
 				opacity: 1;
-				transform: translate(-50%, -50%);
+				transform: translateY(0);
 			}
 		}
 
@@ -457,25 +456,86 @@
 			width: 40px;
 		}
 
-		@media (max-width: 1280px) {
-			.slide-container {
-				width: 100vw;
-				height: 100vh;
-				border-radius: 0;
-				padding: 40px 20px;
+		/* 프레젠테이션 스테이지 및 뷰포트 */
+		.presentation-viewport {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			overflow: hidden;
+			background-color: #0b1a30;
+			z-index: 1;
+		}
+
+		.presentation-stage {
+			width: 1280px;
+			height: 720px;
+			position: relative;
+			transform-origin: center center;
+			flex-shrink: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.mobile-rotation-tip {
+			display: none;
+			position: fixed;
+			top: 20px;
+			left: 50%;
+			transform: translateX(-50%);
+			background: rgba(11, 26, 48, 0.95);
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			color: #cbd5e1;
+			padding: 10px 20px;
+			border-radius: 30px;
+			font-size: 14px;
+			z-index: 2000;
+			pointer-events: none;
+			align-items: center;
+			gap: 8px;
+			box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+			font-family: 'Pretendard', sans-serif;
+			white-space: nowrap;
+		}
+
+		.mobile-rotation-tip i {
+			color: #c9a050;
+			animation: rotateTip 2s infinite linear;
+		}
+
+		@keyframes rotateTip {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
+
+		@media (max-width: 768px) and (orientation: portrait) {
+			.mobile-rotation-tip {
+				display: flex;
+			}
+		}
+
+		@media (max-width: 768px) {
+			.nav-controls {
+				bottom: 20px;
+				right: 20px;
+				gap: 10px;
 			}
 
-			.slide-container h1 {
-				font-size: 40px;
+			.nav-btn {
+				width: 44px;
+				height: 44px;
+				font-size: 16px;
 			}
 
-			.slide-container .slide-title {
-				font-size: 28px;
-			}
-
-			.two-column {
-				grid-template-columns: 1fr;
-				gap: 20px;
+			.slide-number {
+				bottom: 30px;
+				left: 20px;
+				font-size: 14px;
 			}
 		}
 	</style>
@@ -483,13 +543,19 @@
 
 <body>
 
+	<div class="mobile-rotation-tip">
+		<i class="fa-solid fa-rotate"></i> 화면을 가로로 회전하시면 더 크게 볼 수 있습니다.
+	</div>
+
 	<div class="slide-number"><span id="current-num">1</span> / 21</div>
 	<div class="nav-controls">
 		<button class="nav-btn" onclick="prevSlide()"><i class="fa-solid fa-chevron-left"></i></button>
 		<button class="nav-btn" onclick="nextSlide()"><i class="fa-solid fa-chevron-right"></i></button>
 	</div>
 
-	<div class="slide-container active" id="slide1">
+	<div class="presentation-viewport">
+		<div class="presentation-stage">
+			<div class="slide-container active" id="slide1">
 		<div style="text-align: center;">
 			<h1 style="font-size: 60px; color: #cbd5e1; letter-spacing: 5px; margin-bottom: 20px;"><span
 					style="color:#c9a050;">BLANKON SOLUTIONS</span></h1>
@@ -788,9 +854,6 @@
 		</div>
 	</div>
 
-
-	</div>
-
 	<div class="slide-container" id="slide11">
 		<h2 class="slide-title">B2G 솔루션 : 공공 조달을 위한 Audit-Ready 인프라</h2>
 		<div class="content-area">
@@ -879,7 +942,7 @@
 		</div>
 	</div>
 
-	<div class="slide-container" id="slide13()">
+	<div class="slide-container" id="slide12-2">
 		<h2 class="slide-title">단순 중개를 넘어, <span style="color:#c9a050">국가 고립 예방 기술 플랫폼</span>으로</h2>
 		<div class="content-area">
 			<div class="two-column">
@@ -1191,32 +1254,6 @@
 				justify-content: center;
 				text-align: center;
 			}
-
-			@media (max-width: 1024px) {
-				#slide13-2 .content-wrapper {
-					flex-direction: column;
-					gap: 30px;
-				}
-
-				#slide13-2 .image-section {
-					height: auto;
-					display: flex;
-					flex-direction: column;
-					gap: 20px;
-					align-items: center;
-					width: 100%;
-				}
-
-				#slide13-2 .sub-broadcast,
-				#slide13-2 .sub-article {
-					position: relative;
-					top: 0;
-					left: 0;
-					right: 0;
-					width: 100%;
-					max-width: 350px;
-				}
-			}
 		</style>
 
 		<h2 class="slide-title">5. 현장이 증명한 '진짜 전문가' <span style="color:#c9a050;">김도영</span> <span
@@ -1334,18 +1371,6 @@
 				flex-direction: column;
 				justify-content: center;
 				box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-			}
-
-			@media (max-width: 1024px) {
-				#slide14 .benchmark-wrapper {
-					flex-direction: column;
-					padding: 25px;
-					gap: 25px;
-				}
-
-				#slide14 .img-box {
-					height: 250px;
-				}
 			}
 		</style>
 
@@ -1580,6 +1605,7 @@
 		</div>
 	</div>
 	</div>
+	</div>
 
 	<script>
 		let currentSlide = 0;
@@ -1605,7 +1631,58 @@
 			// 프리젠터(PageUp)와 왼쪽 방향키 인식하도록 추가
 			else if (e.key === 'ArrowLeft' || e.key === 'PageUp') prevSlide();
 		});
+
+		// 슬라이드 반응형 스케일 계산 함수
+		function adjustPresentationScale() {
+			const stage = document.querySelector('.presentation-stage');
+			if (!stage) return;
+
+			const baseWidth = 1280;
+			const baseHeight = 720;
+			const windowWidth = window.innerWidth;
+			const windowHeight = window.innerHeight;
+
+			// 가로, 세로 비율 중 작은 값을 택하여 화면에 꽉 차게 맞춤
+			const scaleX = windowWidth / baseWidth;
+			const scaleY = windowHeight / baseHeight;
+			
+			// 모바일 폰에서는 살짝의 여백을 주기 위해 스케일링 계수를 곱해줍니다.
+			const scale = Math.min(scaleX, scaleY) * 0.96;
+
+			// 스테이지의 transform scale 업데이트
+			stage.style.transform = `scale(${scale})`;
+		}
+
+		// 모바일 터치 스와이프 감지
+		let touchStartX = 0;
+		let touchEndX = 0;
+
+		document.addEventListener('touchstart', (e) => {
+			touchStartX = e.changedTouches[0].screenX;
+		}, { passive: true });
+
+		document.addEventListener('touchend', (e) => {
+			touchEndX = e.changedTouches[0].screenX;
+			handleSwipe();
+		}, { passive: true });
+
+		function handleSwipe() {
+			const swipeThreshold = 55; // 최소 스와이프 픽셀
+			if (touchEndX < touchStartX - swipeThreshold) {
+				nextSlide(); // 왼쪽 스와이프 -> 다음 슬라이드
+			}
+			if (touchEndX > touchStartX + swipeThreshold) {
+				prevSlide(); // 오른쪽 스와이프 -> 이전 슬라이드
+			}
+		}
+
+		// 이벤트 리스너 등록
+		window.addEventListener('resize', adjustPresentationScale);
+		window.addEventListener('DOMContentLoaded', adjustPresentationScale);
+
+		// 초기 실행 및 첫 슬라이드 표시
 		showSlide(0);
+		adjustPresentationScale();
 	</script>
 
 </body>
